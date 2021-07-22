@@ -51,6 +51,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -252,8 +253,13 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
 
     protected void setSurveyMetadataDropDir()
     {
-        ModulePropertyValue val = new ModulePropertyValue("Response", "/", "SurveyMetadataDirectory", TestFileUtils.getSampleData("SurveyMetadata").getAbsolutePath());
-        setModuleProperties(Arrays.asList(val));
+        LinkedHashMap<String, String> props = new LinkedHashMap<>()
+        {{
+            put("metadataLoadLocation", "file");
+            put("metadataDirectory", TestFileUtils.getSampleData("SurveyMetadata").getAbsolutePath());
+        }};
+
+        setResponseServerConfigurations(props);
     }
 
     protected void setupProject(String studyName, String projectName, String surveyName, boolean enableResponseCollection)

@@ -17,15 +17,16 @@ package org.labkey.response.surveydesign;
 
 import org.apache.logging.log4j.Logger;
 import org.labkey.api.data.Container;
-import org.labkey.api.module.Module;
-import org.labkey.api.module.ModuleLoader;
-import org.labkey.response.ResponseModule;
+import org.labkey.api.data.PropertyManager;
 import org.labkey.response.participantproperties.ParticipantPropertiesDesign;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import static org.labkey.response.ResponseController.ServerConfigurationAction.METADATA_DIRECTORY;
+import static org.labkey.response.ResponseController.ServerConfigurationAction.RESPONSE_SERVER_CONFIGURATION;
 
 /**
  * Get MobileAppStudy SurveySchema from a resource file
@@ -76,7 +77,7 @@ public class FileSurveyDesignProvider extends AbstractSurveyDesignProviderImpl
 
     public static String getBasePath(Container c)
     {
-        Module module = ModuleLoader.getInstance().getModule(ResponseModule.NAME);
-        return module.getModuleProperties().get(ResponseModule.SURVEY_METADATA_DIRECTORY).getEffectiveValue(c);
+        PropertyManager.PropertyMap props = PropertyManager.getEncryptedStore().getProperties(c, RESPONSE_SERVER_CONFIGURATION);
+        return props.get(METADATA_DIRECTORY);
     }
 }

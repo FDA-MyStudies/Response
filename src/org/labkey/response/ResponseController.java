@@ -1294,7 +1294,7 @@ public class ResponseController extends SpringActionController
         @Override
         public void addNavTrail(NavTree root)
         {
-            setHelpTopic("TODO"); // Rosaline TODO
+            setHelpTopic(new MyStudiesHelpTopic("setup"));
             urlProvider(AdminUrls.class).addAdminNavTrail(root, "Response Server Configuration", getClass(), getContainer());
         }
     }

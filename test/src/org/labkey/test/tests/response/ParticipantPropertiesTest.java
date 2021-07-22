@@ -13,7 +13,6 @@ import org.labkey.remoteapi.query.Row;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.remoteapi.query.UpdateRowsCommand;
 import org.labkey.test.Locator;
-import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.categories.Git;
 import org.labkey.test.commands.response.EnrollmentTokenValidationCommand;
@@ -35,6 +34,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -100,7 +100,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
         initMockserver();
         setupProject(STUDY_NAME01, PROJECT_NAME01, null, true);
         goToProjectHome(PROJECT_NAME01);
-        setupMockserverModuleProperties(PROJECT_NAME01, STUDY_NAME01);
+        setupMockserverResponseServerConfigs(PROJECT_NAME01, STUDY_NAME01);
 
         goToProjectHome(PROJECT_NAME01);
         createTokenBatch(PROJECT_NAME01);
@@ -111,7 +111,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
         portalHelper.addWebPart("Lists");
 
         setupProject(STUDY_NAME03, PROJECT_NAME03, null, true);
-        setupMockserverModuleProperties(PROJECT_NAME03, STUDY_NAME03);
+        setupMockserverResponseServerConfigs(PROJECT_NAME03, STUDY_NAME03);
         goToProjectHome(PROJECT_NAME03);
         SetupPage setupPage = new SetupPage(this);
         setupPage.getStudySetupWebPart().clickUpdateMetadata();
@@ -121,18 +121,28 @@ public class ParticipantPropertiesTest extends BaseResponseTest
         testBaseParticipantProperties();
     }
 
-    private void setupMockserverModuleProperties(String project, String token)
+    private void setupMockserverResponseServerConfigs(String project, String token)
     {
-        setupMockserverModuleProperties(project, token, BASE_URL);
+        setupMockserverResponseServerConfigs(project, token, BASE_URL);
     }
 
-    private void setupMockserverModuleProperties(String project, String token, String url)
+    private void setupMockserverResponseServerConfigs(String project, String token, String url)
     {
         goToProjectHome(project);
         //Setup a study
-        ModulePropertyValue baseUrlMP = new ModulePropertyValue(MODULE_NAME, project, METADATASERVICE_PROPERTY_NAME, url);
-        ModulePropertyValue accessTokenMP = new ModulePropertyValue(MODULE_NAME, project, METADATASERVICE_ACCESSTOKEN_PROPERTY_NAME, token);
-        setModuleProperties(Arrays.asList(baseUrlMP, accessTokenMP));
+//        ModulePropertyValue baseUrlMP = new ModulePropertyValue(MODULE_NAME, project, METADATASERVICE_PROPERTY_NAME, url);
+//        ModulePropertyValue accessTokenMP = new ModulePropertyValue(MODULE_NAME, project, METADATASERVICE_ACCESSTOKEN_PROPERTY_NAME, token);
+//        setModuleProperties(Arrays.asList(baseUrlMP, accessTokenMP));
+
+        LinkedHashMap<String, String> props = new LinkedHashMap<>()
+        {{
+            put("metadataLoadLocation", "wcpServer");
+            put("wcpBaseURL", url);
+            put("wcpUsername", token); // todo
+            put("wcpPassword", token);
+        }};
+        setResponseServerConfigurations(props);
+
         goToProjectHome(project);
     }
 
@@ -334,7 +344,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
     {
         setupProject(STUDY_NAME02, PROJECT_NAME02, null, true);
         goToProjectHome(PROJECT_NAME02);
-        setupMockserverModuleProperties(PROJECT_NAME02, STUDY_NAME02);
+        setupMockserverResponseServerConfigs(PROJECT_NAME02, STUDY_NAME02);
 
         //Create participant properties before EnrollmentTokens
         goToProjectHome(PROJECT_NAME02);
@@ -374,7 +384,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
 
         // Easiest way to change response body of mockserver call is to adjust the path,
         // so update the url used to request participant properties metadata
-        setupMockserverModuleProperties(project, study, changeUrl);
+        setupMockserverResponseServerConfigs(project, study, changeUrl);
         SetupPage setupPage = SetupPage.beginAt(this, project);
         setupPage.getStudySetupWebPart().clickUpdateMetadata();  //Should load OriginalParticipantProperty.json
 
@@ -393,7 +403,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
 
         // Easiest way to change response body of mockserver call is to adjust the path,
         // so update the url used to request participant properties metadata
-        setupMockserverModuleProperties(project, study, changeUrl);
+        setupMockserverResponseServerConfigs(project, study, changeUrl);
         SetupPage setupPage = SetupPage.beginAt(this, project);
         setupPage.getStudySetupWebPart().clickUpdateMetadata();  //Should load OriginalParticipantProperty.json
 
@@ -418,7 +428,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
 
         // Easiest way to change response body of mockserver call is to adjust the path,
         // so update the url used to request participant properties metadata
-        setupMockserverModuleProperties(project, study, changeUrl);
+        setupMockserverResponseServerConfigs(project, study, changeUrl);
         SetupPage setupPage = SetupPage.beginAt(this, project);
         setupPage.getStudySetupWebPart().clickUpdateMetadata();  //Should load OriginalParticipantProperty.json
 
@@ -457,7 +467,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
 
         // Easiest way to change response body of mockserver call is to adjust the path,
         // so update the url used to request participant properties metadata
-        setupMockserverModuleProperties(project, study, changeUrl);
+        setupMockserverResponseServerConfigs(project, study, changeUrl);
 
         String appToken = getNewAppToken(project, study, token);
         String responseString = getResponseFromFile("ParticipantPropertiesMetadata", "Survey_Response.json");
@@ -496,7 +506,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
     {
         setupProject(study, project, null, true);
         goToProjectHome(project);
-        setupMockserverModuleProperties(project, study);
+        setupMockserverResponseServerConfigs(project, study);
 
         SetupPage setupPage = SetupPage.beginAt(this, project);
         setupPage.getStudySetupWebPart().clickUpdateMetadata();  //Should load OriginalParticipantProperty.json

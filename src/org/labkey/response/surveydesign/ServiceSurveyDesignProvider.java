@@ -29,13 +29,19 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.logging.log4j.Logger;
 import org.labkey.api.data.Container;
-import org.labkey.api.module.Module;
-import org.labkey.api.module.ModuleLoader;
-import org.labkey.response.ResponseModule;
+import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.PropertyManager;
 import org.labkey.response.participantproperties.ParticipantPropertiesDesign;
 
 import java.net.URI;
 import java.util.function.Function;
+
+import static org.apache.commons.net.util.Base64.encodeBase64;
+import static org.labkey.api.util.StringUtilsLabKey.DEFAULT_CHARSET;
+import static org.labkey.response.ResponseController.ServerConfigurationAction.RESPONSE_SERVER_CONFIGURATION;
+import static org.labkey.response.ResponseController.ServerConfigurationAction.WCP_BASE_URL;
+import static org.labkey.response.ResponseController.ServerConfigurationAction.WCP_PASSWORD;
+import static org.labkey.response.ResponseController.ServerConfigurationAction.WCP_USERNAME;
 
 /**
  * Created by susanh on 3/10/17.
@@ -56,7 +62,7 @@ public class ServiceSurveyDesignProvider extends AbstractSurveyDesignProviderImp
     @Override
     public SurveyDesign getSurveyDesign(Container c, String shortName, String activityId, String version) throws Exception
     {
-        URIBuilder uriBuilder = new URIBuilder(String.join("/", getServiceUrl(c), ACTIVITY_ACTION));
+        URIBuilder uriBuilder = new URIBuilder(String.join("/", getServiceUrl(), ACTIVITY_ACTION));
         uriBuilder.setParameter(STUDY_ID_PARAM, shortName);
         uriBuilder.setParameter(ACTIVITY_ID_PARAM, activityId);
         uriBuilder.setParameter(VERSION_PARAM, version);
@@ -67,7 +73,7 @@ public class ServiceSurveyDesignProvider extends AbstractSurveyDesignProviderImp
     @Override
     public ParticipantPropertiesDesign getParticipantPropertiesDesign(Container c, String shortName) throws Exception
     {
-        URIBuilder uriBuilder = new URIBuilder(String.join("/", getServiceUrl(c), PARTICIPANT_PROPERTIES_ACTION));
+        URIBuilder uriBuilder = new URIBuilder(String.join("/", getServiceUrl(), PARTICIPANT_PROPERTIES_ACTION));
         uriBuilder.setParameter(STUDY_ID_PARAM, shortName);
 
         return getDesign(c, uriBuilder, this::getParticipantPropertiesDesign);
@@ -80,7 +86,7 @@ public class ServiceSurveyDesignProvider extends AbstractSurveyDesignProviderImp
         try (CloseableHttpClient httpclient = HttpClientBuilder.create().setDefaultCredentialsProvider(provider).build())
         {
             HttpGet httpGet = new HttpGet(uri);
-            httpGet.addHeader("Authorization", "Basic " + getServiceToken(c));
+            httpGet.addHeader("Authorization", "Basic " + getServiceToken());
 
             try (CloseableHttpResponse response = httpclient.execute(httpGet))
             {
@@ -99,16 +105,16 @@ public class ServiceSurveyDesignProvider extends AbstractSurveyDesignProviderImp
         }
     }
 
-    private static String getServiceToken(Container container)
+    private static String getServiceToken()
     {
-        Module module = ModuleLoader.getInstance().getModule(ResponseModule.NAME);
-        return module.getModuleProperties().get(ResponseModule.METADATA_SERVICE_ACCESS_TOKEN).getEffectiveValue(container);
+        PropertyManager.PropertyMap props = PropertyManager.getEncryptedStore().getProperties(ContainerManager.getRoot(), RESPONSE_SERVER_CONFIGURATION);
+        return new String(encodeBase64((props.get(WCP_USERNAME) + ":" + props.get(WCP_PASSWORD)).getBytes(DEFAULT_CHARSET)), DEFAULT_CHARSET);
     }
 
-    private static String getServiceUrl(Container container)
+    private static String getServiceUrl()
     {
-        Module module = ModuleLoader.getInstance().getModule(ResponseModule.NAME);
-        String value = StringUtils.trimToNull(module.getModuleProperties().get(ResponseModule.METADATA_SERVICE_BASE_URL).getEffectiveValue(container));
+        PropertyManager.PropertyMap props = PropertyManager.getEncryptedStore().getProperties(ContainerManager.getRoot(), RESPONSE_SERVER_CONFIGURATION);
+        String value = StringUtils.trimToNull(props.get(WCP_BASE_URL));
 
         //Allow backwards compatibility to baseUrl parameter, truncate /activity from the configured url if present Issue #39137
         return StringUtils.removeEndIgnoreCase(value, "/" + ACTIVITY_ACTION);
@@ -116,6 +122,6 @@ public class ServiceSurveyDesignProvider extends AbstractSurveyDesignProviderImp
 
     public static Boolean isConfigured(Container c)
     {
-        return !StringUtils.isEmpty(getServiceToken(c)) && !StringUtils.isEmpty(getServiceUrl(c));
+        return !StringUtils.isEmpty(getServiceToken()) && !StringUtils.isEmpty(getServiceUrl());
     }
 }
