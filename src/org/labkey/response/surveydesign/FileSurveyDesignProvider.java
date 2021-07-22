@@ -17,6 +17,7 @@ package org.labkey.response.surveydesign;
 
 import org.apache.logging.log4j.Logger;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.PropertyManager;
 import org.labkey.response.participantproperties.ParticipantPropertiesDesign;
 
@@ -45,7 +46,7 @@ public class FileSurveyDesignProvider extends AbstractSurveyDesignProviderImpl
         {
             //TODO: make this more flexible
             StringBuilder sb = new StringBuilder();
-            Path filePath = Paths.get(getBasePath(c), String.join("_", studyId, activityId, version) + ".json");
+            Path filePath = Paths.get(getBasePath(), String.join("_", studyId, activityId, version) + ".json");
             Files.readAllLines(filePath).forEach(sb::append);
 
             return getSurveyDesign(sb.toString());
@@ -62,7 +63,7 @@ public class FileSurveyDesignProvider extends AbstractSurveyDesignProviderImpl
         try
         {
             StringBuilder sb = new StringBuilder();
-            Path filePath = Paths.get(getBasePath(c), String.join("_", shortName, "ParticipantProperties") + ".json");
+            Path filePath = Paths.get(getBasePath(), String.join("_", shortName, "ParticipantProperties") + ".json");
             if (!Files.exists(filePath))
                 return null; // No test file present
 
@@ -75,9 +76,9 @@ public class FileSurveyDesignProvider extends AbstractSurveyDesignProviderImpl
         }
     }
 
-    public static String getBasePath(Container c)
+    public static String getBasePath()
     {
-        PropertyManager.PropertyMap props = PropertyManager.getEncryptedStore().getProperties(c, RESPONSE_SERVER_CONFIGURATION);
+        PropertyManager.PropertyMap props = PropertyManager.getEncryptedStore().getProperties(ContainerManager.getRoot(), RESPONSE_SERVER_CONFIGURATION);
         return props.get(METADATA_DIRECTORY);
     }
 }

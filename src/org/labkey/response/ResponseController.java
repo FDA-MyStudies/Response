@@ -132,7 +132,7 @@ public class ResponseController extends SpringActionController
         @Override
         public void validateForm(ActivityMetadataForm form, Errors errors)
         {
-            if (FileSurveyDesignProvider.getBasePath(getContainer()) == null)
+            if (FileSurveyDesignProvider.getBasePath() == null)
             {
                 errors.reject(ERROR_REQUIRED, "No SurveyMetadataDirectory configured. Please set the appropriate Module Properties.");
                 return;
@@ -1363,17 +1363,10 @@ public class ResponseController extends SpringActionController
 
             valueMap.put(ServerConfigurationAction.METADATA_LOAD_LOCATION, _metadataLoadLocation);
 
-            if (_metadataLoadLocation.equals(FILE))
-            {
-                valueMap.put(ServerConfigurationAction.METADATA_DIRECTORY, _metadataDirectory);
-            }
-            else if (_metadataLoadLocation.equals(WCP_SERVER))
-            {
-                valueMap.put(ServerConfigurationAction.WCP_BASE_URL, _wcpBaseURL);
-                valueMap.put(ServerConfigurationAction.WCP_USERNAME, _wcpUsername);
-                valueMap.put(ServerConfigurationAction.WCP_PASSWORD, _wcpPassword);
-            }
-
+            valueMap.put(ServerConfigurationAction.METADATA_DIRECTORY, _metadataDirectory);
+            valueMap.put(ServerConfigurationAction.WCP_BASE_URL, _wcpBaseURL);
+            valueMap.put(ServerConfigurationAction.WCP_USERNAME, _wcpUsername);
+            valueMap.put(ServerConfigurationAction.WCP_PASSWORD, _wcpPassword);
             return valueMap;
         }
     }

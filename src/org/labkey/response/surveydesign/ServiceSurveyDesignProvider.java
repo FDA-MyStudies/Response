@@ -120,7 +120,7 @@ public class ServiceSurveyDesignProvider extends AbstractSurveyDesignProviderImp
         return StringUtils.removeEndIgnoreCase(value, "/" + ACTIVITY_ACTION);
     }
 
-    public static Boolean isConfigured(Container c)
+    public static Boolean isConfigured()
     {
         return !StringUtils.isEmpty(getServiceToken()) && !StringUtils.isEmpty(getServiceUrl());
     }
