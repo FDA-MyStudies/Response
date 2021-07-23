@@ -60,9 +60,6 @@ public class ParticipantPropertiesTest extends BaseResponseTest
     protected final static int PORT = 8083; //Setting to different port than ForwardResponseTest
 
     private final static String BASE_URL = "http://localhost:" + PORT;
-    private final static String MODULE_NAME = "Response";
-    private final static String METADATASERVICE_PROPERTY_NAME = "MetadataServiceBaseUrl";
-    private final static String METADATASERVICE_ACCESSTOKEN_PROPERTY_NAME = "MetadataServiceAccessToken";
     private final static String MOCKSERVER_CALL_MATCHER_CLASS = ParticipantPropertiesSeverGetCallback.class.getName();
     private final static String PARTICIPANT_PROPERTIES_LIST_NAME = "ParticipantProperties";
     private final static String ENROLLMENTTOKEN_FIELD_KEY = "EnrollmentToken";
@@ -111,7 +108,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
         portalHelper.addWebPart("Lists");
 
         setupProject(STUDY_NAME03, PROJECT_NAME03, null, true);
-        setupMockserverResponseServerConfigs(PROJECT_NAME03, STUDY_NAME03);
+        setupMockserverResponseServerConfigs(PROJECT_NAME03, STUDY_NAME03); // sets response server configs
         goToProjectHome(PROJECT_NAME03);
         SetupPage setupPage = new SetupPage(this);
         setupPage.getStudySetupWebPart().clickUpdateMetadata();
@@ -130,15 +127,12 @@ public class ParticipantPropertiesTest extends BaseResponseTest
     {
         goToProjectHome(project);
         //Setup a study
-//        ModulePropertyValue baseUrlMP = new ModulePropertyValue(MODULE_NAME, project, METADATASERVICE_PROPERTY_NAME, url);
-//        ModulePropertyValue accessTokenMP = new ModulePropertyValue(MODULE_NAME, project, METADATASERVICE_ACCESSTOKEN_PROPERTY_NAME, token);
-//        setModuleProperties(Arrays.asList(baseUrlMP, accessTokenMP));
 
         LinkedHashMap<String, String> props = new LinkedHashMap<>()
         {{
             put("metadataLoadLocation", "wcpServer");
-            put("wcpBaseURL", url);
-            put("wcpUsername", token); // todo
+            put("wcpBaseURL", url + "/StudyMetaData");
+            put("wcpUsername", token);
             put("wcpPassword", token);
         }};
         setResponseServerConfigurations(props);
