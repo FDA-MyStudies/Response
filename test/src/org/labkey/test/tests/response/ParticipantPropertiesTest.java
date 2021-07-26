@@ -77,7 +77,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
     private static final int INSERT_ROW_TOKEN_INDEX = 2;
 
     public final static String WCP_SURVEY_METHOD = "activity";
-    public final static String WCP_API_METHOD = "participantProperties";
+    public final static String WCP_API_METHOD = "StudyMetaData/participantProperties";
     public final static String ADD_PATH = "AddPropertyPath";
     public final static String UPDATE_PATH = "UpdatePropertyPath";
     public final static String DELETE_PATH = "DeletePropertyPath";
