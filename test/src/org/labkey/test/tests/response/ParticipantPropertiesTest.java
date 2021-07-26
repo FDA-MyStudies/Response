@@ -82,6 +82,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
     public final static String UPDATE_PATH = "UpdatePropertyPath";
     public final static String DELETE_PATH = "DeletePropertyPath";
     public final static String SURVEY_UPDATE_PATH = "SurveyUpdatePath";
+    public final static String SURVEY_UPDATE_PATH_URL = "SurveyUpdatePath/StudyMetaData";
 
 
     @Override
@@ -169,7 +170,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
             addRequestMatcher(mockServer, String.join("/", UPDATE_PATH, WCP_API_METHOD), this::log,"GET", MOCKSERVER_CALL_MATCHER_CLASS);
             addRequestMatcher(mockServer, String.join("/", DELETE_PATH, WCP_API_METHOD), this::log,"GET", MOCKSERVER_CALL_MATCHER_CLASS);
             addRequestMatcher(mockServer, String.join("/", SURVEY_UPDATE_PATH, WCP_API_METHOD), this::log,"GET", MOCKSERVER_CALL_MATCHER_CLASS);
-            addRequestMatcher(mockServer, String.join("/", SURVEY_UPDATE_PATH, WCP_SURVEY_METHOD), this::log,"GET", MOCKSERVER_CALL_MATCHER_CLASS);
+            addRequestMatcher(mockServer, String.join("/", SURVEY_UPDATE_PATH_URL, WCP_SURVEY_METHOD), this::log,"GET", MOCKSERVER_CALL_MATCHER_CLASS);
         }
         else {
             log("Mockserver is not running, could not add RequestMatcher.");
