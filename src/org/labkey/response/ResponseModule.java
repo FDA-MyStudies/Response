@@ -113,13 +113,7 @@ public class ResponseModule extends DefaultModule
         metadataServiceAccessToken.setInputFieldWidth(500);
         this.addModuleProperty(metadataServiceAccessToken);
 
-<<<<<<< Updated upstream
         FolderManagement.addTab(FolderManagement.TYPE.FolderManagement, "Response Forwarding", "forwarding",
-=======
-        ActionURL serverConfigurationURL = new ActionURL(ResponseController.ServerConfigurationAction.class, ContainerManager.getRoot());
-        AdminConsole.addLink(AdminConsole.SettingsLinkType.Configuration, "Response Server Configuration", serverConfigurationURL, ApplicationAdminPermission.class);
-        FolderManagement.addTab(FolderManagement.TYPE.FolderManagement, "MyStudies Response Server", "forwarding",
->>>>>>> Stashed changes
                 IS_ACTIVE, ResponseController.ForwardingSettingsAction.class);
 
         //Startup shredding and forwarder jobs

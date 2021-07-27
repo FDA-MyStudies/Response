@@ -9,6 +9,9 @@
 <%@ page import="org.labkey.response.forwarder.ForwarderProperties" %>
 <%@ page import="org.labkey.response.forwarder.ForwardingType" %>
 <%@ page import="java.util.Map" %>
+<%@ page import="org.labkey.response.data.MobileAppStudy" %>
+<%@ page import="org.labkey.api.security.permissions.AdminPermission" %>
+<%@ page import="org.labkey.response.ResponseController" %>
 <%@ page extends="org.labkey.api.jsp.JspBase" %>
 <%@ taglib prefix="labkey" uri="http://www.labkey.org/taglib" %>
 
@@ -19,6 +22,8 @@
 
     .lk-response-collection {
         vertical-align: text-bottom;
+        margin-top: 2px;
+        margin-left: 7px;
     }
 
     .lk-response-collection-buttons {
@@ -27,6 +32,20 @@
 
     .lk-response-update-metadata {
         margin-left: 20px;
+    }
+
+    .lk-response-collection-enable-checkbox {
+        display: flex;
+    }
+
+    .lk-response-update-metadata-success {
+        color: #5cb85c;
+        font-size: 12px;
+        margin-left: 15px;
+    }
+
+    .lk-response-update-metadata-failure {
+        color: red;
     }
 </style>
 
@@ -59,21 +78,34 @@
     String oauthTokenFieldPath = forwardingProperties.get(ForwarderProperties.TOKEN_FIELD);
     String oauthTokenHeader= forwardingProperties.get(ForwarderProperties.TOKEN_HEADER);
     String oauthURL = forwardingProperties.get(ForwarderProperties.OAUTH_URL);
+
+    MobileAppStudy studySetupBean = ResponseManager.get().getStudy(getContainer());
+    studySetupBean = studySetupBean != null ? studySetupBean : new MobileAppStudy();
+    studySetupBean.setEditable(!ResponseManager.get().hasStudyParticipants(getContainer()));
+    studySetupBean.setCanChangeCollection(getContainer().hasPermission(getUser(), AdminPermission.class));
+
+    String shortName = studySetupBean.getShortName();
+    boolean collectionEnabled = studySetupBean.getCollectionEnabled();
 %>
 
 <labkey:panel title="Study Setup">
-    Enter the StudyId to be associated with this folder. The StudyId should be the same as it appears in the study design interface. <br/><br/>
+    <labkey:form name="StudyConfigForm" action="<%=new ActionURL(ResponseController.StudyConfigAction.class, getContainer())%>" method="POST">
+        Enter the StudyId to be associated with this folder. The StudyId should be the same as it appears in the study design interface. <br/><br/>
 
-    <labkey:input type="text" className="form-control lk-study-id" name="studyId" placeholder="Enter StudyId" value="<%=basicAuthUser%>" /> <br/>
-    <labkey:input type="checkbox" id="responseCollection" /> <span class="lk-response-collection"> Enable Response Collection </span>
+        <labkey:input type="text" className="form-control lk-study-id" name="studyId" id="studyId" placeholder="Enter StudyId" value="<%=shortName%>" /> <br/>
+        <div class="lk-response-collection-enable-checkbox">
+            <labkey:input type="checkbox" id="responseCollection" name="responseCollection" checked="<%=collectionEnabled%>" />
+            <span class="lk-response-collection"> Enable Response Collection </span>
+        </div>
 
-    <div class="lk-response-collection-buttons">
-        <%= button("Submit").submit(true) %>
-        <span class="lk-response-update-metadata"> <%= button("Update Metadata").href("asdf") %> </span>
-    </div>
-
+        <div class="lk-response-collection-buttons">
+            <%= button("Submit").id("submitStudySetupButton").onClick("submitStudySetup();") %>
+            <span class="lk-response-update-metadata"> <%= button("Update Metadata").id("updateMetadataButton").onClick("updateMetadata();") %> </span>
+            <span class="lk-response-update-metadata-success"></span>
+            <span class="lk-response-update-metadata-failure"></span>
+        </div>
+    </labkey:form>
 </labkey:panel>
-
 
 <labkey:panel title="Response Forwarding">
     <labkey:errors></labkey:errors>
@@ -112,12 +144,75 @@
         </div>
     </labkey:form>
 </labkey:panel>
+
 <script type="text/javascript">
+    let pulseSuccessMessage = () => {
+        let successMessage = $('.lk-response-update-metadata-success');
+        successMessage.text("Configuration Saved");
+        successMessage.fadeIn(3000).delay(1000).fadeOut("slow");
+    }
+
+    function submitStudySetup() {
+        if (!$('#responseCollection').is(":checked")) {
+            LABKEY.Utils.alert("Response collection stopped", "Response collection is disabled for this study. No data will be collected until it is enabled.");
+        }
+
+        LABKEY.Ajax.request({
+            url: LABKEY.ActionURL.buildURL("response", "studyConfig"),
+            method: 'POST',
+            jsonData: {
+                collectionEnabled: $('#responseCollection').is(":checked"),
+                studyId: $('#studyId').val()
+            },
+            success: (response) => {
+                let result = JSON.parse(response.response);
+
+                // Set panel values
+                $('#studyId').val(result.data.studyId);
+                $('#responseCollection').prop('checked', result.data.collectionEnabled);
+
+                pulseSuccessMessage();
+            },
+            failure: (response) => {
+                LABKEY.Utils.alert("Error", "There was a problem.  Please check the logs or contact an administrator.");
+            }
+        });
+    }
+
+    function updateMetadata() {
+        LABKEY.Ajax.request({
+            url: LABKEY.ActionURL.buildURL("response", "UpdateStudyMetadata"),
+            method: 'POST',
+            jsonData: { studyId: $('#studyId').val() },
+            success: (r) => { pulseSuccessMessage(); },
+            failure: (r) => {
+                LABKEY.Utils.alert("Error", "There was a problem updating the study metadata.  Please check the logs or contact an administrator.");
+            }
+        })
+    }
+
+    function enableOrDisableStudySetupButtons () {
+        if (($('#studyId').val() !== "<%=h(shortName)%>") || ($('#responseCollection').prop('checked') !== <%=collectionEnabled%>)) {
+            $('#submitStudySetupButton').removeClass("labkey-disabled-button");
+        } else {
+            $('#submitStudySetupButton').addClass("labkey-disabled-button");
+        }
+
+        if (($('#studyId').val() !== "<%=h(shortName)%>")) {
+            $('#updateMetadataButton').addClass("labkey-disabled-button");
+        } else {
+            $('#updateMetadataButton').removeClass("labkey-disabled-button");
+        }
+    }
+
+    // Dirtiness listeners for enabling and disabling Study Setup buttons
+    $('#studyId').on('input', function() {enableOrDisableStudySetupButtons()});
+    $('#responseCollection').change(() => {enableOrDisableStudySetupButtons()});
 
     +function ($) {
-
         $('#authTypeSelector').change(LABKEY.MobileAppForwarderSettings.showAuthPanel);
 
         LABKEY.MobileAppForwarderSettings.showAuthPanel();
+        enableOrDisableStudySetupButtons();
     } (jQuery);
 </script>
