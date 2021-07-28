@@ -23,8 +23,39 @@
 <%@ page import="org.labkey.response.data.MobileAppStudy" %>
 <%@ page import="org.labkey.response.forwarder.ForwarderProperties" %>
 <%@ page import="java.util.Map" %>
+<%@ page import="org.labkey.api.view.ActionURL" %>
+<%@ page import="static org.labkey.response.ResponseController.getResponseForwardingSettingsURL" %>
+<%@ page import="org.labkey.api.util.Link" %>
 <%@ page extends="org.labkey.api.jsp.JspBase" %>
 <%@ taglib prefix="labkey" uri="http://www.labkey.org/taglib" %>
+
+<style type="text/css">
+    .labkey-warning  { color: red; }
+
+    .study-configuration-values {
+        margin-left: 20px;
+        margin-top: 15px;
+    }
+
+    .study-configuration-row {
+        margin-bottom: 7px;
+    }
+
+    .study-configuration-row-title {
+        font-weight: bold;
+        width: 240px;
+        float: left;
+    }
+
+    .study-configuration-times-circle {
+        color: red;
+    }
+
+    .study-configuration-check-circle {
+        color: green;
+        margin-left: 5px;
+    }
+</style>
 
 <%!
     @Override
@@ -51,34 +82,76 @@
     String forwardingPassword = StringUtils.isNotBlank(forwardingProperties.get(ForwarderProperties.USER_PROPERTY_NAME)) ?
             ForwarderProperties.PASSWORD_PLACEHOLDER :
             "";
+    ActionURL responseForwardingTab = getResponseForwardingSettingsURL(getContainer());
+    ActionURL responseServerAdminConfigPage = new ActionURL(); // todo on merging story 1
+    boolean responseServerAdminConfigured = false; // todo on merging story 1
 
 %>
-<style type="text/css">
-    .labkey-warning  { color: red; }
-</style>
 
 <labkey:errors></labkey:errors>
 <div id="<%= h(renderId)%>" class="requests-editor"></div>
 
-Response Server Site Settings are not configured. Click here to configure them.
+<% if (!responseServerAdminConfigured) { %>
+    <div>
+        Response Server Site Settings are not configured. Click <a href="<%=h(responseServerAdminConfigPage)%>"> here </a> to configure them.
+        <i class="fa fa-times-circle study-configuration-times-circle"></i>
+    </div>
+<% } %>
 
-Study Configuration
+<h4>
+    Study Configuration
+
+    <% if (shortName == null || shortName.isEmpty()) { %>
+        <i class="fa fa-times-circle study-configuration-times-circle"></i>
+    <% } else { %>
+        <i class="fa fa-check-circle study-configuration-check-circle"></i>
+    <% } %>
+</h4>
+
+<div class="study-configuration-values">
+    <div class="study-configuration-row">
+        <span class="study-configuration-row-title"> StudyId associated with this folder: </span>
+        <% if (shortName == null || shortName.isEmpty()) { %>
+        Study Id is not set. Click <a href="<%=h(responseForwardingTab)%>"> here </a> to set Study Id.
+        <% } else { %>
+            <%= h(shortName)%>
+        <% } %>
+    </div>
+
+    <div class="study-configuration-row">
+        <span class="study-configuration-row-title"> Response Collection: </span>
+        <% if (collectionEnabled) { %>
+            Enabled
+        <% } else { %>
+            Disabled
+        <% } %>
+    </div>
+
+    <div class="study-configuration-row">
+        <span class="study-configuration-row-title"> Response forwarding: </span>
+        <% if (forwardingEnabled) { %>
+            Enabled
+        <% } else { %>
+            Disabled
+        <% } %>
+    </div>
+</div>
 
 <script type="text/javascript">
-    Ext4.onReady(function(){
+    <%--Ext4.onReady(function(){--%>
 
-        Ext4.create('LABKEY.MobileAppStudy.StudySetupPanel',
-                {
-                    renderTo            : <%= q(renderId) %>,
-                    shortName           : <%= qh(shortName) %>,
-                    isEditable          : <%= isEditable %>,
-                    canChangeCollection : <%= canChangeCollection %>,
-                    collectionEnabled   : <%= collectionEnabled %>,
-                    forwardingEnabled   : <%= forwardingEnabled %>,
-                    forwardingUrl       : <%= q(forwardingURL) %>,
-                    forwardingUsername  : <%= q(forwardingUser) %>,
-                    forwardingPassword  : <%= q(forwardingPassword) %>
-                }
-        );
-    });
+    <%--    Ext4.create('LABKEY.MobileAppStudy.StudySetupPanel',--%>
+    <%--            {--%>
+    <%--                renderTo            : <%= q(renderId) %>,--%>
+    <%--                shortName           : <%= qh(shortName) %>,--%>
+    <%--                isEditable          : <%= isEditable %>,--%>
+    <%--                canChangeCollection : <%= canChangeCollection %>,--%>
+    <%--                collectionEnabled   : <%= collectionEnabled %>,--%>
+    <%--                forwardingEnabled   : <%= forwardingEnabled %>,--%>
+    <%--                forwardingUrl       : <%= q(forwardingURL) %>,--%>
+    <%--                forwardingUsername  : <%= q(forwardingUser) %>,--%>
+    <%--                forwardingPassword  : <%= q(forwardingPassword) %>--%>
+    <%--            }--%>
+    <%--    );--%>
+    <%--});--%>
 </script>

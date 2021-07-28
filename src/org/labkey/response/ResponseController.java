@@ -1103,6 +1103,11 @@ public class ResponseController extends SpringActionController
     }
 
 
+    public static ActionURL getResponseForwardingSettingsURL(Container c)
+    {
+        return new ActionURL(ForwardingSettingsAction.class, c);
+    }
+
     /**
      * Admin action to allow immediate updating of study metadata
      */

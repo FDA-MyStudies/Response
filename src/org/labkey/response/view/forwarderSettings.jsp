@@ -47,6 +47,10 @@
     .lk-response-update-metadata-failure {
         color: red;
     }
+
+    .text-field-error-state {
+        border: 1px solid red !important;
+    }
 </style>
 
 <%!
@@ -192,10 +196,14 @@
     }
 
     function enableOrDisableStudySetupButtons () {
-        if (($('#studyId').val() !== "<%=h(shortName)%>") || ($('#responseCollection').prop('checked') !== <%=collectionEnabled%>)) {
+        if (($('#studyId').val() !== "<%=h(shortName)%>" || $('#responseCollection').prop('checked') !== <%=collectionEnabled%>) && $('#studyId').val().length > 0) {
             $('#submitStudySetupButton').removeClass("labkey-disabled-button");
+            $('#studyId').removeClass("text-field-error-state");
         } else {
             $('#submitStudySetupButton').addClass("labkey-disabled-button");
+            if ($('#studyId').val().length === 0) {
+                $('#studyId').addClass("text-field-error-state");
+            }
         }
 
         if (($('#studyId').val() !== "<%=h(shortName)%>")) {
