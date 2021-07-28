@@ -30,7 +30,7 @@ public class ResponseUpgradeCode implements UpgradeCode
     private static final Logger LOG = LogManager.getLogger(ResponseUpgradeCode.class);
 
     /**
-     * Invoked within mobileappstudy-20.001-20.002.sql
+     * Invoked within mobileappstudy-21.000-21.001.sql
      * Response Module Properties, which were formerly set in the Folder Management Module Properties tab, are here migrated
      * to the Admin Console Response Server Configuration page.
      */
