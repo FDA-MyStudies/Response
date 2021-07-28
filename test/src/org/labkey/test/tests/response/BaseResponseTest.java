@@ -180,7 +180,8 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
 
     private void goToResponseServerConfiguration()
     {
-        goToAdminConsole().clickResponseServerConfiguration();
+        goToAdminConsole();
+        clickAndWait(Locator.linkWithText("Response Server Configuration"));
     }
 
     protected void setResponseServerConfigurations(LinkedHashMap<String, String> props)
