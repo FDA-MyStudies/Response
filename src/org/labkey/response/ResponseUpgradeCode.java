@@ -45,7 +45,7 @@ public class ResponseUpgradeCode implements UpgradeCode
         String metadataServiceBaseUrl = getResultingPropertyValue(METADATA_SERVICE_BASE_URL, responseModule);
         String metadataServiceAccessToken =  getResultingPropertyValue(METADATA_SERVICE_ACCESS_TOKEN, responseModule);
 
-        PropertyManager.PropertyMap props = PropertyManager.getEncryptedStore().getWritableProperties(ContainerManager.getRoot(), RESPONSE_SERVER_CONFIGURATION, false);
+        PropertyManager.PropertyMap props = PropertyManager.getEncryptedStore().getWritableProperties(ContainerManager.getRoot(), RESPONSE_SERVER_CONFIGURATION, true);
         if (props != null)
         {
             Map<String, String> valueMap = new HashMap<>();
