@@ -1261,7 +1261,7 @@ public class ResponseController extends SpringActionController
                     errors.addError(new LabKeyError("WCP Base URL must end with '/StudyMetaData'"));
             }
 
-            if (errors.getErrorCount() > 0)
+            if (errors.hasErrors())
                 return false;
             else
             {

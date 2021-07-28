@@ -8,6 +8,7 @@
 <%@ page import="static org.labkey.response.ResponseController.ServerConfigurationAction.WCP_BASE_URL" %>
 <%@ page import="static org.labkey.response.ResponseController.ServerConfigurationAction.WCP_USERNAME" %>
 <%@ page import="static org.labkey.response.ResponseController.ServerConfigurationAction.WCP_PASSWORD" %>
+<%@ page import="org.labkey.api.data.ContainerManager" %>
 <%@ page extends="org.labkey.api.jsp.JspBase" %>
 <%@ taglib prefix="labkey" uri="http://www.labkey.org/taglib" %>
 
@@ -55,7 +56,7 @@
 </style>
 
 <%
-    PropertyManager.PropertyMap props = PropertyManager.getEncryptedStore().getProperties(getContainer(), RESPONSE_SERVER_CONFIGURATION);
+    PropertyManager.PropertyMap props = PropertyManager.getEncryptedStore().getProperties(ContainerManager.getRoot(), RESPONSE_SERVER_CONFIGURATION);
 
     String metadataLoadLocation = props.get(METADATA_LOAD_LOCATION);
     String metadataDirectory = props.get(METADATA_DIRECTORY);

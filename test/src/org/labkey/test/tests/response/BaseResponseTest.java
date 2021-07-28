@@ -29,6 +29,8 @@ import org.labkey.remoteapi.PostCommand;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.test.BaseWebDriverTest;
+import org.labkey.test.Locator;
+import org.labkey.test.Locators;
 import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.TestFileUtils;
 import org.labkey.test.WebTestHelper;
@@ -174,6 +176,31 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
         }
 
         return null;
+    }
+
+    private void goToResponseServerConfiguration()
+    {
+        goToAdminConsole().clickResponseServerConfiguration();
+    }
+
+    protected void setResponseServerConfigurations(LinkedHashMap<String, String> props)
+    {
+        log("setting response server configuration");
+        goToResponseServerConfiguration();
+
+        for (String prop: props.keySet())
+        {
+            String val = props.get(prop);
+            log("setting property: " + prop + " to value: " + val);
+
+            if (prop.equals("metadataLoadLocation"))
+                checkRadioButton(Locator.radioButtonByNameAndValue("metadataLoadLocation", val));
+            else
+                setFormElement(Locator.name(prop), val);
+        }
+        clickButton("Save and Finish");
+
+        assertElementNotPresent(Locators.labkeyError);
     }
 
     @LogMethod
