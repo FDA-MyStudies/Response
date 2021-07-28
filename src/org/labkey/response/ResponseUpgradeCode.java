@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 import static java.util.Base64.getDecoder;
 import static org.labkey.response.ResponseController.ServerConfigurationAction.RESPONSE_SERVER_CONFIGURATION;
 import static org.labkey.response.ResponseController.ServerConfigurationAction.WCP_SERVER;
-import static org.labkey.response.ResponseModule.METADATA_SERVICE_ACCESS_TOKEN;
-import static org.labkey.response.ResponseModule.METADATA_SERVICE_BASE_URL;
-import static org.labkey.response.ResponseModule.SURVEY_METADATA_DIRECTORY;
 
 public class ResponseUpgradeCode implements UpgradeCode
 {
     private static final Logger LOG = LogManager.getLogger(ResponseUpgradeCode.class);
+    private static final String SURVEY_METADATA_DIRECTORY = "SurveyMetadataDirectory";
+    private static final String METADATA_SERVICE_BASE_URL = "MetadataServiceBaseUrl";
+    private static final String METADATA_SERVICE_ACCESS_TOKEN = "MetadataServiceAccessToken";
 
     /**
      * Invoked within mobileappstudy-21.000-21.001.sql
@@ -41,13 +41,9 @@ public class ResponseUpgradeCode implements UpgradeCode
         if (responseModule == null)
             return;
 
-        ModuleProperty responseModulePropertyDirectory = responseModule.getModuleProperties().get(SURVEY_METADATA_DIRECTORY);
-        ModuleProperty responseModulePropertyURL = responseModule.getModuleProperties().get(METADATA_SERVICE_BASE_URL);
-        ModuleProperty responseModuleProperty = responseModule.getModuleProperties().get(METADATA_SERVICE_ACCESS_TOKEN);
-
-        String surveyMetadataDirectoryValue = responseModulePropertyDirectory != null ? getResultingPropertyValue(SURVEY_METADATA_DIRECTORY, responseModulePropertyDirectory, responseModule) : "";
-        String metadataServiceBaseUrl = responseModulePropertyURL != null ? getResultingPropertyValue(METADATA_SERVICE_BASE_URL, responseModulePropertyURL, responseModule) : "";
-        String metadataServiceAccessToken = responseModuleProperty != null ? getResultingPropertyValue(METADATA_SERVICE_ACCESS_TOKEN, responseModuleProperty, responseModule) : "";
+        String surveyMetadataDirectoryValue = getResultingPropertyValue(SURVEY_METADATA_DIRECTORY, responseModule);
+        String metadataServiceBaseUrl = getResultingPropertyValue(METADATA_SERVICE_BASE_URL, responseModule);
+        String metadataServiceAccessToken =  getResultingPropertyValue(METADATA_SERVICE_ACCESS_TOKEN, responseModule);
 
         PropertyManager.PropertyMap props = PropertyManager.getEncryptedStore().getWritableProperties(ContainerManager.getRoot(), RESPONSE_SERVER_CONFIGURATION, false);
         if (props != null)
@@ -57,17 +53,26 @@ public class ResponseUpgradeCode implements UpgradeCode
             valueMap.put(ResponseController.ServerConfigurationAction.METADATA_DIRECTORY, surveyMetadataDirectoryValue);
             valueMap.put(ResponseController.ServerConfigurationAction.WCP_BASE_URL, metadataServiceBaseUrl);
 
-            String decodedAccessToken = new String(getDecoder().decode(metadataServiceAccessToken), StringUtilsLabKey.DEFAULT_CHARSET);
-            valueMap.put(ResponseController.ServerConfigurationAction.WCP_USERNAME, decodedAccessToken.split(":")[0]);
-            valueMap.put(ResponseController.ServerConfigurationAction.WCP_PASSWORD, decodedAccessToken.split(":")[1]);
+            if (metadataServiceAccessToken != null)
+            {
+                String decodedAccessToken = new String(getDecoder().decode(metadataServiceAccessToken), StringUtilsLabKey.DEFAULT_CHARSET);
+                if (decodedAccessToken.split(":").length > 1)
+                {
+                    valueMap.put(ResponseController.ServerConfigurationAction.WCP_USERNAME, decodedAccessToken.split(":")[0]);
+                    valueMap.put(ResponseController.ServerConfigurationAction.WCP_PASSWORD, decodedAccessToken.split(":")[1]);
+                }
+            }
 
             props.putAll(valueMap);
             props.save();
         }
     }
 
-    private static String getResultingPropertyValue(String moduleProperty, ModuleProperty responseModuleProperty, Module responseModule)
+    private static String getResultingPropertyValue(String moduleProperty, Module responseModule)
     {
+        ModuleProperty responseModuleProperty = new ModuleProperty(responseModule, moduleProperty);
+        responseModuleProperty.setCanSetPerContainer(true);
+
         String siteDefaultValue = responseModuleProperty.getValueContainerSpecific(ContainerManager.getRoot());
         HashMap<String, Integer> projectLevelValues = new HashMap<>();
         HashMap<String, Integer> containerLevelValues = new HashMap<>();
@@ -84,8 +89,8 @@ public class ResponseUpgradeCode implements UpgradeCode
         }
 
         // Find most popular values collected
-        String projectLevelValue = projectLevelValues.entrySet().stream().max((entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1).get().getKey();
-        String containerLevelValue = containerLevelValues.entrySet().stream().max((entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1).get().getKey();
+        String projectLevelValue = projectLevelValues.size() > 0 ? projectLevelValues.entrySet().stream().max((entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1).get().getKey() : null;
+        String containerLevelValue = containerLevelValues.size() > 0 ? containerLevelValues.entrySet().stream().max((entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1).get().getKey() : null;
 
         if (siteDefaultValue != null)
         {
@@ -94,7 +99,7 @@ public class ResponseUpgradeCode implements UpgradeCode
             return siteDefaultValue;
         }
 
-        if (projectLevelValue != null && !projectLevelValue.isEmpty())
+        if (projectLevelValue != null)
         {
             warnUnusedValues("Container", moduleProperty, containerLevelValues);
             return projectLevelValue;
