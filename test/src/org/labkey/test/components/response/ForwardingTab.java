@@ -13,6 +13,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class ForwardingTab extends LabKeyPage<ForwardingTab.ElementCache> implements FolderManagementTab
@@ -80,6 +81,11 @@ public class ForwardingTab extends LabKeyPage<ForwardingTab.ElementCache> implem
         webPart.setBasicURL(endpointURL);
     }
 
+    public String getInputId()
+    {
+        return elementCache().studyId.get();
+    }
+
     public void setInputId(String value)
     {
         elementCache().studyId.setValue(value);
@@ -110,6 +116,12 @@ public class ForwardingTab extends LabKeyPage<ForwardingTab.ElementCache> implem
     {
         log("Validate that the submit button is now enabled.");
         assertTrue("Submit button is not showing as enabled, it should be.", isSubmitEnabled());
+    }
+
+    public void validateSubmitButtonDisabled()
+    {
+        log("Validate that the submit button is disabled.");
+        assertFalse("Submit button is showing as enabled, it should not be.", isSubmitEnabled());
     }
 
     public void acceptCollectionWarning()

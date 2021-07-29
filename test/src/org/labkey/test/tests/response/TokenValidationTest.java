@@ -22,6 +22,7 @@ import org.labkey.test.categories.Git;
 import org.labkey.test.commands.response.EnrollParticipantCommand;
 import org.labkey.test.commands.response.EnrollmentTokenValidationCommand;
 import org.labkey.test.commands.response.ResolveEnrollmentTokenCommand;
+import org.labkey.test.components.response.ForwardingTab;
 import org.labkey.test.components.response.TokenBatchPopup;
 import org.labkey.test.components.response.TokenBatchesWebPart;
 import org.labkey.test.pages.response.SetupPage;
@@ -59,26 +60,27 @@ public class TokenValidationTest extends BaseResponseTest
 
         goToProjectHome(PROJECT_NAME01);
         SetupPage setupPage = new SetupPage(this);
-        setupPage.getStudySetupWebPart().setShortName(STUDY_NAME01);
-        setupPage.validateSubmitButtonEnabled();
-        setupPage.getStudySetupWebPart().clickSubmit();
+        ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
+        forwardingTab.setInputId(STUDY_NAME01);
+        forwardingTab.validateSubmitButtonEnabled();
+        forwardingTab.submitStudySetup();
 
         log("Create tokens.");
         TokenBatchPopup tokenBatchPopup = setupPage.getTokenBatchesWebPart().openNewBatchPopup();
         tokenBatchPopup.createNewBatch("100");
 
         goToProjectHome(PROJECT_NAME02);
-        setupPage = new SetupPage(this);
-        setupPage.getStudySetupWebPart().setShortName(STUDY_NAME02);
-        setupPage.validateSubmitButtonEnabled();
-        setupPage.getStudySetupWebPart().clickSubmit();
+        forwardingTab = ForwardingTab.beginAt(this);
+        forwardingTab.setInputId(STUDY_NAME02);
+        forwardingTab.validateSubmitButtonEnabled();
+        forwardingTab.submitStudySetup();
 
         // Third project to test resolving enrollment tokens in another study
         goToProjectHome(PROJECT_NAME03);
-        setupPage = new SetupPage(this);
-        setupPage.getStudySetupWebPart().setShortName(STUDY_NAME03);
-        setupPage.validateSubmitButtonEnabled();
-        setupPage.getStudySetupWebPart().clickSubmit();
+        forwardingTab = ForwardingTab.beginAt(this);
+        forwardingTab.setInputId(STUDY_NAME03);
+        forwardingTab.validateSubmitButtonEnabled();
+        forwardingTab.submitStudySetup();
 
         log("Create tokens.");
         tokenBatchPopup = setupPage.getTokenBatchesWebPart().openNewBatchPopup();

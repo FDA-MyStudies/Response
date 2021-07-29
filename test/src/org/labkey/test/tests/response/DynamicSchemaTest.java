@@ -20,9 +20,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.test.categories.Git;
 import org.labkey.test.commands.response.SubmitResponseCommand;
+import org.labkey.test.components.response.ForwardingTab;
 import org.labkey.test.pages.list.BeginPage;
 import org.labkey.test.pages.response.ResponseQueryPage;
-import org.labkey.test.pages.response.SetupPage;
 import org.labkey.test.util.PortalHelper;
 
 import java.util.ArrayList;
@@ -64,11 +64,11 @@ public class DynamicSchemaTest extends BaseResponseTest
         _containerHelper.deleteProject(PROJECT_NAME, false);
         _containerHelper.createProject(PROJECT_NAME, FOLDER_TYPE);
         goToProjectHome(PROJECT_NAME);
-        SetupPage setupPage = new SetupPage(this);
-        setupPage.getStudySetupWebPart().checkResponseCollection();
-        setupPage.getStudySetupWebPart().setShortName(STUDY_NAME);
-        setupPage.validateSubmitButtonEnabled();
-        setupPage.getStudySetupWebPart().clickSubmit();
+        ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
+        forwardingTab.checkResponseCollection();
+        forwardingTab.setInputId(STUDY_NAME);
+        forwardingTab.validateSubmitButtonEnabled();
+        forwardingTab.submitStudySetup();
 
         //setupLists();
         setSurveyMetadataDropDir();

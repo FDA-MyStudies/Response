@@ -23,6 +23,7 @@ import org.labkey.remoteapi.Connection;
 import org.labkey.test.categories.Git;
 import org.labkey.test.commands.response.EnrollmentTokenValidationCommand;
 import org.labkey.test.components.ext4.Error;
+import org.labkey.test.components.response.ForwardingTab;
 import org.labkey.test.components.response.TokenBatchPopup;
 import org.labkey.test.pages.response.SetupPage;
 import org.labkey.test.pages.response.TokenListPage;
@@ -76,41 +77,43 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         goToProjectHome(PROJECT_NAME01);
 
         setupPage = new SetupPage(this);
+        ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
 
         log("Validate the prompt.");
-        assertEquals("The prompt is not as expected.", PROMPT_NOT_ASSIGNED, setupPage.getStudySetupWebPart().getPrompt());
-        setupPage.validateSubmitButtonDisabled();
+        assertEquals("The prompt is not as expected.", PROMPT_NOT_ASSIGNED, setupPage.getStudySetupWebPart().getPrompt()); // todo rosaline: have to do this out
+        forwardingTab.validateSubmitButtonDisabled();
 
         log("Set a study name.");
-        setupPage.getStudySetupWebPart().setShortName(STUDY_NAME01);
-        setupPage.validateSubmitButtonEnabled();
-        setupPage.getStudySetupWebPart().clickSubmit();
+        forwardingTab.setInputId(STUDY_NAME01);
+        forwardingTab.validateSubmitButtonEnabled();
+        forwardingTab.submitStudySetup();
 
         log("Validate that the submit button is disabled after you click it.");
-        assertFalse("Submit button is showing as enabled, it should not be.", setupPage.getStudySetupWebPart().isSubmitEnabled());
+        assertFalse("Submit button is showing as enabled, it should not be.", forwardingTab.isSubmitEnabled());
 
         log("Remove the web part,bring it back and validate the study name is still there.");
         setupPage.getStudySetupWebPart().remove();
         _portalHelper.addWebPart("MyStudies Study Setup");
-        setupPage = new SetupPage(this);
+        forwardingTab = ForwardingTab.beginAt(this);
 
         log("Validate that the Study Short Name field is still set.");
-        assertEquals("Study name did not persist after removing the web part.", STUDY_NAME01.toUpperCase(), setupPage.getStudySetupWebPart().getShortName());
-        setupPage.validateSubmitButtonDisabled();
+        assertEquals("Study name did not persist after removing the web part.", STUDY_NAME01.toUpperCase(), forwardingTab.getInputId());
+        forwardingTab.validateSubmitButtonDisabled();
 
         log("Change the study name and submit.");
-        setupPage.getStudySetupWebPart().setShortName(STUDY_NAME02);
-        setupPage.validateSubmitButtonEnabled();
-        setupPage.getStudySetupWebPart().clickSubmit();
+        forwardingTab.setInputId(STUDY_NAME02);
+        forwardingTab.validateSubmitButtonEnabled();
+        forwardingTab.submitStudySetup();
 
         log("Create a new project and try to reuse the study name.");
         _containerHelper.createProject(PROJECT_NAME02, FOLDER_TYPE);
         goToProjectHome(PROJECT_NAME02);
 
         setupPage = new SetupPage(this);
+        forwardingTab = ForwardingTab.beginAt(this);
 
         log("Set the study name to a value already saved.");
-        setupPage.getStudySetupWebPart().setShortName(STUDY_NAME02);
+        forwardingTab.setInputId(STUDY_NAME02);
 
         final Error error = setupPage.getStudySetupWebPart().submitAndExpectError();
 
@@ -119,9 +122,8 @@ public class ConfigAndEnrollTest extends BaseResponseTest
 
         log("Reuse the first study name");
 
-        setupPage.getStudySetupWebPart().setShortName(STUDY_NAME01);
-
-        setupPage.getStudySetupWebPart().clickSubmit();
+        forwardingTab.setInputId(STUDY_NAME01);
+        forwardingTab.submitStudySetup();
 
         log("Now create some tokens and use them and then validate that the study name cannot be changed.");
 
@@ -167,28 +169,28 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         _containerHelper.createProject(PROJECT_NAME03, FOLDER_TYPE);
 
         goToProjectHome(PROJECT_NAME03);
-        SetupPage setupPage = new SetupPage(this);
+        ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
 
         //Validate collection checkbox behavior
         log("Collection is initially disabled");
-        assertFalse("Response collection is enabled at study creation", setupPage.getStudySetupWebPart().isResponseCollectionChecked());
-        setupPage.validateSubmitButtonDisabled();
+        assertFalse("Response collection is enabled at study creation", forwardingTab.isResponseCollectionChecked());
+        forwardingTab.validateSubmitButtonDisabled();
 
         log("Enabling response collection doesn't allow submit prior to a valid study name");
-        setupPage.getStudySetupWebPart().checkResponseCollection();
-        setupPage.validateSubmitButtonDisabled();
+        forwardingTab.checkResponseCollection();
+        forwardingTab.validateSubmitButtonDisabled();
 
         log("Set a study name.");
-        setupPage.getStudySetupWebPart().setShortName(STUDY_NAME01);
-        setupPage.validateSubmitButtonEnabled();
+        forwardingTab.setInputId(STUDY_NAME01);
+        forwardingTab.validateSubmitButtonEnabled();
 
         log("Disabling response collection allows study config submission");
-        setupPage.getStudySetupWebPart().uncheckResponseCollection();
-        setupPage.validateSubmitButtonEnabled();
+        forwardingTab.uncheckResponseCollection();
+        forwardingTab.validateSubmitButtonEnabled();
 
         log("Clearing StudyId disables submit button");
-        setupPage.getStudySetupWebPart().setShortName("");
-        setupPage.validateSubmitButtonDisabled();
+        forwardingTab.setInputId("");
+        forwardingTab.validateSubmitButtonDisabled();
     }
 
     @Test
@@ -212,10 +214,11 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         goToProjectHome(PROJECT_NAME04);
 
         SetupPage setupPage = new SetupPage(this);
+        ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
 
         log("Set a study name.");
-        setupPage.getStudySetupWebPart().setShortName(PROJECT01_STUDY_NAME)
-                .clickSubmit();
+        forwardingTab.setInputId(PROJECT01_STUDY_NAME);
+        forwardingTab.submitStudySetup();
 
         log("Create " + proj01_tokenCount01 + " tokens.");
         TokenBatchPopup tokenBatchPopup = setupPage.getTokenBatchesWebPart().openNewBatchPopup();
@@ -324,10 +327,11 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         goToProjectHome(PROJECT_NAME05);
 
         setupPage = new SetupPage(this);
+        forwardingTab = ForwardingTab.beginAt(this);
 
         log("Set a study name.");
-        setupPage.getStudySetupWebPart().setShortName(PROJECT02_STUDY_NAME)
-                .clickSubmit();
+        forwardingTab.setInputId(PROJECT02_STUDY_NAME);
+        forwardingTab.submitStudySetup();
 
         log("Create " + proj02_tokenCount01 + " tokens.");
         tokenBatchPopup = setupPage.getTokenBatchesWebPart().openNewBatchPopup();

@@ -53,29 +53,9 @@ public class StudySetupWebPart extends BodyWebPart<StudySetupWebPart.ElementCach
         return elementCache().collectionCheckbox.isChecked();
     }
 
-    public boolean isCollectionCheckboxVisible()
-    {
-        return elementCache().collectionCheckbox.isDisplayed();
-    }
-
-    public boolean isCollectionCheckboxEnabled()
-    {
-        return elementCache().collectionCheckbox.isEnabled();
-    }
-
     public String getPrompt()
     {
         return elementCache().shortNamePrompt.getText();
-    }
-
-    public String getShortName()
-    {
-        return elementCache().shortNameField.get();
-    }
-
-    public StudySetupWebPart setShortName(String shortName)
-    {
-        return setField(elementCache().shortNameField, shortName);
     }
 
     public boolean isShortNameVisible()
@@ -93,33 +73,6 @@ public class StudySetupWebPart extends BodyWebPart<StudySetupWebPart.ElementCach
     public boolean isSubmitVisible()
     {
         return elementCache().submitButton.isDisplayed();
-    }
-
-    public void clickSubmit()
-    {
-        submit();
-        getWrapper().shortWait().until(ExpectedConditions.visibilityOf(elementCache().successMessage));
-    }
-
-    public void clickUpdateMetadata()
-    {
-        updateMetadata();
-        getWrapper().shortWait().until(ExpectedConditions.visibilityOf(elementCache().successMessage));
-    }
-
-    private void updateMetadata()
-    {
-        if (!isUpdateMetadataEnabled())
-            throw new IllegalStateException("Submit button not enabled");
-
-        elementCache().updateMetadataButton.click();
-    }
-
-    private boolean isUpdateMetadataEnabled()
-    {
-        WebDriverWrapper.sleep(500);
-        String classValue = elementCache().updateMetadataButton.getAttribute("class");
-        return !classValue.toLowerCase().contains("x4-btn-disabled");
     }
 
     public Error submitAndExpectError()
@@ -145,15 +98,6 @@ public class StudySetupWebPart extends BodyWebPart<StudySetupWebPart.ElementCach
     {
         ResponseCollectionDialog warning = new ResponseCollectionDialog(getDriver());
         warning.clickOk();
-    }
-
-    private StudySetupWebPart setField(Input field, String value)
-    {
-        field.set(value);
-        field.blur();
-        getWrapper().waitForFormElementToEqual(field.getComponentElement(), value);
-        WebDriverWrapper.sleep(500);
-        return this;
     }
 
     @Override

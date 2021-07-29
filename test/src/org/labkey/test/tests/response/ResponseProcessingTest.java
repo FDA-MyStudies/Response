@@ -23,6 +23,7 @@ import org.junit.experimental.categories.Category;
 import org.labkey.test.Locator;
 import org.labkey.test.TestFileUtils;
 import org.labkey.test.categories.Git;
+import org.labkey.test.components.response.ForwardingTab;
 import org.labkey.test.data.response.AbstractQuestionResponse.SupportedResultType;
 import org.labkey.test.data.response.ChoiceQuestionResponse;
 import org.labkey.test.data.response.GroupedQuestionResponse;
@@ -31,7 +32,6 @@ import org.labkey.test.data.response.MedForm;
 import org.labkey.test.data.response.QuestionResponse;
 import org.labkey.test.data.response.Survey;
 import org.labkey.test.pages.response.ResponseQueryPage;
-import org.labkey.test.pages.response.SetupPage;
 import org.labkey.test.util.DataRegionTable;
 
 import java.text.ParseException;
@@ -67,11 +67,11 @@ public class ResponseProcessingTest extends BaseResponseTest
         //Setup a study
         _containerHelper.createProject(PROJECT_NAME01, FOLDER_TYPE);
         goToProjectHome(PROJECT_NAME01);
-        SetupPage setupPage = new SetupPage(this);
-        setupPage.getStudySetupWebPart().checkResponseCollection();
-        setupPage.getStudySetupWebPart().setShortName(STUDY_NAME01);
-        setupPage.validateSubmitButtonEnabled();
-        setupPage.getStudySetupWebPart().clickSubmit();
+        ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
+        forwardingTab.checkResponseCollection();
+        forwardingTab.setInputId(STUDY_NAME01);
+        forwardingTab.validateSubmitButtonEnabled();
+        forwardingTab.submitStudySetup();
 
         setupLists();
         setSurveyMetadataDropDir();
