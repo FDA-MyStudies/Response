@@ -103,7 +103,7 @@
         </div>
 
         <div class="lk-response-collection-buttons">
-            <%= button("Submit").id("submitStudySetupButton").onClick("submitStudySetup();") %>
+            <%= button("Save").id("submitStudySetupButton").onClick("submitStudySetup();") %>
             <span class="lk-response-update-metadata"> <%= button("Update Metadata").id("updateMetadataButton").onClick("updateMetadata();") %> </span>
             <span class="lk-response-update-metadata-success"></span>
             <span class="lk-response-update-metadata-failure"></span>
@@ -153,7 +153,7 @@
     let pulseSuccessMessage = () => {
         let successMessage = $('.lk-response-update-metadata-success');
         successMessage.text("Configuration Saved");
-        successMessage.fadeIn(3000).delay(1000).fadeOut("slow");
+        successMessage.fadeIn(3000).delay(3000).fadeOut("slow");
     }
 
     function submitStudySetup() {

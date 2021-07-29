@@ -34,10 +34,10 @@ import org.labkey.test.TestFileUtils;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.commands.response.EnrollParticipantCommand;
 import org.labkey.test.commands.response.SubmitResponseCommand;
+import org.labkey.test.components.response.ForwardingTab;
 import org.labkey.test.data.response.InitialSurvey;
 import org.labkey.test.data.response.QuestionResponse;
 import org.labkey.test.data.response.Survey;
-import org.labkey.test.pages.response.SetupPage;
 import org.labkey.test.util.ListHelper;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.LoggedParam;
@@ -261,12 +261,13 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
         _containerHelper.createProject(projectName, FOLDER_TYPE);
         log("Set a study name.");
         goToProjectHome(projectName);
-        SetupPage setupPage = new SetupPage(this);
-        setupPage.getStudySetupWebPart().setShortName(studyName);
+
+        ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
+        forwardingTab.setInputId(studyName);
         if (enableResponseCollection)
-            setupPage.getStudySetupWebPart().checkResponseCollection();
-        setupPage.validateSubmitButtonEnabled();
-        setupPage.getStudySetupWebPart().clickSubmit();
+            forwardingTab.checkResponseCollection();
+        forwardingTab.validateSubmitButtonEnabled();
+        forwardingTab.submitStudySetup();
         if (StringUtils.isNotBlank(surveyName))
             _listHelper.createList(projectName, surveyName, ListHelper.ListColumnType.AutoInteger, "Key");
     }
