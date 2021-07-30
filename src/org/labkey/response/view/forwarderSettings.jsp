@@ -185,7 +185,11 @@
                 pulseSuccessMessage();
             },
             failure: (response) => {
-                LABKEY.Utils.alert("Error", "There was a problem.  Please check the logs or contact an administrator.");
+                let errorMessage = "There was a problem.  Please check the logs or contact an administrator.";
+                if ('responseText' in response && 'exception' in JSON.parse(response.responseText)) {
+                    errorMessage = JSON.parse(response.responseText).exception;
+                }
+                LABKEY.Utils.alert("Error", errorMessage);
             }
         });
     }

@@ -76,7 +76,6 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         _containerHelper.createProject(PROJECT_NAME01, FOLDER_TYPE);
         goToProjectHome(PROJECT_NAME01);
 
-        setupPage = new SetupPage(this);
         ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
 
         log("Validate the prompt.");
@@ -98,15 +97,12 @@ public class ConfigAndEnrollTest extends BaseResponseTest
 
         log("Create a new project and try to reuse the study name.");
         _containerHelper.createProject(PROJECT_NAME02, FOLDER_TYPE);
-        goToProjectHome(PROJECT_NAME02);
-
-        setupPage = new SetupPage(this);
         forwardingTab = ForwardingTab.beginAt(this);
 
         log("Set the study name to a value already saved.");
         forwardingTab.setInputId(STUDY_NAME02);
 
-        final Error error = setupPage.getStudySetupWebPart().submitAndExpectError();
+        final Error error = forwardingTab.submitAndExpectError();
 
         assertEquals("Error message text does not match", REUSED_STUDY_NAME_ERROR.replace("$STUDY_NAME$", STUDY_NAME02), error.getBody());
         error.clickOk();
@@ -119,6 +115,8 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         log("Now create some tokens and use them and then validate that the study name cannot be changed.");
 
         log("Create " + expectedTokenCount + " tokens.");
+        setupPage = new SetupPage(this);
+        SetupPage.beginAt(this, PROJECT_NAME01);
         TokenBatchPopup tokenBatchPopup = setupPage.getTokenBatchesWebPart().openNewBatchPopup();
         TokenListPage tokenListPage = tokenBatchPopup.createNewBatch(expectedTokenCount);
 
@@ -212,6 +210,7 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         forwardingTab.submitStudySetup();
 
         log("Create " + proj01_tokenCount01 + " tokens.");
+        SetupPage.beginAt(this, PROJECT_NAME04);
         TokenBatchPopup tokenBatchPopup = setupPage.getTokenBatchesWebPart().openNewBatchPopup();
         TokenListPage tokenListPage = tokenBatchPopup.createNewBatch(proj01_tokenCount01);
 
@@ -325,6 +324,7 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         forwardingTab.submitStudySetup();
 
         log("Create " + proj02_tokenCount01 + " tokens.");
+        SetupPage.beginAt(this, PROJECT_NAME05);
         tokenBatchPopup = setupPage.getTokenBatchesWebPart().openNewBatchPopup();
         tokenListPage = tokenBatchPopup.createNewBatch(proj02_tokenCount01);
 

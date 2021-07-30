@@ -66,6 +66,7 @@ public class TokenValidationTest extends BaseResponseTest
         forwardingTab.submitStudySetup();
 
         log("Create tokens.");
+        SetupPage.beginAt(this, PROJECT_NAME01);
         TokenBatchPopup tokenBatchPopup = setupPage.getTokenBatchesWebPart().openNewBatchPopup();
         tokenBatchPopup.createNewBatch("100");
 
@@ -83,6 +84,7 @@ public class TokenValidationTest extends BaseResponseTest
         forwardingTab.submitStudySetup();
 
         log("Create tokens.");
+        SetupPage.beginAt(this, PROJECT_NAME01);
         tokenBatchPopup = setupPage.getTokenBatchesWebPart().openNewBatchPopup();
         tokenBatchPopup.createNewBatch("100");
     }

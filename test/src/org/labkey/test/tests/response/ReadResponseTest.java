@@ -126,6 +126,7 @@ public class ReadResponseTest extends BaseResponseTest
         forwardingTab.submitStudySetup();
 
         log("Create " + tokenCount + " tokens.");
+        SetupPage.beginAt(this, PROJECT_NAME);
         TokenBatchPopup tokenBatchPopup = setupPage.getTokenBatchesWebPart().openNewBatchPopup();
         TokenListPage tokenListPage = tokenBatchPopup.createNewBatch(tokenCount);
 
