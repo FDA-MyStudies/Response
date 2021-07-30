@@ -80,7 +80,7 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
 
         log("Validate the prompt.");
-        assertEquals("The prompt is not as expected.", PROMPT_NOT_ASSIGNED, setupPage.getStudySetupWebPart().getPrompt()); // todo rosaline: have to do this out
+        assertEquals("The prompt is not as expected.", PROMPT_NOT_ASSIGNED, forwardingTab.getPrompt());
         forwardingTab.validateSubmitButtonDisabled();
 
         log("Set a study name.");
@@ -90,15 +90,6 @@ public class ConfigAndEnrollTest extends BaseResponseTest
 
         log("Validate that the submit button is disabled after you click it.");
         assertFalse("Submit button is showing as enabled, it should not be.", forwardingTab.isSubmitEnabled());
-
-        log("Remove the web part,bring it back and validate the study name is still there.");
-        setupPage.getStudySetupWebPart().remove();
-        _portalHelper.addWebPart("MyStudies Study Setup");
-        forwardingTab = ForwardingTab.beginAt(this);
-
-        log("Validate that the Study Short Name field is still set.");
-        assertEquals("Study name did not persist after removing the web part.", STUDY_NAME01.toUpperCase(), forwardingTab.getInputId());
-        forwardingTab.validateSubmitButtonDisabled();
 
         log("Change the study name and submit.");
         forwardingTab.setInputId(STUDY_NAME02);

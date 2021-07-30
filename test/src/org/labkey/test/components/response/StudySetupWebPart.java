@@ -117,7 +117,7 @@ public class StudySetupWebPart extends BodyWebPart<StudySetupWebPart.ElementCach
         final WebElement successMessage = Locator.tagWithText("label", "Configuration Saved").findWhenNeeded(this);
     }
 
-    public class ResponseCollectionDialog extends Message
+    public static class ResponseCollectionDialog extends Message
     {
         public static final String WARNING_TITLE = "Response collection stopped";
 

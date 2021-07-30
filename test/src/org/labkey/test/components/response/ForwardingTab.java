@@ -3,6 +3,7 @@ package org.labkey.test.components.response;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.WebTestHelper;
+import org.labkey.test.components.ext4.Error;
 import org.labkey.test.components.html.Checkbox;
 import org.labkey.test.components.html.Input;
 import org.labkey.test.components.html.RadioButton;
@@ -126,7 +127,19 @@ public class ForwardingTab extends LabKeyPage<ForwardingTab.ElementCache> implem
 
     public void acceptCollectionWarning()
     {
-        clickButton("OK");
+        StudySetupWebPart.ResponseCollectionDialog warning = new StudySetupWebPart.ResponseCollectionDialog(getDriver());
+        warning.clickOk();
+    }
+
+    public String getPrompt()
+    {
+        return elementCache().shortNamePrompt.getText();
+    }
+
+    public Error submitAndExpectError()
+    {
+        submitStudySetup();
+        return new Error(getDriver());
     }
 
     public void submitStudySetup()
@@ -181,6 +194,7 @@ public class ForwardingTab extends LabKeyPage<ForwardingTab.ElementCache> implem
         WebElement submitStudySetup = new LazyWebElement(Locator.lkButton("Save"),this);
         WebElement updateMetadata = new LazyWebElement(Locator.lkButton("Update Metadata"),this);
         WebElement successMessage = Locator.tagWithText("span", "Configuration Saved").findWhenNeeded(this);
+        final WebElement shortNamePrompt = Locator.tagWithClass("div", "studysetup-prompt").findWhenNeeded(this);
 
         OAuthWebPart oAuthWebPart = new OAuthWebPart(getDriver(), new LazyWebElement(Locator.id("oauthPanel"), this));
         BasicAuthWebPart basicAuthWebPart = new BasicAuthWebPart(getDriver(), new LazyWebElement(Locator.id("basicAuthPanel"), this));

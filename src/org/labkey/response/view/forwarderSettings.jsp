@@ -51,6 +51,10 @@
     .text-field-error-state {
         border: 1px solid red !important;
     }
+
+    .studysetup-prompt {
+        margin-bottom: 28px;
+    }
 </style>
 
 <%!
@@ -94,7 +98,7 @@
 
 <labkey:panel title="Study Setup">
     <labkey:form name="StudyConfigForm" action="<%=new ActionURL(ResponseController.StudyConfigAction.class, getContainer())%>" method="POST">
-        Enter the StudyId to be associated with this folder. The StudyId should be the same as it appears in the study design interface. <br/><br/>
+        <div class="studysetup-prompt"> Enter the StudyId to be associated with this folder. The StudyId should be the same as it appears in the study design interface. </div>
 
         <labkey:input type="text" className="form-control lk-study-id" name="studyId" id="studyId" placeholder="Enter StudyId" value="<%=shortName%>" /> <br/>
         <div class="lk-response-collection-enable-checkbox">
@@ -175,6 +179,9 @@
                 $('#studyId').val(result.data.studyId);
                 $('#responseCollection').prop('checked', result.data.collectionEnabled);
 
+                $('#submitStudySetupButton').addClass("labkey-disabled-button");
+                $('#updateMetadataButton').removeClass("labkey-disabled-button");
+
                 pulseSuccessMessage();
             },
             failure: (response) => {
@@ -214,6 +221,7 @@
     }
 
     // Dirtiness listeners for enabling and disabling Study Setup buttons
+    $('#studyId').change(() => {enableOrDisableStudySetupButtons()}); // Must be present for automation test purposes
     $('#studyId').on('input', function() {enableOrDisableStudySetupButtons()});
     $('#responseCollection').change(() => {enableOrDisableStudySetupButtons()});
 

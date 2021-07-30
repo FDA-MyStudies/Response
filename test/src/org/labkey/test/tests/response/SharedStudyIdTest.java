@@ -79,11 +79,12 @@ public class SharedStudyIdTest extends BaseResponseTest
 
         String projectPath = project + "/" + subfolder;
 
-        SetupPage setupPage = new SetupPage(this);
         ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.setInputId(studyId);
         forwardingTab.submitStudySetup();
 
+        SetupPage setupPage = new SetupPage(this);
+        SetupPage.beginAt(this, projectPath);
         if (addTokens)
         {
             log("Creating 10 tokens for " + projectPath);
@@ -126,6 +127,7 @@ public class SharedStudyIdTest extends BaseResponseTest
         forwardingTab.submitStudySetup();
         goToProjectHome(PROJECT_NAME02);
         clickFolder(STUDY_FOLDER_NAME);
+        forwardingTab = ForwardingTab.beginAt(this);
         assertEquals("Study name not saved for second project", SHORT_NAME.toUpperCase(), forwardingTab.getInputId());
 
         log("Testing enrollment, which should fail without any tokens.");
