@@ -63,7 +63,7 @@ public class TokenValidationTest extends BaseResponseTest
         ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.setInputId(STUDY_NAME01);
         forwardingTab.validateSubmitButtonEnabled();
-        forwardingTab.submitStudySetup();
+        forwardingTab.submitStudySetup(false);
 
         log("Create tokens.");
         SetupPage.beginAt(this, PROJECT_NAME01);
@@ -74,14 +74,14 @@ public class TokenValidationTest extends BaseResponseTest
         forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.setInputId(STUDY_NAME02);
         forwardingTab.validateSubmitButtonEnabled();
-        forwardingTab.submitStudySetup();
+        forwardingTab.submitStudySetup(false);
 
         // Third project to test resolving enrollment tokens in another study
         goToProjectHome(PROJECT_NAME03);
         forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.setInputId(STUDY_NAME03);
         forwardingTab.validateSubmitButtonEnabled();
-        forwardingTab.submitStudySetup();
+        forwardingTab.submitStudySetup(false);
 
         log("Create tokens.");
         SetupPage.beginAt(this, PROJECT_NAME01);
@@ -231,13 +231,17 @@ public class TokenValidationTest extends BaseResponseTest
         // Test for Administrator
         assertTrue(batchesWebPart.isNewBatchPresent());
         assertTrue(batchesWebPart.isNewBatchEnabled());
-        setupPage.validateSubmitButtonDisabled();  // Submit button should be present
+        ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
+        forwardingTab.validateSubmitButtonDisabled();  // Submit button should be present
+        SetupPage.beginAt(this, PROJECT_NAME01);
 
         // Test for Reader
         impersonateRole("Reader");
         assertTrue(batchesWebPart.isNewBatchPresent());
         assertFalse(batchesWebPart.isNewBatchEnabled());
-        assertFalse(setupPage.isSubmitButtonVisible());  // Submit button should NOT be present
+        forwardingTab = ForwardingTab.beginAt(this);
+        assertFalse(forwardingTab.isSubmitButtonVisible());  // Submit button should NOT be present
+        SetupPage.beginAt(this, PROJECT_NAME01);
         stopImpersonating(false);
 
         // Test for MyStudies Coordinator

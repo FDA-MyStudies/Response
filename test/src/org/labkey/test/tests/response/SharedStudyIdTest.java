@@ -81,7 +81,7 @@ public class SharedStudyIdTest extends BaseResponseTest
 
         ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.setInputId(studyId);
-        forwardingTab.submitStudySetup();
+        forwardingTab.submitStudySetup(false);
 
         SetupPage setupPage = new SetupPage(this);
         SetupPage.beginAt(this, projectPath);
@@ -117,14 +117,14 @@ public class SharedStudyIdTest extends BaseResponseTest
 
         ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.setInputId(SHORT_NAME);
-        forwardingTab.submitStudySetup();
+        forwardingTab.submitStudySetup(false);
 
         _containerHelper.createProject(PROJECT_NAME02, "Collaboration");
         _containerHelper.createSubfolder(PROJECT_NAME02, STUDY_FOLDER_NAME, FOLDER_TYPE);
 
         forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.setInputId(SHORT_NAME);
-        forwardingTab.submitStudySetup();
+        forwardingTab.submitStudySetup(false);
         goToProjectHome(PROJECT_NAME02);
         clickFolder(STUDY_FOLDER_NAME);
         forwardingTab = ForwardingTab.beginAt(this);

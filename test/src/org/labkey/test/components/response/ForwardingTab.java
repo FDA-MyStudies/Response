@@ -125,6 +125,11 @@ public class ForwardingTab extends LabKeyPage<ForwardingTab.ElementCache> implem
         assertFalse("Submit button is showing as enabled, it should not be.", isSubmitEnabled());
     }
 
+    public boolean isSubmitButtonVisible()
+    {
+        return elementCache().submitStudySetup.isDisplayed();
+    }
+
     public void acceptCollectionWarning()
     {
         StudySetupWebPart.ResponseCollectionDialog warning = new StudySetupWebPart.ResponseCollectionDialog(getDriver());
@@ -138,11 +143,11 @@ public class ForwardingTab extends LabKeyPage<ForwardingTab.ElementCache> implem
 
     public Error submitAndExpectError()
     {
-        submitStudySetup();
+        submitStudySetup(true);
         return new Error(getDriver());
     }
 
-    public void submitStudySetup()
+    public void submitStudySetup(boolean expectError)
     {
         if (!isSubmitEnabled())
             throw new IllegalStateException("Submit button not enabled");
@@ -153,7 +158,8 @@ public class ForwardingTab extends LabKeyPage<ForwardingTab.ElementCache> implem
         if (!collectionEnabled)
             acceptCollectionWarning();
 
-        shortWait().until(ExpectedConditions.visibilityOf(elementCache().successMessage));
+        if (!expectError)
+            shortWait().until(ExpectedConditions.visibilityOf(elementCache().successMessage));
     }
 
     public void clickUpdateMetadata()

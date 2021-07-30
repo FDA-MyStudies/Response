@@ -160,11 +160,7 @@
         successMessage.fadeIn(3000).delay(3000).fadeOut("slow");
     }
 
-    function submitStudySetup() {
-        if (!$('#responseCollection').is(":checked")) {
-            LABKEY.Utils.alert("Response collection stopped", "Response collection is disabled for this study. No data will be collected until it is enabled.");
-        }
-
+    function postStudySetup() {
         LABKEY.Ajax.request({
             url: LABKEY.ActionURL.buildURL("response", "studyConfig"),
             method: 'POST',
@@ -192,6 +188,25 @@
                 LABKEY.Utils.alert("Error", errorMessage);
             }
         });
+    }
+
+    function submitStudySetup() {
+        if (!$('#responseCollection').is(":checked")) {
+            Ext4.Msg.show({
+                title: 'Response collection stopped',
+                msg: 'Response collection is disabled for this study. No data will be collected until it is enabled.',
+                buttons: Ext4.Msg.OKCANCEL,
+                icon: Ext4.Msg.WARNING,
+                fn: function(val) {
+                    if (val == 'ok'){
+                        postStudySetup();
+                    } else {
+                        $('#submitStudySetupButton').removeClass("labkey-disabled-button");
+                    }
+                },
+                scope: this
+            });
+        }
     }
 
     function updateMetadata() {
@@ -234,5 +249,6 @@
 
         LABKEY.MobileAppForwarderSettings.showAuthPanel();
         enableOrDisableStudySetupButtons();
+        $('#studyId').removeClass("text-field-error-state");
     } (jQuery);
 </script>

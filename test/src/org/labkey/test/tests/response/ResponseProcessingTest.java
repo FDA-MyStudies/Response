@@ -32,6 +32,7 @@ import org.labkey.test.data.response.MedForm;
 import org.labkey.test.data.response.QuestionResponse;
 import org.labkey.test.data.response.Survey;
 import org.labkey.test.pages.response.ResponseQueryPage;
+import org.labkey.test.pages.response.SetupPage;
 import org.labkey.test.util.DataRegionTable;
 
 import java.text.ParseException;
@@ -71,8 +72,9 @@ public class ResponseProcessingTest extends BaseResponseTest
         forwardingTab.checkResponseCollection();
         forwardingTab.setInputId(STUDY_NAME01);
         forwardingTab.validateSubmitButtonEnabled();
-        forwardingTab.submitStudySetup();
+        forwardingTab.submitStudySetup(false);
 
+        SetupPage.beginAt(this, PROJECT_NAME01);
         setupLists();
         setSurveyMetadataDropDir();
         goToProjectHome(PROJECT_NAME01);
