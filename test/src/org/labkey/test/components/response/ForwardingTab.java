@@ -141,12 +141,6 @@ public class ForwardingTab extends LabKeyPage<ForwardingTab.ElementCache> implem
         return elementCache().shortNamePrompt.getText();
     }
 
-    public Error submitAndExpectError()
-    {
-        submitStudySetup();
-        return new Error(getDriver());
-    }
-
     public void submitStudySetup()
     {
         if (!isSubmitEnabled())
@@ -157,7 +151,17 @@ public class ForwardingTab extends LabKeyPage<ForwardingTab.ElementCache> implem
 
         if (!collectionEnabled)
             acceptCollectionWarning();
+    }
 
+    public Error submitAndExpectError()
+    {
+        submitStudySetup();
+        return new Error(getDriver());
+    }
+
+    public void submitAndExpectSuccess()
+    {
+        submitStudySetup();
         shortWait().until(ExpectedConditions.visibilityOf(elementCache().successMessage));
     }
 

@@ -98,7 +98,12 @@
 
 <labkey:panel title="Study Setup">
     <labkey:form name="StudyConfigForm" action="<%=new ActionURL(ResponseController.StudyConfigAction.class, getContainer())%>" method="POST">
-        <div class="studysetup-prompt"> Enter the StudyId to be associated with this folder. The StudyId should be the same as it appears in the study design interface. </div>
+
+        <% if (shortName == null || shortName.isEmpty()) { %>
+            <div class="studysetup-prompt"> Enter the StudyId to be associated with this folder. The StudyId should be the same as it appears in the study design interface. </div>
+        <% } else { %>
+            <div class="studysetup-prompt"> The StudyId associated with this folder is <%=h(shortName)%>. </div>
+        <% } %>
 
         <labkey:input type="text" className="form-control lk-study-id" name="studyId" id="studyId" placeholder="Enter StudyId" value="<%=shortName%>" /> <br/>
         <div class="lk-response-collection-enable-checkbox">
@@ -185,7 +190,7 @@
                 if ('responseText' in response && 'exception' in JSON.parse(response.responseText)) {
                     errorMessage = JSON.parse(response.responseText).exception;
                 }
-                LABKEY.Utils.alert("Error", errorMessage);
+                LABKEY.Utils.alert("Error", "There were problems storing the configuration. " + errorMessage);
             }
         });
     }

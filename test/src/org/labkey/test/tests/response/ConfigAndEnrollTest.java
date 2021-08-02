@@ -85,7 +85,7 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         log("Set a study name.");
         forwardingTab.setInputId(STUDY_NAME01);
         forwardingTab.validateSubmitButtonEnabled();
-        forwardingTab.submitStudySetup();
+        forwardingTab.submitAndExpectSuccess();
 
         log("Validate that the submit button is disabled after you click it.");
         assertFalse("Submit button is showing as enabled, it should not be.", forwardingTab.isSubmitEnabled());
@@ -93,7 +93,7 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         log("Change the study name and submit.");
         forwardingTab.setInputId(STUDY_NAME02);
         forwardingTab.validateSubmitButtonEnabled();
-        forwardingTab.submitStudySetup();
+        forwardingTab.submitAndExpectSuccess();
 
         log("Create a new project and try to reuse the study name.");
         _containerHelper.createProject(PROJECT_NAME02, FOLDER_TYPE);
@@ -110,13 +110,13 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         log("Reuse the first study name");
 
         forwardingTab.setInputId(STUDY_NAME01);
-        forwardingTab.submitStudySetup();
+        forwardingTab.submitAndExpectSuccess();
 
         log("Now create some tokens and use them and then validate that the study name cannot be changed.");
 
         log("Create " + expectedTokenCount + " tokens.");
         setupPage = new SetupPage(this);
-        SetupPage.beginAt(this, PROJECT_NAME01);
+        SetupPage.beginAt(this, PROJECT_NAME02);
         TokenBatchPopup tokenBatchPopup = setupPage.getTokenBatchesWebPart().openNewBatchPopup();
         TokenListPage tokenListPage = tokenBatchPopup.createNewBatch(expectedTokenCount);
 
@@ -146,8 +146,9 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         validateGridInfo(setupPage, batchId, expectedTokenCount, Integer.toString(tokensToAssign.size()));
 
         log("Validate the prompt.");
-        assertEquals("The prompt is not as expected.", PROMPT_ASSIGNED.replace("$STUDY_NAME$", STUDY_NAME01.toUpperCase()), setupPage.getStudySetupWebPart().getPrompt());
-        assertFalse("The short name field is visible and it should not be.", setupPage.getStudySetupWebPart().isShortNameVisible());
+        forwardingTab = ForwardingTab.beginAt(this);
+        assertEquals("The prompt is not as expected.", PROMPT_ASSIGNED.replace("$STUDY_NAME$", STUDY_NAME01.toUpperCase()), forwardingTab.getPrompt());
+//        assertFalse("The short name field is visible and it should not be.", setupPage.getStudySetupWebPart().isShortNameVisible());
     }
 
     @Test
@@ -207,7 +208,7 @@ public class ConfigAndEnrollTest extends BaseResponseTest
 
         log("Set a study name.");
         forwardingTab.setInputId(PROJECT01_STUDY_NAME);
-        forwardingTab.submitStudySetup();
+        forwardingTab.submitAndExpectSuccess();
 
         log("Create " + proj01_tokenCount01 + " tokens.");
         SetupPage.beginAt(this, PROJECT_NAME04);
@@ -321,7 +322,7 @@ public class ConfigAndEnrollTest extends BaseResponseTest
 
         log("Set a study name.");
         forwardingTab.setInputId(PROJECT02_STUDY_NAME);
-        forwardingTab.submitStudySetup();
+        forwardingTab.submitAndExpectSuccess();
 
         log("Create " + proj02_tokenCount01 + " tokens.");
         SetupPage.beginAt(this, PROJECT_NAME05);
