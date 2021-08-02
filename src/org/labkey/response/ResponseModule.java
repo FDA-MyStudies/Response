@@ -20,12 +20,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.SqlSelector;
 import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.module.DefaultModule;
 import org.labkey.api.module.ModuleContext;
 import org.labkey.api.security.permissions.ApplicationAdminPermission;
 import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.settings.AdminConsole;
+import org.labkey.api.usageMetrics.UsageMetricsService;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.FolderManagement;
 import org.labkey.api.view.SimpleWebPartFactory;
@@ -38,7 +40,9 @@ import org.labkey.response.view.StudyConfigWebPart;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -113,6 +117,16 @@ public class ResponseModule extends DefaultModule
         ResponseManager.get().doStartup();
 
         RoleManager.registerRole(new MyStudiesCoordinator());
+
+        UsageMetricsService svc = UsageMetricsService.get();
+        if (null != svc)
+        {
+            svc.registerUsageMetrics(NAME, () -> {
+                Map<String, Object> metric = new HashMap<>();
+                metric.put("foldersWithStudyIdConfiguredCount", new SqlSelector(MobileAppStudyQuerySchema.getSchema(), "SELECT COUNT(*) FROM MOBILEAPPSTUDY.STUDY").getObject(Long.class));
+                return metric;
+            });
+        }
     }
 
     @Override
