@@ -63,8 +63,6 @@ public class ConfigAndEnrollTest extends BaseResponseTest
     @Test
     public void testStudyName()
     {
-        final String PROMPT_NOT_ASSIGNED = "Enter the StudyId to be associated with this folder. The StudyId should be the same as it appears in the study design interface.";
-        final String PROMPT_ASSIGNED = "The StudyId associated with this folder is $STUDY_NAME$.";
         final String STUDY_NAME01 = "StudyName01";  // Study names are case insensitive, so test it once.
         final String STUDY_NAME02 = "STUDYNAME02";
         final String REUSED_STUDY_NAME_ERROR = "There were problems storing the configuration. StudyId '$STUDY_NAME$' is already associated with a different container within this folder. Each study can be associated with only one container per folder.";
@@ -77,9 +75,6 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         goToProjectHome(PROJECT_NAME01);
 
         ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
-
-        log("Validate the prompt.");
-        assertEquals("The prompt is not as expected.", PROMPT_NOT_ASSIGNED, forwardingTab.getPrompt());
         forwardingTab.validateSubmitButtonDisabled();
 
         log("Set a study name.");
@@ -144,11 +139,6 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         // Get a new setupPage.
         setupPage = new SetupPage(this);
         validateGridInfo(setupPage, batchId, expectedTokenCount, Integer.toString(tokensToAssign.size()));
-
-        log("Validate the prompt.");
-        forwardingTab = ForwardingTab.beginAt(this);
-        assertEquals("The prompt is not as expected.", PROMPT_ASSIGNED.replace("$STUDY_NAME$", STUDY_NAME01.toUpperCase()), forwardingTab.getPrompt());
-//        assertFalse("The short name field is visible and it should not be.", setupPage.getStudySetupWebPart().isShortNameVisible());
     }
 
     @Test

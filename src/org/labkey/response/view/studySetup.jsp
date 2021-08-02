@@ -138,20 +138,20 @@
 </div>
 
 <script type="text/javascript">
-    <%--Ext4.onReady(function(){--%>
+    Ext4.onReady(function(){
 
-    <%--    Ext4.create('LABKEY.MobileAppStudy.StudySetupPanel',--%>
-    <%--            {--%>
-    <%--                renderTo            : <%= q(renderId) %>,--%>
-    <%--                shortName           : <%= qh(shortName) %>,--%>
-    <%--                isEditable          : <%= isEditable %>,--%>
-    <%--                canChangeCollection : <%= canChangeCollection %>,--%>
-    <%--                collectionEnabled   : <%= collectionEnabled %>,--%>
-    <%--                forwardingEnabled   : <%= forwardingEnabled %>,--%>
-    <%--                forwardingUrl       : <%= q(forwardingURL) %>,--%>
-    <%--                forwardingUsername  : <%= q(forwardingUser) %>,--%>
-    <%--                forwardingPassword  : <%= q(forwardingPassword) %>--%>
-    <%--            }--%>
-    <%--    );--%>
-    <%--});--%>
+        Ext4.create('LABKEY.MobileAppStudy.StudySetupPanel',
+                {
+                    renderTo            : <%= q(renderId) %>,
+                    shortName           : <%= qh(shortName) %>,
+                    isEditable          : <%= isEditable %>,
+                    canChangeCollection : <%= canChangeCollection %>,
+                    collectionEnabled   : <%= collectionEnabled %>,
+                    forwardingEnabled   : <%= forwardingEnabled %>,
+                    forwardingUrl       : <%= q(forwardingURL) %>,
+                    forwardingUsername  : <%= q(forwardingUser) %>,
+                    forwardingPassword  : <%= q(forwardingPassword) %>
+                }
+        );
+    });
 </script>

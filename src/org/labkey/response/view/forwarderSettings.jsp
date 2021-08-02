@@ -20,10 +20,14 @@
         width: 300px;
     }
 
+    .study-id-label {
+        width: 190px;
+    }
+
     .lk-response-collection {
         vertical-align: text-bottom;
         margin-top: 2px;
-        margin-left: 7px;
+        width: 190px;
     }
 
     .lk-response-collection-buttons {
@@ -34,8 +38,9 @@
         margin-left: 20px;
     }
 
-    .lk-response-collection-enable-checkbox {
+    .lk-response-collection-field-row {
         display: flex;
+        margin-top: 10px;
     }
 
     .lk-response-update-metadata-success {
@@ -94,21 +99,21 @@
 
     String shortName = studySetupBean.getShortName();
     boolean collectionEnabled = studySetupBean.getCollectionEnabled();
+
+    String studyIdHelpText = "";
 %>
 
 <labkey:panel title="Study Setup">
     <labkey:form name="StudyConfigForm" action="<%=new ActionURL(ResponseController.StudyConfigAction.class, getContainer())%>" method="POST">
 
-        <% if (shortName == null || shortName.isEmpty()) { %>
-            <div class="studysetup-prompt"> Enter the StudyId to be associated with this folder. The StudyId should be the same as it appears in the study design interface. </div>
-        <% } else { %>
-            <div class="studysetup-prompt"> The StudyId associated with this folder is <%=h(shortName)%>. </div>
-        <% } %>
-
-        <labkey:input type="text" className="form-control lk-study-id" name="studyId" id="studyId" placeholder="Enter StudyId" value="<%=shortName%>" /> <br/>
-        <div class="lk-response-collection-enable-checkbox">
-            <labkey:input type="checkbox" id="responseCollection" name="responseCollection" checked="<%=collectionEnabled%>" />
+        <div class="lk-response-collection-field-row">
+            <div class="study-id-label"> Study Id <%=helpPopup("Study Id", studyIdHelpText, true, 300)%> </div>
+            <labkey:input type="text" className="form-control lk-study-id" name="studyId" id="studyId" placeholder="Enter StudyId" value="<%=shortName%>" /> <br/>
+        </div>
+        
+        <div class="lk-response-collection-field-row">
             <span class="lk-response-collection"> Enable Response Collection </span>
+            <labkey:input type="checkbox" id="responseCollection" name="responseCollection" checked="<%=collectionEnabled%>" />
         </div>
 
         <div class="lk-response-collection-buttons">
