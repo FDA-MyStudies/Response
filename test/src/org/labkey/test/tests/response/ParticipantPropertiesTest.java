@@ -13,7 +13,6 @@ import org.labkey.remoteapi.query.Row;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.remoteapi.query.UpdateRowsCommand;
 import org.labkey.test.Locator;
-import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.categories.Git;
 import org.labkey.test.commands.response.EnrollmentTokenValidationCommand;
@@ -36,6 +35,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,9 +61,6 @@ public class ParticipantPropertiesTest extends BaseResponseTest
     protected final static int PORT = 8083; //Setting to different port than ForwardResponseTest
 
     private final static String BASE_URL = "http://localhost:" + PORT;
-    private final static String MODULE_NAME = "Response";
-    private final static String METADATASERVICE_PROPERTY_NAME = "MetadataServiceBaseUrl";
-    private final static String METADATASERVICE_ACCESSTOKEN_PROPERTY_NAME = "MetadataServiceAccessToken";
     private final static String MOCKSERVER_CALL_MATCHER_CLASS = ParticipantPropertiesSeverGetCallback.class.getName();
     private final static String PARTICIPANT_PROPERTIES_LIST_NAME = "ParticipantProperties";
     private final static String ENROLLMENTTOKEN_FIELD_KEY = "EnrollmentToken";
@@ -81,11 +78,12 @@ public class ParticipantPropertiesTest extends BaseResponseTest
     private static final int INSERT_ROW_TOKEN_INDEX = 2;
 
     public final static String WCP_SURVEY_METHOD = "activity";
-    public final static String WCP_API_METHOD = "participantProperties";
+    public final static String WCP_API_METHOD = "StudyMetaData/participantProperties";
     public final static String ADD_PATH = "AddPropertyPath";
     public final static String UPDATE_PATH = "UpdatePropertyPath";
     public final static String DELETE_PATH = "DeletePropertyPath";
     public final static String SURVEY_UPDATE_PATH = "SurveyUpdatePath";
+    public final static String SURVEY_UPDATE_PATH_URL = "SurveyUpdatePath/StudyMetaData";
 
 
     @Override
@@ -101,7 +99,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
         initMockserver();
         setupProject(STUDY_NAME01, PROJECT_NAME01, null, true);
         goToProjectHome(PROJECT_NAME01);
-        setupMockserverModuleProperties(PROJECT_NAME01, STUDY_NAME01);
+        setupMockserverResponseServerConfigs(PROJECT_NAME01, STUDY_NAME01);
 
         goToProjectHome(PROJECT_NAME01);
         createTokenBatch(PROJECT_NAME01);
@@ -112,7 +110,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
         portalHelper.addWebPart("Lists");
 
         setupProject(STUDY_NAME03, PROJECT_NAME03, null, true);
-        setupMockserverModuleProperties(PROJECT_NAME03, STUDY_NAME03);
+        setupMockserverResponseServerConfigs(PROJECT_NAME03, STUDY_NAME03); // sets response server configs
         goToProjectHome(PROJECT_NAME03);
         ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.clickUpdateMetadata();
@@ -122,18 +120,25 @@ public class ParticipantPropertiesTest extends BaseResponseTest
         testBaseParticipantProperties();
     }
 
-    private void setupMockserverModuleProperties(String project, String token)
+    private void setupMockserverResponseServerConfigs(String project, String token)
     {
-        setupMockserverModuleProperties(project, token, BASE_URL);
+        setupMockserverResponseServerConfigs(project, token, BASE_URL);
     }
 
-    private void setupMockserverModuleProperties(String project, String token, String url)
+    private void setupMockserverResponseServerConfigs(String project, String token, String url)
     {
         goToProjectHome(project);
         //Setup a study
-        ModulePropertyValue baseUrlMP = new ModulePropertyValue(MODULE_NAME, project, METADATASERVICE_PROPERTY_NAME, url);
-        ModulePropertyValue accessTokenMP = new ModulePropertyValue(MODULE_NAME, project, METADATASERVICE_ACCESSTOKEN_PROPERTY_NAME, token);
-        setModuleProperties(Arrays.asList(baseUrlMP, accessTokenMP));
+
+        LinkedHashMap<String, String> props = new LinkedHashMap<>()
+        {{
+            put("metadataLoadLocation", "wcpServer");
+            put("wcpBaseURL", url + "/StudyMetaData");
+            put("wcpUsername", token);
+            put("wcpPassword", token);
+        }};
+        setResponseServerConfigurations(props);
+
         goToProjectHome(project);
     }
 
@@ -166,7 +171,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
             addRequestMatcher(mockServer, String.join("/", UPDATE_PATH, WCP_API_METHOD), this::log,"GET", MOCKSERVER_CALL_MATCHER_CLASS);
             addRequestMatcher(mockServer, String.join("/", DELETE_PATH, WCP_API_METHOD), this::log,"GET", MOCKSERVER_CALL_MATCHER_CLASS);
             addRequestMatcher(mockServer, String.join("/", SURVEY_UPDATE_PATH, WCP_API_METHOD), this::log,"GET", MOCKSERVER_CALL_MATCHER_CLASS);
-            addRequestMatcher(mockServer, String.join("/", SURVEY_UPDATE_PATH, WCP_SURVEY_METHOD), this::log,"GET", MOCKSERVER_CALL_MATCHER_CLASS);
+            addRequestMatcher(mockServer, String.join("/", SURVEY_UPDATE_PATH_URL, WCP_SURVEY_METHOD), this::log,"GET", MOCKSERVER_CALL_MATCHER_CLASS);
         }
         else {
             log("Mockserver is not running, could not add RequestMatcher.");
@@ -335,7 +340,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
     {
         setupProject(STUDY_NAME02, PROJECT_NAME02, null, true);
         goToProjectHome(PROJECT_NAME02);
-        setupMockserverModuleProperties(PROJECT_NAME02, STUDY_NAME02);
+        setupMockserverResponseServerConfigs(PROJECT_NAME02, STUDY_NAME02);
 
         //Create participant properties before EnrollmentTokens
         goToProjectHome(PROJECT_NAME02);
@@ -375,7 +380,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
 
         // Easiest way to change response body of mockserver call is to adjust the path,
         // so update the url used to request participant properties metadata
-        setupMockserverModuleProperties(project, study, changeUrl);
+        setupMockserverResponseServerConfigs(project, study, changeUrl);
         ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.clickUpdateMetadata(); //Should load OriginalParticipantProperty.json
 
@@ -394,7 +399,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
 
         // Easiest way to change response body of mockserver call is to adjust the path,
         // so update the url used to request participant properties metadata
-        setupMockserverModuleProperties(project, study, changeUrl);
+        setupMockserverResponseServerConfigs(project, study, changeUrl);
         ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.clickUpdateMetadata();  //Should load OriginalParticipantProperty.json
 
@@ -419,7 +424,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
 
         // Easiest way to change response body of mockserver call is to adjust the path,
         // so update the url used to request participant properties metadata
-        setupMockserverModuleProperties(project, study, changeUrl);
+        setupMockserverResponseServerConfigs(project, study, changeUrl);
         ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.clickUpdateMetadata();  //Should load OriginalParticipantProperty.json
 
@@ -458,7 +463,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
 
         // Easiest way to change response body of mockserver call is to adjust the path,
         // so update the url used to request participant properties metadata
-        setupMockserverModuleProperties(project, study, changeUrl);
+        setupMockserverResponseServerConfigs(project, study, changeUrl);
 
         String appToken = getNewAppToken(project, study, token);
         String responseString = getResponseFromFile("ParticipantPropertiesMetadata", "Survey_Response.json");
@@ -497,7 +502,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
     {
         setupProject(study, project, null, true);
         goToProjectHome(project);
-        setupMockserverModuleProperties(project, study);
+        setupMockserverResponseServerConfigs(project, study);
 
         ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.clickUpdateMetadata();  //Should load OriginalParticipantProperty.json

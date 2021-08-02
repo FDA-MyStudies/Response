@@ -28,6 +28,8 @@ import org.labkey.api.action.ActionType;
 import org.labkey.api.action.ApiQueryResponse;
 import org.labkey.api.action.ApiSimpleResponse;
 import org.labkey.api.action.ApiUsageException;
+import org.labkey.api.action.FormViewAction;
+import org.labkey.api.action.LabKeyError;
 import org.labkey.api.action.Marshal;
 import org.labkey.api.action.Marshaller;
 import org.labkey.api.action.MutatingApiAction;
@@ -35,11 +37,13 @@ import org.labkey.api.action.ReadOnlyApiAction;
 import org.labkey.api.action.ReportingApiQueryResponse;
 import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
+import org.labkey.api.admin.AdminUrls;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DataRegion;
 import org.labkey.api.data.DataRegionSelection;
 import org.labkey.api.data.NormalContainerType;
+import org.labkey.api.data.PropertyManager;
 import org.labkey.api.module.FolderTypeManager;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
@@ -50,6 +54,7 @@ import org.labkey.api.query.QuerySettings;
 import org.labkey.api.query.QueryView;
 import org.labkey.api.query.TempQuerySettings;
 import org.labkey.api.query.UserSchema;
+import org.labkey.api.security.AdminConsoleAction;
 import org.labkey.api.security.CSRF;
 import org.labkey.api.security.RequiresNoPermission;
 import org.labkey.api.security.RequiresPermission;
@@ -57,7 +62,10 @@ import org.labkey.api.security.RequiresSiteAdmin;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.ReadPermission;
+import org.labkey.api.security.permissions.SiteAdminPermission;
+import org.labkey.api.util.HelpTopic;
 import org.labkey.api.util.PageFlowUtil;
+import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.FolderManagement.FolderManagementViewPostAction;
 import org.labkey.api.view.HttpView;
@@ -82,13 +90,18 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.labkey.api.util.Result.failure;
+import static org.labkey.response.ResponseController.ServerConfigurationAction.FILE;
+import static org.labkey.response.ResponseController.ServerConfigurationAction.WCP_SERVER;
 
 @Marshal(Marshaller.Jackson)
 public class ResponseController extends SpringActionController
@@ -119,7 +132,7 @@ public class ResponseController extends SpringActionController
         @Override
         public void validateForm(ActivityMetadataForm form, Errors errors)
         {
-            if (FileSurveyDesignProvider.getBasePath(getContainer()) == null)
+            if (FileSurveyDesignProvider.getBasePath() == null)
             {
                 errors.reject(ERROR_REQUIRED, "No SurveyMetadataDirectory configured. Please set the appropriate Module Properties.");
                 return;
@@ -1234,6 +1247,160 @@ public class ResponseController extends SpringActionController
         public void setDescription(String description)
         {
             _description = description;
+        }
+    }
+
+    @AdminConsoleAction
+    @RequiresPermission(SiteAdminPermission.class)
+    public class ServerConfigurationAction extends FormViewAction<ServerConfigurationForm>
+    {
+        public static final String RESPONSE_SERVER_CONFIGURATION = "ResponseServerConfig";
+        public static final String FILE = "file";
+        public static final String WCP_SERVER = "wcpServer";
+
+        public static final String  METADATA_LOAD_LOCATION = "metadataLoadLocation";
+        public static final String METADATA_DIRECTORY = "metadataDirectory";
+        public static final String WCP_BASE_URL = "wcpBaseURL";
+        public static final String WCP_USERNAME = "wcpUsername";
+        public static final String WCP_PASSWORD = "wcpPassword";
+
+        @Override
+        public ModelAndView getView(ServerConfigurationForm form, boolean reshow, BindException errors) throws Exception
+        {
+            JspView<ServerConfigurationForm> view = new JspView<>("/org/labkey/response/view/responseServerConfiguration.jsp", form, errors);
+            view.setTitle("Global Settings");
+            return view;
+        }
+
+        @Override
+        public boolean handlePost(ServerConfigurationForm form, BindException errors) throws Exception
+        {
+            if (form.getMetadataLoadLocation() != null && form.getMetadataLoadLocation().equals(FILE) && !Files.exists(Paths.get(form.getMetadataDirectory())))
+            {
+                errors.addError(new LabKeyError("Metadata Directory path is invalid"));
+            }
+            else if (form.getMetadataLoadLocation() != null && form.getMetadataLoadLocation().equals(WCP_SERVER))
+            {
+                if (form.getWcpUsername() == null || form.getWcpUsername().isBlank())
+                    errors.addError(new LabKeyError("WCP username must not be blank"));
+
+                if (form.getWcpPassword() == null || form.getWcpPassword().isBlank())
+                    errors.addError(new LabKeyError("WCP password must not be blank"));
+
+                if (form.getWcpBaseURL() == null || !form.getWcpBaseURL().toUpperCase().matches("^(HTTP|HTTPS)://.*$"))
+                    errors.addError(new LabKeyError("WCP Base URL must begin with 'http://' or 'https://'"));
+
+                if (form.getWcpBaseURL() == null || !form.getWcpBaseURL().endsWith("/StudyMetaData"))
+                    errors.addError(new LabKeyError("WCP Base URL must end with '/StudyMetaData'"));
+            }
+
+            if (errors.hasErrors())
+                return false;
+            else
+            {
+                PropertyManager.PropertyMap props = PropertyManager.getEncryptedStore().getWritableProperties(getContainer(), RESPONSE_SERVER_CONFIGURATION, true);
+                Map<String, String> valuesToPersist = form.getOptions();
+
+                if (!valuesToPersist.isEmpty())
+                {
+                    props.putAll(valuesToPersist);
+                    props.save();
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        @Override
+        public URLHelper getSuccessURL(ServerConfigurationForm serverConfigurationForm)
+        {
+            return urlProvider(AdminUrls.class).getAdminConsoleURL();
+        }
+
+        @Override
+        public void validateCommand(ServerConfigurationForm target, Errors errors)
+        {
+
+        }
+
+        @Override
+        public void addNavTrail(NavTree root)
+        {
+            setHelpTopic(new MyStudiesHelpTopic("setup"));
+            urlProvider(AdminUrls.class).addAdminNavTrail(root, "Response Server Configuration", getClass(), getContainer());
+        }
+    }
+
+    public static class ServerConfigurationForm
+    {
+        private String _metadataDirectory;
+        private String _wcpBaseURL;
+        private String _wcpUsername;
+        private String _wcpPassword;
+        private String _metadataLoadLocation;
+
+        public String getMetadataDirectory()
+        {
+            return _metadataDirectory;
+        }
+
+        public void setMetadataDirectory(String metadataDirectory)
+        {
+            _metadataDirectory = metadataDirectory;
+        }
+
+        public String getWcpBaseURL()
+        {
+            return _wcpBaseURL;
+        }
+
+        public void setWcpBaseURL(String wcpBaseURL)
+        {
+            _wcpBaseURL = wcpBaseURL;
+        }
+
+        public String getWcpUsername()
+        {
+            return _wcpUsername;
+        }
+
+        public void setWcpUsername(String wcpUsername)
+        {
+            _wcpUsername = wcpUsername;
+        }
+
+        public String getWcpPassword()
+        {
+            return _wcpPassword;
+        }
+
+        public void setWcpPassword(String wcpPassword)
+        {
+            _wcpPassword = wcpPassword;
+        }
+
+        public String getMetadataLoadLocation()
+        {
+            return _metadataLoadLocation;
+        }
+
+        public void setMetadataLoadLocation(String metadataLoadLocation)
+        {
+            _metadataLoadLocation = metadataLoadLocation;
+        }
+
+        public Map<String, String> getOptions()
+        {
+            Map<String, String> valueMap = new HashMap<>();
+
+            valueMap.put(ServerConfigurationAction.METADATA_LOAD_LOCATION, _metadataLoadLocation);
+
+            valueMap.put(ServerConfigurationAction.METADATA_DIRECTORY, _metadataDirectory);
+            valueMap.put(ServerConfigurationAction.WCP_BASE_URL, _wcpBaseURL);
+            valueMap.put(ServerConfigurationAction.WCP_USERNAME, _wcpUsername);
+            valueMap.put(ServerConfigurationAction.WCP_PASSWORD, _wcpPassword);
+            return valueMap;
         }
     }
 }
