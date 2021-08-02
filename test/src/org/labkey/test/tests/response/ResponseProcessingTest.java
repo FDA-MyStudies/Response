@@ -72,7 +72,7 @@ public class ResponseProcessingTest extends BaseResponseTest
         forwardingTab.checkResponseCollection();
         forwardingTab.setInputId(STUDY_NAME01);
         forwardingTab.validateSubmitButtonEnabled();
-        forwardingTab.submitStudySetup(false);
+        forwardingTab.submitStudySetup();
 
         SetupPage.beginAt(this, PROJECT_NAME01);
         setupLists();

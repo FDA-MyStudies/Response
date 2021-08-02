@@ -198,7 +198,7 @@
                 buttons: Ext4.Msg.OKCANCEL,
                 icon: Ext4.Msg.WARNING,
                 fn: function(val) {
-                    if (val == 'ok'){
+                    if (val === 'ok'){
                         postStudySetup();
                     } else {
                         $('#submitStudySetupButton').removeClass("labkey-disabled-button");

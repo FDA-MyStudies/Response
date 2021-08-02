@@ -63,7 +63,7 @@ public class TokenValidationTest extends BaseResponseTest
         ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.setInputId(STUDY_NAME01);
         forwardingTab.validateSubmitButtonEnabled();
-        forwardingTab.submitStudySetup(false);
+        forwardingTab.submitStudySetup();
 
         log("Create tokens.");
         SetupPage.beginAt(this, PROJECT_NAME01);
@@ -74,14 +74,14 @@ public class TokenValidationTest extends BaseResponseTest
         forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.setInputId(STUDY_NAME02);
         forwardingTab.validateSubmitButtonEnabled();
-        forwardingTab.submitStudySetup(false);
+        forwardingTab.submitStudySetup();
 
         // Third project to test resolving enrollment tokens in another study
         goToProjectHome(PROJECT_NAME03);
         forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.setInputId(STUDY_NAME03);
         forwardingTab.validateSubmitButtonEnabled();
-        forwardingTab.submitStudySetup(false);
+        forwardingTab.submitStudySetup();
 
         log("Create tokens.");
         SetupPage.beginAt(this, PROJECT_NAME01);

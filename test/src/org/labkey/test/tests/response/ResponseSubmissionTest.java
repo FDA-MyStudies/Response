@@ -159,7 +159,7 @@ public class ResponseSubmissionTest extends BaseResponseTest
         {
             forwardingTab.uncheckResponseCollection();
             log("Disabling response collection for " + STUDY_NAME01);
-            forwardingTab.submitStudySetup(false);
+            forwardingTab.submitStudySetup();
         }
 
         checkErrors();
@@ -177,7 +177,7 @@ public class ResponseSubmissionTest extends BaseResponseTest
         goToProjectHome(PROJECT_NAME01);
         forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.checkResponseCollection();
-        forwardingTab.submitStudySetup(false);
+        forwardingTab.submitStudySetup();
         goToProjectHome(PROJECT_NAME01);
 
         log("Testing Response Submission with Study collection turned on");
@@ -189,7 +189,7 @@ public class ResponseSubmissionTest extends BaseResponseTest
         log("Disabling response collection for " + STUDY_NAME01);
         forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.uncheckResponseCollection();
-        forwardingTab.submitStudySetup(false);
+        forwardingTab.submitStudySetup();
         goToProjectHome(PROJECT_NAME01);
 
         //        8. Test submitting to a Study previously collecting, but not currently accepting results
@@ -247,7 +247,7 @@ public class ResponseSubmissionTest extends BaseResponseTest
         forwardingTab.checkResponseCollection();
         forwardingTab.setInputId(STUDY_NAME03);
         forwardingTab.validateSubmitButtonEnabled();
-        forwardingTab.submitStudySetup(false);
+        forwardingTab.submitStudySetup();
         _listHelper.createList(PROJECT_NAME03, SURVEY_NAME, ListHelper.ListColumnType.AutoInteger, "Key" );
         setSurveyMetadataDropDir();
         goToProjectHome(PROJECT_NAME03);

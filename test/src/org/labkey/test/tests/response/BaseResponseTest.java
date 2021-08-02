@@ -267,7 +267,7 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
         if (enableResponseCollection)
             forwardingTab.checkResponseCollection();
         forwardingTab.validateSubmitButtonEnabled();
-        forwardingTab.submitStudySetup(false);
+        forwardingTab.submitStudySetup();
         if (StringUtils.isNotBlank(surveyName))
             _listHelper.createList(projectName, surveyName, ListHelper.ListColumnType.AutoInteger, "Key");
     }

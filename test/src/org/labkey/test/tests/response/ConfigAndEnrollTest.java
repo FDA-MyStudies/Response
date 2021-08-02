@@ -85,7 +85,7 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         log("Set a study name.");
         forwardingTab.setInputId(STUDY_NAME01);
         forwardingTab.validateSubmitButtonEnabled();
-        forwardingTab.submitStudySetup(false);
+        forwardingTab.submitStudySetup();
 
         log("Validate that the submit button is disabled after you click it.");
         assertFalse("Submit button is showing as enabled, it should not be.", forwardingTab.isSubmitEnabled());
@@ -93,7 +93,7 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         log("Change the study name and submit.");
         forwardingTab.setInputId(STUDY_NAME02);
         forwardingTab.validateSubmitButtonEnabled();
-        forwardingTab.submitStudySetup(false);
+        forwardingTab.submitStudySetup();
 
         log("Create a new project and try to reuse the study name.");
         _containerHelper.createProject(PROJECT_NAME02, FOLDER_TYPE);
@@ -110,7 +110,7 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         log("Reuse the first study name");
 
         forwardingTab.setInputId(STUDY_NAME01);
-        forwardingTab.submitStudySetup(false);
+        forwardingTab.submitStudySetup();
 
         log("Now create some tokens and use them and then validate that the study name cannot be changed.");
 
@@ -207,7 +207,7 @@ public class ConfigAndEnrollTest extends BaseResponseTest
 
         log("Set a study name.");
         forwardingTab.setInputId(PROJECT01_STUDY_NAME);
-        forwardingTab.submitStudySetup(false);
+        forwardingTab.submitStudySetup();
 
         log("Create " + proj01_tokenCount01 + " tokens.");
         SetupPage.beginAt(this, PROJECT_NAME04);
@@ -321,7 +321,7 @@ public class ConfigAndEnrollTest extends BaseResponseTest
 
         log("Set a study name.");
         forwardingTab.setInputId(PROJECT02_STUDY_NAME);
-        forwardingTab.submitStudySetup(false);
+        forwardingTab.submitStudySetup();
 
         log("Create " + proj02_tokenCount01 + " tokens.");
         SetupPage.beginAt(this, PROJECT_NAME05);

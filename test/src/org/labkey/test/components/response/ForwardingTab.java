@@ -143,11 +143,11 @@ public class ForwardingTab extends LabKeyPage<ForwardingTab.ElementCache> implem
 
     public Error submitAndExpectError()
     {
-        submitStudySetup(true);
+        submitStudySetup();
         return new Error(getDriver());
     }
 
-    public void submitStudySetup(boolean expectError)
+    public void submitStudySetup()
     {
         if (!isSubmitEnabled())
             throw new IllegalStateException("Submit button not enabled");
@@ -158,8 +158,7 @@ public class ForwardingTab extends LabKeyPage<ForwardingTab.ElementCache> implem
         if (!collectionEnabled)
             acceptCollectionWarning();
 
-        if (!expectError)
-            shortWait().until(ExpectedConditions.visibilityOf(elementCache().successMessage));
+        shortWait().until(ExpectedConditions.visibilityOf(elementCache().successMessage));
     }
 
     public void clickUpdateMetadata()
