@@ -20,10 +20,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.module.DefaultModule;
 import org.labkey.api.module.ModuleContext;
-import org.labkey.api.module.ModuleProperty;
+import org.labkey.api.security.permissions.ApplicationAdminPermission;
 import org.labkey.api.security.roles.RoleManager;
+import org.labkey.api.settings.AdminConsole;
+import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.FolderManagement;
 import org.labkey.api.view.SimpleWebPartFactory;
 import org.labkey.api.view.WebPartFactory;
@@ -60,13 +63,19 @@ public class ResponseModule extends DefaultModule
     @Override
     public @Nullable Double getSchemaVersion()
     {
-        return 21.000;
+        return 21.001;
     }
 
     @Override
     public boolean hasScripts()
     {
         return true;
+    }
+
+    @Override
+    public @Nullable UpgradeCode getUpgradeCode()
+    {
+        return new ResponseUpgradeCode();
     }
 
     @Override
@@ -95,24 +104,8 @@ public class ResponseModule extends DefaultModule
         MobileAppStudyQuerySchema.register(this);
         ReadResponsesQuerySchema.register(this);
 
-        ModuleProperty designDropDirectory = new ModuleProperty(this, SURVEY_METADATA_DIRECTORY);
-        designDropDirectory.setCanSetPerContainer(true);
-        designDropDirectory.setDescription("Directory in which to find survey design metadata files (for use when metadata service is not available).");
-        designDropDirectory.setInputFieldWidth(500);
-        this.addModuleProperty(designDropDirectory);
-
-        ModuleProperty metadataServiceBaseURL = new ModuleProperty(this, METADATA_SERVICE_BASE_URL);
-        metadataServiceBaseURL.setCanSetPerContainer(true);
-        metadataServiceBaseURL.setDescription("Base URL for the Activity Metadata Service");
-        metadataServiceBaseURL.setInputFieldWidth(500);
-        this.addModuleProperty(metadataServiceBaseURL);
-
-        ModuleProperty metadataServiceAccessToken = new ModuleProperty(this, METADATA_SERVICE_ACCESS_TOKEN);
-        metadataServiceAccessToken.setCanSetPerContainer(true);
-        metadataServiceAccessToken.setDescription("Token to be passed in the header of requests to the Activity Metadata Service to identify this client of that service.");
-        metadataServiceAccessToken.setInputFieldWidth(500);
-        this.addModuleProperty(metadataServiceAccessToken);
-
+        ActionURL serverConfigurationURL = new ActionURL(ResponseController.ServerConfigurationAction.class, ContainerManager.getRoot());
+        AdminConsole.addLink(AdminConsole.SettingsLinkType.Configuration, "Response Server Configuration", serverConfigurationURL, ApplicationAdminPermission.class);
         FolderManagement.addTab(FolderManagement.TYPE.FolderManagement, "Response Forwarding", "forwarding",
                 IS_ACTIVE, ResponseController.ForwardingSettingsAction.class);
 

@@ -29,6 +29,8 @@ import org.labkey.remoteapi.PostCommand;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.test.BaseWebDriverTest;
+import org.labkey.test.Locator;
+import org.labkey.test.Locators;
 import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.TestFileUtils;
 import org.labkey.test.WebTestHelper;
@@ -51,6 +53,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -175,6 +178,32 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
         return null;
     }
 
+    private void goToResponseServerConfiguration()
+    {
+        goToAdminConsole();
+        clickAndWait(Locator.linkWithText("Response Server Configuration"));
+    }
+
+    protected void setResponseServerConfigurations(LinkedHashMap<String, String> props)
+    {
+        log("setting response server configuration");
+        goToResponseServerConfiguration();
+
+        for (String prop: props.keySet())
+        {
+            String val = props.get(prop);
+            log("setting property: " + prop + " to value: " + val);
+
+            if (prop.equals("metadataLoadLocation"))
+                checkRadioButton(Locator.radioButtonByNameAndValue("metadataLoadLocation", val));
+            else
+                setFormElement(Locator.name(prop), val);
+        }
+        clickButton("Save and Finish");
+
+        assertElementNotPresent(Locators.labkeyError);
+    }
+
     @LogMethod
     protected void assignTokens(List<String> tokensToAssign, String projectName, String studyName)
     {
@@ -252,8 +281,13 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
 
     protected void setSurveyMetadataDropDir()
     {
-        ModulePropertyValue val = new ModulePropertyValue("Response", "/", "SurveyMetadataDirectory", TestFileUtils.getSampleData("SurveyMetadata").getAbsolutePath());
-        setModuleProperties(Arrays.asList(val));
+        LinkedHashMap<String, String> props = new LinkedHashMap<>()
+        {{
+            put("metadataLoadLocation", "file");
+            put("metadataDirectory", TestFileUtils.getSampleData("SurveyMetadata").getAbsolutePath());
+        }};
+
+        setResponseServerConfigurations(props);
     }
 
     protected void setupProject(String studyName, String projectName, String surveyName, boolean enableResponseCollection)
