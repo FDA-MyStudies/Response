@@ -72,7 +72,7 @@
     Map<String, String> forwardingProperties = ResponseManager.get().getForwardingProperties(getContainer());
     boolean forwardingEnabled = Boolean.valueOf(forwardingProperties.get(ForwarderProperties.ENABLED_PROPERTY_NAME));
     ActionURL responseForwardingTab = getResponseForwardingSettingsURL(getContainer());
-    ActionURL responseServerAdminConfigPage = new ActionURL(ResponseController.ResponseServerAction.class, getContainer());
+    ActionURL responseServerAdminConfigPage = new ActionURL(ResponseController.ServerConfigurationAction.class, ContainerManager.getRoot());
     PropertyManager.PropertyMap props = PropertyManager.getEncryptedStore().getProperties(ContainerManager.getRoot(), RESPONSE_SERVER_CONFIGURATION);
     String metadataDirectory = props.get(METADATA_DIRECTORY);
     String wcpBaseURL = props.get(WCP_BASE_URL);

@@ -230,12 +230,12 @@
     }
 
     function enableOrDisableStudySetupButtons () {
-        if (($('#studyId').val() !== "<%=h(shortName)%>" || $('#responseCollection').prop('checked') !== <%=collectionEnabled%>) && $('#studyId').val().length > 0) {
+        if (($('#studyId').val() !== "<%=h(shortName)%>" || $('#responseCollection').prop('checked') !== <%=collectionEnabled%>) && $('#studyId').val().length > 0 && $('#studyId').val().trim().length > 0) {
             $('#submitStudySetupButton').removeClass("labkey-disabled-button");
             $('#studyId').removeClass("text-field-error-state");
         } else {
             $('#submitStudySetupButton').addClass("labkey-disabled-button");
-            if ($('#studyId').val().length === 0) {
+            if ($('#studyId').val().length === 0 || $('#studyId').val().trim().length === 0) {
                 $('#studyId').addClass("text-field-error-state");
             }
         }
