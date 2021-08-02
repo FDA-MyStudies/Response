@@ -53,10 +53,6 @@ public class StudySetupWebPart extends BodyWebPart<StudySetupWebPart.ElementCach
         return elementCache().collectionCheckbox.isChecked();
     }
 
-    public String getPrompt()
-    {
-        return elementCache().shortNamePrompt.getText();
-    }
 
     public boolean isShortNameVisible()
     {
@@ -73,25 +69,6 @@ public class StudySetupWebPart extends BodyWebPart<StudySetupWebPart.ElementCach
     public boolean isSubmitVisible()
     {
         return elementCache().submitButton.isDisplayed();
-    }
-
-    public Error submitAndExpectError()
-    {
-        submit();
-        return new Error(getDriver());
-    }
-
-    private void submit()
-    {
-        if (!isSubmitEnabled())
-            throw new IllegalStateException("Submit button not enabled");
-
-        boolean collectionEnabled = isResponseCollectionChecked();
-        elementCache().submitButton.click();
-        if (!collectionEnabled)
-        {
-            acceptCollectionWarning();
-        }
     }
 
     public void acceptCollectionWarning()

@@ -62,8 +62,8 @@ public class TokenValidationTest extends BaseResponseTest
         SetupPage setupPage = new SetupPage(this);
         ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.setInputId(STUDY_NAME01);
-        forwardingTab.validateSubmitButtonEnabled();
-        forwardingTab.submitAndExpectSuccess();
+        forwardingTab.validateSaveButtonEnabled();
+        forwardingTab.saveAndExpectSuccess();
 
         log("Create tokens.");
         SetupPage.beginAt(this, PROJECT_NAME01);
@@ -73,15 +73,15 @@ public class TokenValidationTest extends BaseResponseTest
         goToProjectHome(PROJECT_NAME02);
         forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.setInputId(STUDY_NAME02);
-        forwardingTab.validateSubmitButtonEnabled();
-        forwardingTab.submitAndExpectSuccess();
+        forwardingTab.validateSaveButtonEnabled();
+        forwardingTab.saveAndExpectSuccess();
 
         // Third project to test resolving enrollment tokens in another study
         goToProjectHome(PROJECT_NAME03);
         forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.setInputId(STUDY_NAME03);
-        forwardingTab.validateSubmitButtonEnabled();
-        forwardingTab.submitAndExpectSuccess();
+        forwardingTab.validateSaveButtonEnabled();
+        forwardingTab.saveAndExpectSuccess();
 
         log("Create tokens.");
         SetupPage.beginAt(this, PROJECT_NAME03);
@@ -232,7 +232,7 @@ public class TokenValidationTest extends BaseResponseTest
         assertTrue(batchesWebPart.isNewBatchPresent());
         assertTrue(batchesWebPart.isNewBatchEnabled());
         ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
-        forwardingTab.validateSubmitButtonDisabled();  // Submit button should be present
+        forwardingTab.validateSaveButtonDisabled();  // Save button should be present
         SetupPage.beginAt(this, PROJECT_NAME01);
 
         // Test for Reader
@@ -247,7 +247,6 @@ public class TokenValidationTest extends BaseResponseTest
         impersonateRoles("Reader", "MyStudies Coordinator");
         assertTrue(batchesWebPart.isNewBatchPresent());
         assertTrue(batchesWebPart.isNewBatchEnabled());  // Should be able to create a new batch
-        assertFalse(setupPage.isSubmitButtonVisible());  // Submit button should NOT be present
         TokenBatchPopup tokenBatchPopup = batchesWebPart.openNewBatchPopup();
         TokenListPage tokenListPage = tokenBatchPopup.createNewBatch("100");
         assertEquals("Wrong number of tokens generated for MyStudies Coordinator", 100, tokenListPage.getNumTokens());

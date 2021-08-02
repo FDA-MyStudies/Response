@@ -31,7 +31,6 @@ import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.Locators;
-import org.labkey.test.ModulePropertyValue;
 import org.labkey.test.TestFileUtils;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.commands.response.EnrollParticipantCommand;
@@ -300,8 +299,8 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
         forwardingTab.setInputId(studyName);
         if (enableResponseCollection)
             forwardingTab.checkResponseCollection();
-        forwardingTab.validateSubmitButtonEnabled();
-        forwardingTab.submitAndExpectSuccess();
+        forwardingTab.validateSaveButtonEnabled();
+        forwardingTab.saveAndExpectSuccess();
         if (StringUtils.isNotBlank(surveyName))
             _listHelper.createList(projectName, surveyName, ListHelper.ListColumnType.AutoInteger, "Key");
     }

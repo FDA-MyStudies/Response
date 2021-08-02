@@ -15,17 +15,21 @@
  * limitations under the License.
  */
 %>
-<%@ page import="org.apache.commons.lang3.StringUtils" %>
 <%@ page import="org.labkey.api.view.HttpView" %>
 <%@ page import="org.labkey.api.view.JspView" %>
-<%@ page import="org.labkey.api.view.template.ClientDependencies" %>
 <%@ page import="org.labkey.response.ResponseManager" %>
 <%@ page import="org.labkey.response.data.MobileAppStudy" %>
 <%@ page import="org.labkey.response.forwarder.ForwarderProperties" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="org.labkey.api.view.ActionURL" %>
 <%@ page import="static org.labkey.response.ResponseController.getResponseForwardingSettingsURL" %>
-<%@ page import="org.labkey.api.util.Link" %>
+<%@ page import="org.labkey.response.ResponseController" %>
+<%@ page import="org.labkey.api.data.ContainerManager" %>
+<%@ page
+        import="static org.labkey.response.ResponseController.ServerConfigurationAction.RESPONSE_SERVER_CONFIGURATION" %>
+<%@ page import="org.labkey.api.data.PropertyManager" %>
+<%@ page import="static org.labkey.response.ResponseController.ServerConfigurationAction.WCP_BASE_URL" %>
+<%@ page import="static org.labkey.response.ResponseController.ServerConfigurationAction.METADATA_DIRECTORY" %>
 <%@ page extends="org.labkey.api.jsp.JspBase" %>
 <%@ taglib prefix="labkey" uri="http://www.labkey.org/taglib" %>
 
@@ -57,35 +61,22 @@
     }
 </style>
 
-<%!
-    @Override
-    public void addClientDependencies(ClientDependencies dependencies)
-    {
-        dependencies.add("Ext4");
-        dependencies.add("mobileAppStudy/panel/studySetup.js");
-    }
-%>
 <%
     JspView<MobileAppStudy> me = (JspView<MobileAppStudy>) HttpView.currentView();
     MobileAppStudy bean = me.getModelBean();
 
     String renderId = "labkey-mobileappstudy-studysetup";
     String shortName = bean.getShortName();
-    Boolean isEditable = bean.getEditable();
-    Boolean canChangeCollection = bean.getCanChangeCollection();
     boolean collectionEnabled = bean.getCollectionEnabled();
 
     Map<String, String> forwardingProperties = ResponseManager.get().getForwardingProperties(getContainer());
     boolean forwardingEnabled = Boolean.valueOf(forwardingProperties.get(ForwarderProperties.ENABLED_PROPERTY_NAME));
-    String forwardingURL = forwardingProperties.get(ForwarderProperties.URL_PROPERTY_NAME);
-    String forwardingUser = forwardingProperties.get(ForwarderProperties.USER_PROPERTY_NAME);
-    String forwardingPassword = StringUtils.isNotBlank(forwardingProperties.get(ForwarderProperties.USER_PROPERTY_NAME)) ?
-            ForwarderProperties.PASSWORD_PLACEHOLDER :
-            "";
     ActionURL responseForwardingTab = getResponseForwardingSettingsURL(getContainer());
-    ActionURL responseServerAdminConfigPage = new ActionURL(); // todo on merging story 1
-    boolean responseServerAdminConfigured = false; // todo on merging story 1
-
+    ActionURL responseServerAdminConfigPage = new ActionURL(ResponseController.ResponseServerAction.class, getContainer());
+    PropertyManager.PropertyMap props = PropertyManager.getEncryptedStore().getProperties(ContainerManager.getRoot(), RESPONSE_SERVER_CONFIGURATION);
+    String metadataDirectory = props.get(METADATA_DIRECTORY);
+    String wcpBaseURL = props.get(WCP_BASE_URL);
+    boolean responseServerAdminConfigured = (metadataDirectory != null && !metadataDirectory.isEmpty()) || (wcpBaseURL != null && !wcpBaseURL.isEmpty());
 %>
 
 <labkey:errors></labkey:errors>
@@ -128,7 +119,7 @@
     </div>
 
     <div class="study-configuration-row">
-        <span class="study-configuration-row-title"> Response forwarding: </span>
+        <span class="study-configuration-row-title"> Response Forwarding: </span>
         <% if (forwardingEnabled) { %>
             Enabled
         <% } else { %>
@@ -136,22 +127,3 @@
         <% } %>
     </div>
 </div>
-
-<script type="text/javascript">
-    Ext4.onReady(function(){
-
-        Ext4.create('LABKEY.MobileAppStudy.StudySetupPanel',
-                {
-                    renderTo            : <%= q(renderId) %>,
-                    shortName           : <%= qh(shortName) %>,
-                    isEditable          : <%= isEditable %>,
-                    canChangeCollection : <%= canChangeCollection %>,
-                    collectionEnabled   : <%= collectionEnabled %>,
-                    forwardingEnabled   : <%= forwardingEnabled %>,
-                    forwardingUrl       : <%= q(forwardingURL) %>,
-                    forwardingUsername  : <%= q(forwardingUser) %>,
-                    forwardingPassword  : <%= q(forwardingPassword) %>
-                }
-        );
-    });
-</script>

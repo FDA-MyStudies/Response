@@ -71,8 +71,8 @@ public class ResponseProcessingTest extends BaseResponseTest
         ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.checkResponseCollection();
         forwardingTab.setInputId(STUDY_NAME01);
-        forwardingTab.validateSubmitButtonEnabled();
-        forwardingTab.submitAndExpectSuccess();
+        forwardingTab.validateSaveButtonEnabled();
+        forwardingTab.saveAndExpectSuccess();
 
         SetupPage.beginAt(this, PROJECT_NAME01);
         setupLists();

@@ -67,8 +67,8 @@ public class DynamicSchemaTest extends BaseResponseTest
         ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.checkResponseCollection();
         forwardingTab.setInputId(STUDY_NAME);
-        forwardingTab.validateSubmitButtonEnabled();
-        forwardingTab.submitAndExpectSuccess();
+        forwardingTab.validateSaveButtonEnabled();
+        forwardingTab.saveAndExpectSuccess();
 
         //setupLists();
         setSurveyMetadataDropDir();

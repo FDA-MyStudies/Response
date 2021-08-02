@@ -344,9 +344,7 @@ public class ForwardResponseTest extends BaseResponseTest
 
         goToProjectHome(project);
         ForwardingTab tab = ForwardingTab.beginAt(this);
-//        tab.validateSubmitButtonDisabled();
         tab.disableForwarding();
-//        tab.validateSubmitButtonEnabled();
         tab.submit();
 
         goToProjectHome(project);

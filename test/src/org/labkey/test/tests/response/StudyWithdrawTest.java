@@ -78,7 +78,7 @@ public class StudyWithdrawTest extends BaseResponseTest
         ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
         forwardingTab.setInputId(STUDY_NAME);
         forwardingTab.checkResponseCollection();
-        forwardingTab.submitAndExpectSuccess();
+        forwardingTab.saveAndExpectSuccess();
         HAS_RESPONSES_DELETE = getNewAppToken(PROJECT_NAME, STUDY_NAME, null );
         HAS_RESPONSES_NO_DELETE = getNewAppToken(PROJECT_NAME, STUDY_NAME, null );
         NO_RESPONSES_DELETE = getNewAppToken(PROJECT_NAME, STUDY_NAME, null );

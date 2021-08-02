@@ -96,7 +96,7 @@
     String shortName = studySetupBean.getShortName();
     boolean collectionEnabled = studySetupBean.getCollectionEnabled();
 
-    String studyIdHelpText = "";
+    String studyIdHelpText = "The StudyId to be associated with this folder. Enter the StudyId exactly as it appears in the WCP (study design interface)";
 %>
 
 <labkey:panel title="Study Setup">

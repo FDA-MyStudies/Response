@@ -75,20 +75,20 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         goToProjectHome(PROJECT_NAME01);
 
         ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
-        forwardingTab.validateSubmitButtonDisabled();
+        forwardingTab.validateSaveButtonDisabled();
 
         log("Set a study name.");
         forwardingTab.setInputId(STUDY_NAME01);
-        forwardingTab.validateSubmitButtonEnabled();
-        forwardingTab.submitAndExpectSuccess();
+        forwardingTab.validateSaveButtonEnabled();
+        forwardingTab.saveAndExpectSuccess();
 
-        log("Validate that the submit button is disabled after you click it.");
-        assertFalse("Submit button is showing as enabled, it should not be.", forwardingTab.isSubmitEnabled());
+        log("Validate that the save button is disabled after you click it.");
+        assertFalse("Save button is showing as enabled, it should not be.", forwardingTab.isSaveEnabled());
 
-        log("Change the study name and submit.");
+        log("Change the study name and save.");
         forwardingTab.setInputId(STUDY_NAME02);
-        forwardingTab.validateSubmitButtonEnabled();
-        forwardingTab.submitAndExpectSuccess();
+        forwardingTab.validateSaveButtonEnabled();
+        forwardingTab.saveAndExpectSuccess();
 
         log("Create a new project and try to reuse the study name.");
         _containerHelper.createProject(PROJECT_NAME02, FOLDER_TYPE);
@@ -97,7 +97,7 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         log("Set the study name to a value already saved.");
         forwardingTab.setInputId(STUDY_NAME02);
 
-        final Error error = forwardingTab.submitAndExpectError();
+        final Error error = forwardingTab.saveAndExpectError();
 
         assertEquals("Error message text does not match", REUSED_STUDY_NAME_ERROR.replace("$STUDY_NAME$", STUDY_NAME02), error.getBody());
         error.clickOk();
@@ -105,7 +105,7 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         log("Reuse the first study name");
 
         forwardingTab.setInputId(STUDY_NAME01);
-        forwardingTab.submitAndExpectSuccess();
+        forwardingTab.saveAndExpectSuccess();
 
         log("Now create some tokens and use them and then validate that the study name cannot be changed.");
 
@@ -154,23 +154,23 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         //Validate collection checkbox behavior
         log("Collection is initially disabled");
         assertFalse("Response collection is enabled at study creation", forwardingTab.isResponseCollectionChecked());
-        forwardingTab.validateSubmitButtonDisabled();
+        forwardingTab.validateSaveButtonDisabled();
 
-        log("Enabling response collection doesn't allow submit prior to a valid study name");
+        log("Enabling response collection doesn't allow save prior to a valid study name");
         forwardingTab.checkResponseCollection();
-        forwardingTab.validateSubmitButtonDisabled();
+        forwardingTab.validateSaveButtonDisabled();
 
         log("Set a study name.");
         forwardingTab.setInputId(STUDY_NAME01);
-        forwardingTab.validateSubmitButtonEnabled();
+        forwardingTab.validateSaveButtonEnabled();
 
         log("Disabling response collection allows study config submission");
         forwardingTab.uncheckResponseCollection();
-        forwardingTab.validateSubmitButtonEnabled();
+        forwardingTab.validateSaveButtonEnabled();
 
-        log("Clearing StudyId disables submit button");
+        log("Clearing StudyId disables save button");
         forwardingTab.setInputId("");
-        forwardingTab.validateSubmitButtonDisabled();
+        forwardingTab.validateSaveButtonDisabled();
     }
 
     @Test
@@ -198,7 +198,7 @@ public class ConfigAndEnrollTest extends BaseResponseTest
 
         log("Set a study name.");
         forwardingTab.setInputId(PROJECT01_STUDY_NAME);
-        forwardingTab.submitAndExpectSuccess();
+        forwardingTab.saveAndExpectSuccess();
 
         log("Create " + proj01_tokenCount01 + " tokens.");
         SetupPage.beginAt(this, PROJECT_NAME04);
@@ -312,7 +312,7 @@ public class ConfigAndEnrollTest extends BaseResponseTest
 
         log("Set a study name.");
         forwardingTab.setInputId(PROJECT02_STUDY_NAME);
-        forwardingTab.submitAndExpectSuccess();
+        forwardingTab.saveAndExpectSuccess();
 
         log("Create " + proj02_tokenCount01 + " tokens.");
         SetupPage.beginAt(this, PROJECT_NAME05);

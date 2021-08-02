@@ -123,7 +123,7 @@ public class ReadResponseTest extends BaseResponseTest
 
         log("Set a study name.");
         forwardingTab.setInputId(PROJECT_STUDY_NAME);
-        forwardingTab.submitAndExpectSuccess();
+        forwardingTab.saveAndExpectSuccess();
 
         log("Create " + tokenCount + " tokens.");
         SetupPage.beginAt(this, PROJECT_NAME);

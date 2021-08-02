@@ -107,27 +107,22 @@ public class ForwardingTab extends LabKeyPage<ForwardingTab.ElementCache> implem
         return elementCache().responseCollection.isChecked();
     }
 
-    public boolean isSubmitEnabled()
+    public boolean isSaveEnabled()
     {
-        String classValue = elementCache().submitStudySetup.getAttribute("class");
+        String classValue = elementCache().saveStudySetup.getAttribute("class");
         return !classValue.toLowerCase().contains("labkey-disabled-button");
     }
 
-    public void validateSubmitButtonEnabled()
+    public void validateSaveButtonEnabled()
     {
-        log("Validate that the submit button is now enabled.");
-        assertTrue("Submit button is not showing as enabled, it should be.", isSubmitEnabled());
+        log("Validate that the save button is now enabled.");
+        assertTrue("Save button is not showing as enabled, it should be.", isSaveEnabled());
     }
 
-    public void validateSubmitButtonDisabled()
+    public void validateSaveButtonDisabled()
     {
-        log("Validate that the submit button is disabled.");
-        assertFalse("Submit button is showing as enabled, it should not be.", isSubmitEnabled());
-    }
-
-    public boolean isSubmitButtonVisible()
-    {
-        return elementCache().submitStudySetup.isDisplayed();
+        log("Validate that the save button is disabled.");
+        assertFalse("Save button is showing as enabled, it should not be.", isSaveEnabled());
     }
 
     public void acceptCollectionWarning()
@@ -141,27 +136,27 @@ public class ForwardingTab extends LabKeyPage<ForwardingTab.ElementCache> implem
         return elementCache().shortNamePrompt.getText();
     }
 
-    public void submitStudySetup()
+    public void saveStudySetup()
     {
-        if (!isSubmitEnabled())
-            throw new IllegalStateException("Submit button not enabled");
+        if (!isSaveEnabled())
+            throw new IllegalStateException("Save button not enabled");
 
         boolean collectionEnabled = isResponseCollectionChecked();
-        elementCache().submitStudySetup.click();
+        elementCache().saveStudySetup.click();
 
         if (!collectionEnabled)
             acceptCollectionWarning();
     }
 
-    public Error submitAndExpectError()
+    public Error saveAndExpectError()
     {
-        submitStudySetup();
+        saveStudySetup();
         return new Error(getDriver());
     }
 
-    public void submitAndExpectSuccess()
+    public void saveAndExpectSuccess()
     {
-        submitStudySetup();
+        saveStudySetup();
         shortWait().until(ExpectedConditions.visibilityOf(elementCache().successMessage));
     }
 
@@ -200,7 +195,7 @@ public class ForwardingTab extends LabKeyPage<ForwardingTab.ElementCache> implem
 
         Input studyId = new Input(Locator.input("studyId").findWhenNeeded(this), getDriver());
         Checkbox responseCollection = new Checkbox(Locator.checkboxById("responseCollection").findWhenNeeded(getDriver()));
-        WebElement submitStudySetup = new LazyWebElement(Locator.lkButton("Save"),this);
+        WebElement saveStudySetup = new LazyWebElement(Locator.lkButton("Save"),this);
         WebElement updateMetadata = new LazyWebElement(Locator.lkButton("Update Metadata"),this);
         WebElement successMessage = Locator.tagWithText("span", "Configuration Saved").findWhenNeeded(this);
         final WebElement shortNamePrompt = Locator.tagWithClass("div", "studysetup-prompt").findWhenNeeded(this);

@@ -974,7 +974,6 @@ public class ResponseController extends SpringActionController
     @RequiresPermission(AdminPermission.class)
     public static class ResponseServerAction extends FolderManagementViewPostAction<MyStudiesRespServerForm>
     {
-
         @Override
         public void validateCommand(MyStudiesRespServerForm form, Errors errors)
         {
