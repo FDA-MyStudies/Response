@@ -206,6 +206,8 @@
                 },
                 scope: this
             });
+        } else {
+            postStudySetup();
         }
     }
 
