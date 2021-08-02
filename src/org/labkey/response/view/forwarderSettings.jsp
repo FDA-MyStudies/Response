@@ -24,7 +24,7 @@
         width: 190px;
     }
 
-    .lk-response-collection {
+    .lk-response-collection-label {
         vertical-align: text-bottom;
         margin-top: 2px;
         width: 190px;
@@ -55,10 +55,6 @@
 
     .text-field-error-state {
         border: 1px solid red !important;
-    }
-
-    .studysetup-prompt {
-        margin-bottom: 28px;
     }
 </style>
 
@@ -110,9 +106,9 @@
             <div class="study-id-label"> Study Id <%=helpPopup("Study Id", studyIdHelpText, true, 300)%> </div>
             <labkey:input type="text" className="form-control lk-study-id" name="studyId" id="studyId" placeholder="Enter StudyId" value="<%=shortName%>" /> <br/>
         </div>
-        
+
         <div class="lk-response-collection-field-row">
-            <span class="lk-response-collection"> Enable Response Collection </span>
+            <span class="lk-response-collection-label"> Enable Response Collection </span>
             <labkey:input type="checkbox" id="responseCollection" name="responseCollection" checked="<%=collectionEnabled%>" />
         </div>
 
