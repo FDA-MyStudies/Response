@@ -36,7 +36,7 @@ import org.labkey.response.query.MobileAppStudyQuerySchema;
 import org.labkey.response.query.ReadResponsesQuerySchema;
 import org.labkey.response.security.MyStudiesCoordinator;
 import org.labkey.response.view.EnrollmentTokenBatchesWebPart;
-import org.labkey.response.view.StudyConfigWebPart;
+import org.labkey.response.view.MyStudiesResponseServerWebPart;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -87,7 +87,7 @@ public class ResponseModule extends DefaultModule
     protected Collection<WebPartFactory> createWebPartFactories()
     {
         SimpleWebPartFactory studySetupFactory = new SimpleWebPartFactory("MyStudies Response Server",
-            WebPartFactory.LOCATION_BODY, StudyConfigWebPart.class, null);
+            WebPartFactory.LOCATION_BODY, MyStudiesResponseServerWebPart.class, null);
         studySetupFactory.addLegacyNames("Mobile App Study Setup");
         return List.of(
             new SimpleWebPartFactory("Enrollment Token Batches", WebPartFactory.LOCATION_BODY, EnrollmentTokenBatchesWebPart.class, null),
@@ -111,7 +111,7 @@ public class ResponseModule extends DefaultModule
         ActionURL serverConfigurationURL = new ActionURL(ResponseController.ServerConfigurationAction.class, ContainerManager.getRoot());
         AdminConsole.addLink(AdminConsole.SettingsLinkType.Configuration, "Response Server Configuration", serverConfigurationURL, ApplicationAdminPermission.class);
         FolderManagement.addTab(FolderManagement.TYPE.FolderManagement, "MyStudies Response Server", "forwarding",
-                IS_ACTIVE, ResponseController.ForwardingSettingsAction.class);
+                IS_ACTIVE, ResponseController.MyStudiesResponseServerAction.class);
 
         //Startup shredding and forwarder jobs
         ResponseManager.get().doStartup();

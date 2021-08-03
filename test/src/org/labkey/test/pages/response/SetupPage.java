@@ -17,7 +17,6 @@ package org.labkey.test.pages.response;
 
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.WebDriverWrapper;
-import org.labkey.test.components.response.StudySetupWebPart;
 import org.labkey.test.components.response.TokenBatchesWebPart;
 import org.labkey.test.pages.LabKeyPage;
 

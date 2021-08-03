@@ -63,7 +63,6 @@ import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.SiteAdminPermission;
-import org.labkey.api.util.HelpTopic;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
@@ -100,8 +99,6 @@ import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.labkey.api.util.Result.failure;
-import static org.labkey.response.ResponseController.ServerConfigurationAction.FILE;
-import static org.labkey.response.ResponseController.ServerConfigurationAction.WCP_SERVER;
 
 @Marshal(Marshaller.Jackson)
 public class ResponseController extends SpringActionController
@@ -972,39 +969,12 @@ public class ResponseController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public static class ResponseServerAction extends FolderManagementViewPostAction<MyStudiesRespServerForm>
-    {
-        @Override
-        public void validateCommand(MyStudiesRespServerForm form, Errors errors)
-        {
-
-        }
-
-        @Override
-        public boolean handlePost(MyStudiesRespServerForm form, BindException errors) throws Exception
-        {
-            return false;
-        }
-
-        @Override
-        protected HttpView getTabView(MyStudiesRespServerForm form, boolean reshow, BindException errors) throws Exception
-        {
-            return new JspView<>("/org/labkey/response/view/forwarderSettings.jsp", form, errors);
-        }
-    }
-
-    public static class MyStudiesRespServerForm
-    {
-
-    }
-
-    @RequiresPermission(AdminPermission.class)
-    public static class ForwardingSettingsAction extends FolderManagementViewPostAction<ForwardingSettingsForm>
+    public static class MyStudiesResponseServerAction extends FolderManagementViewPostAction<ForwardingSettingsForm>
     {
         @Override
         protected HttpView getTabView(ForwardingSettingsForm form, boolean reshow, BindException errors)
         {
-            return new JspView<>("/org/labkey/response/view/forwarderSettings.jsp", form, errors);
+            return new JspView<>("/org/labkey/response/view/MyStudiesResponseServerSettings.jsp", form, errors);
         }
 
         @Override
@@ -1117,7 +1087,7 @@ public class ResponseController extends SpringActionController
 
     public static ActionURL getResponseForwardingSettingsURL(Container c)
     {
-        return new ActionURL(ForwardingSettingsAction.class, c);
+        return new ActionURL(MyStudiesResponseServerAction.class, c);
     }
 
     /**

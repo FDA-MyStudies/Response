@@ -127,7 +127,7 @@ public class ForwardingTab extends LabKeyPage<ForwardingTab.ElementCache> implem
 
     public void acceptCollectionWarning()
     {
-        StudySetupWebPart.ResponseCollectionDialog warning = new StudySetupWebPart.ResponseCollectionDialog(getDriver());
+        MyStudiesResponseServerWebPart.ResponseCollectionDialog warning = new MyStudiesResponseServerWebPart.ResponseCollectionDialog(getDriver());
         warning.clickOk();
     }
 
@@ -165,7 +165,7 @@ public class ForwardingTab extends LabKeyPage<ForwardingTab.ElementCache> implem
         if (!isUpdateMetadataEnabled())
             throw new IllegalStateException("Update metadata button not enabled");
 
-        elementCache().updateMetadata.click(); // might not be triggering
+        elementCache().updateMetadata.click();
 
         shortWait().until(ExpectedConditions.visibilityOf(elementCache().successMessage));
     }

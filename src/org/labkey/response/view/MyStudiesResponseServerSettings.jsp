@@ -3,7 +3,7 @@
 <%@ page import="org.labkey.api.view.HttpView" %>
 <%@ page import="org.labkey.api.view.JspView" %>
 <%@ page import="org.labkey.api.view.template.ClientDependencies" %>
-<%@ page import="org.labkey.response.ResponseController.ForwardingSettingsAction" %>
+<%@ page import="org.labkey.response.ResponseController.MyStudiesResponseServerAction" %>
 <%@ page import="org.labkey.response.ResponseController.ForwardingSettingsForm" %>
 <%@ page import="org.labkey.response.ResponseManager" %>
 <%@ page import="org.labkey.response.forwarder.ForwarderProperties" %>
@@ -124,7 +124,7 @@
 <labkey:panel title="Response Forwarding">
     <labkey:errors></labkey:errors>
 
-    <labkey:form name="mobileAppStudyForwardingSettingsForm" action="<%=new ActionURL(ForwardingSettingsAction.class, getContainer())%>" method="POST" >
+    <labkey:form name="mobileAppStudyForwardingSettingsForm" action="<%=new ActionURL(MyStudiesResponseServerAction.class, getContainer())%>" method="POST" >
         <div id="authTypeSelector" class=" form-group" >
             <label>
                 <input type="radio" name="forwardingType" value="<%=ForwardingType.Disabled%>"<%=checked(authType == ForwardingType.Disabled)%>/>
