@@ -35,7 +35,7 @@ import org.labkey.test.TestFileUtils;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.commands.response.EnrollParticipantCommand;
 import org.labkey.test.commands.response.SubmitResponseCommand;
-import org.labkey.test.components.response.ForwardingTab;
+import org.labkey.test.components.response.MyStudiesResponseServerTab;
 import org.labkey.test.data.response.InitialSurvey;
 import org.labkey.test.data.response.QuestionResponse;
 import org.labkey.test.data.response.Survey;
@@ -295,12 +295,12 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
         log("Set a study name.");
         goToProjectHome(projectName);
 
-        ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
-        forwardingTab.setInputId(studyName);
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.setInputId(studyName);
         if (enableResponseCollection)
-            forwardingTab.checkResponseCollection();
-        forwardingTab.validateSaveButtonEnabled();
-        forwardingTab.saveAndExpectSuccess();
+            myStudiesResponseServerTab.checkResponseCollection();
+        myStudiesResponseServerTab.validateSaveButtonEnabled();
+        myStudiesResponseServerTab.saveAndExpectSuccess();
         if (StringUtils.isNotBlank(surveyName))
             _listHelper.createList(projectName, surveyName, ListHelper.ListColumnType.AutoInteger, "Key");
     }

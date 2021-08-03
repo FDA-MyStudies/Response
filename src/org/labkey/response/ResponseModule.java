@@ -111,7 +111,7 @@ public class ResponseModule extends DefaultModule
         ActionURL serverConfigurationURL = new ActionURL(ResponseController.ServerConfigurationAction.class, ContainerManager.getRoot());
         AdminConsole.addLink(AdminConsole.SettingsLinkType.Configuration, "Response Server Configuration", serverConfigurationURL, ApplicationAdminPermission.class);
         FolderManagement.addTab(FolderManagement.TYPE.FolderManagement, "MyStudies Response Server", "forwarding",
-                IS_ACTIVE, ResponseController.MyStudiesResponseServerAction.class);
+                IS_ACTIVE, ResponseController.ForwardingSettingsAction.class);
 
         //Startup shredding and forwarder jobs
         ResponseManager.get().doStartup();

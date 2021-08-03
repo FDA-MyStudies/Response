@@ -22,7 +22,7 @@ import org.labkey.test.categories.Git;
 import org.labkey.test.commands.response.EnrollParticipantCommand;
 import org.labkey.test.commands.response.EnrollmentTokenValidationCommand;
 import org.labkey.test.commands.response.ResolveEnrollmentTokenCommand;
-import org.labkey.test.components.response.ForwardingTab;
+import org.labkey.test.components.response.MyStudiesResponseServerTab;
 import org.labkey.test.components.response.TokenBatchPopup;
 import org.labkey.test.components.response.TokenBatchesWebPart;
 import org.labkey.test.pages.response.SetupPage;
@@ -60,10 +60,10 @@ public class TokenValidationTest extends BaseResponseTest
 
         goToProjectHome(PROJECT_NAME01);
         SetupPage setupPage = new SetupPage(this);
-        ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
-        forwardingTab.setInputId(STUDY_NAME01);
-        forwardingTab.validateSaveButtonEnabled();
-        forwardingTab.saveAndExpectSuccess();
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.setInputId(STUDY_NAME01);
+        myStudiesResponseServerTab.validateSaveButtonEnabled();
+        myStudiesResponseServerTab.saveAndExpectSuccess();
 
         log("Create tokens.");
         SetupPage.beginAt(this, PROJECT_NAME01);
@@ -71,17 +71,17 @@ public class TokenValidationTest extends BaseResponseTest
         tokenBatchPopup.createNewBatch("100");
 
         goToProjectHome(PROJECT_NAME02);
-        forwardingTab = ForwardingTab.beginAt(this);
-        forwardingTab.setInputId(STUDY_NAME02);
-        forwardingTab.validateSaveButtonEnabled();
-        forwardingTab.saveAndExpectSuccess();
+        myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.setInputId(STUDY_NAME02);
+        myStudiesResponseServerTab.validateSaveButtonEnabled();
+        myStudiesResponseServerTab.saveAndExpectSuccess();
 
         // Third project to test resolving enrollment tokens in another study
         goToProjectHome(PROJECT_NAME03);
-        forwardingTab = ForwardingTab.beginAt(this);
-        forwardingTab.setInputId(STUDY_NAME03);
-        forwardingTab.validateSaveButtonEnabled();
-        forwardingTab.saveAndExpectSuccess();
+        myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.setInputId(STUDY_NAME03);
+        myStudiesResponseServerTab.validateSaveButtonEnabled();
+        myStudiesResponseServerTab.saveAndExpectSuccess();
 
         log("Create tokens.");
         SetupPage.beginAt(this, PROJECT_NAME03);
@@ -231,15 +231,15 @@ public class TokenValidationTest extends BaseResponseTest
         // Test for Administrator
         assertTrue(batchesWebPart.isNewBatchPresent());
         assertTrue(batchesWebPart.isNewBatchEnabled());
-        ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
-        forwardingTab.validateSaveButtonDisabled();  // Save button should be present
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.validateSaveButtonDisabled();  // Save button should be present
         SetupPage.beginAt(this, PROJECT_NAME01);
 
         // Test for Reader
         impersonateRole("Reader");
         assertTrue(batchesWebPart.isNewBatchPresent());
         assertFalse(batchesWebPart.isNewBatchEnabled());
-        ForwardingTab.beginAt(this);
+        MyStudiesResponseServerTab.beginAt(this);
         assertTextPresent("User does not have permission to perform this operation.");  // Not authorized
         stopImpersonating(false);
 

@@ -28,7 +28,7 @@ import org.labkey.remoteapi.PostCommand;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.categories.Git;
 import org.labkey.test.commands.response.SubmitResponseCommand;
-import org.labkey.test.components.response.ForwardingTab;
+import org.labkey.test.components.response.MyStudiesResponseServerTab;
 import org.labkey.test.components.response.TokenBatchPopup;
 import org.labkey.test.mockserver.response.MockServerPostCallback;
 import org.labkey.test.pages.response.SetupPage;
@@ -161,24 +161,24 @@ public class ForwardResponseTest extends BaseResponseTest
     {
         log(String.format("Enabling OAuth forwarding for %1$s", projectName));
         goToProjectHome(projectName);
-        ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
 
         String tokenURL = FORWARDING_URL + "/" + tokenRequestPath;
         String endpointURL = FORWARDING_URL + "/" + forwardingPath;
 
 
-        forwardingTab.setOauthCredentials(tokenURL, tokenField, tokenHeader, endpointURL);
-        forwardingTab.submit();
+        myStudiesResponseServerTab.setOauthCredentials(tokenURL, tokenField, tokenHeader, endpointURL);
+        myStudiesResponseServerTab.submit();
     }
 
     private void enableBasicAuthForwarding(String projectName, String username, String password, String forwardingPath)
     {
         log(String.format("Enabling basic forwarding for %1$s", projectName));
         goToProjectHome(projectName);
-        ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
 
-        forwardingTab.setBasicAuthCredentials(username, password, forwardingPath);
-        forwardingTab.submit();
+        myStudiesResponseServerTab.setBasicAuthCredentials(username, password, forwardingPath);
+        myStudiesResponseServerTab.submit();
     }
 
     private TokenListPage createTokenBatch(SetupPage setupPage)
@@ -343,7 +343,7 @@ public class ForwardResponseTest extends BaseResponseTest
         mockServer.clear(req);
 
         goToProjectHome(project);
-        ForwardingTab tab = ForwardingTab.beginAt(this);
+        MyStudiesResponseServerTab tab = MyStudiesResponseServerTab.beginAt(this);
         tab.disableForwarding();
         tab.submit();
 

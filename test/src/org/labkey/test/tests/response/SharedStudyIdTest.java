@@ -27,7 +27,7 @@ import org.labkey.test.WebTestHelper;
 import org.labkey.test.categories.Git;
 import org.labkey.test.commands.response.EnrollParticipantCommand;
 import org.labkey.test.commands.response.EnrollmentTokenValidationCommand;
-import org.labkey.test.components.response.ForwardingTab;
+import org.labkey.test.components.response.MyStudiesResponseServerTab;
 import org.labkey.test.components.response.TokenBatchPopup;
 import org.labkey.test.pages.response.SetupPage;
 import org.labkey.test.pages.response.TokenListPage;
@@ -79,9 +79,9 @@ public class SharedStudyIdTest extends BaseResponseTest
 
         String projectPath = project + "/" + subfolder;
 
-        ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
-        forwardingTab.setInputId(studyId);
-        forwardingTab.saveAndExpectSuccess();
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.setInputId(studyId);
+        myStudiesResponseServerTab.saveAndExpectSuccess();
 
         SetupPage setupPage = new SetupPage(this);
         SetupPage.beginAt(this, projectPath);
@@ -115,20 +115,20 @@ public class SharedStudyIdTest extends BaseResponseTest
         _containerHelper.createProject(PROJECT_NAME01, "Collaboration");
         _containerHelper.createSubfolder(PROJECT_NAME01, STUDY_FOLDER_NAME,FOLDER_TYPE);
 
-        ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
-        forwardingTab.setInputId(SHORT_NAME);
-        forwardingTab.saveAndExpectSuccess();
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.setInputId(SHORT_NAME);
+        myStudiesResponseServerTab.saveAndExpectSuccess();
 
         _containerHelper.createProject(PROJECT_NAME02, "Collaboration");
         _containerHelper.createSubfolder(PROJECT_NAME02, STUDY_FOLDER_NAME, FOLDER_TYPE);
 
-        forwardingTab = ForwardingTab.beginAt(this);
-        forwardingTab.setInputId(SHORT_NAME);
-        forwardingTab.saveAndExpectSuccess();
+        myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.setInputId(SHORT_NAME);
+        myStudiesResponseServerTab.saveAndExpectSuccess();
         goToProjectHome(PROJECT_NAME02);
         clickFolder(STUDY_FOLDER_NAME);
-        forwardingTab = ForwardingTab.beginAt(this);
-        assertEquals("Study name not saved for second project", SHORT_NAME.toUpperCase(), forwardingTab.getInputId());
+        myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        assertEquals("Study name not saved for second project", SHORT_NAME.toUpperCase(), myStudiesResponseServerTab.getInputId());
 
         log("Testing enrollment, which should fail without any tokens.");
         EnrollParticipantCommand enrollCmd = new EnrollParticipantCommand("home", SHORT_NAME, null, "NA", this::log);

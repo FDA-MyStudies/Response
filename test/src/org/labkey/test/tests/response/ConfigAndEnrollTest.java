@@ -23,7 +23,7 @@ import org.labkey.remoteapi.Connection;
 import org.labkey.test.categories.Git;
 import org.labkey.test.commands.response.EnrollmentTokenValidationCommand;
 import org.labkey.test.components.ext4.Error;
-import org.labkey.test.components.response.ForwardingTab;
+import org.labkey.test.components.response.MyStudiesResponseServerTab;
 import org.labkey.test.components.response.TokenBatchPopup;
 import org.labkey.test.pages.response.SetupPage;
 import org.labkey.test.pages.response.TokenListPage;
@@ -74,38 +74,38 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         _containerHelper.createProject(PROJECT_NAME01, FOLDER_TYPE);
         goToProjectHome(PROJECT_NAME01);
 
-        ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
-        forwardingTab.validateSaveButtonDisabled();
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.validateSaveButtonDisabled();
 
         log("Set a study name.");
-        forwardingTab.setInputId(STUDY_NAME01);
-        forwardingTab.validateSaveButtonEnabled();
-        forwardingTab.saveAndExpectSuccess();
+        myStudiesResponseServerTab.setInputId(STUDY_NAME01);
+        myStudiesResponseServerTab.validateSaveButtonEnabled();
+        myStudiesResponseServerTab.saveAndExpectSuccess();
 
         log("Validate that the save button is disabled after you click it.");
-        assertFalse("Save button is showing as enabled, it should not be.", forwardingTab.isSaveEnabled());
+        assertFalse("Save button is showing as enabled, it should not be.", myStudiesResponseServerTab.isSaveEnabled());
 
         log("Change the study name and save.");
-        forwardingTab.setInputId(STUDY_NAME02);
-        forwardingTab.validateSaveButtonEnabled();
-        forwardingTab.saveAndExpectSuccess();
+        myStudiesResponseServerTab.setInputId(STUDY_NAME02);
+        myStudiesResponseServerTab.validateSaveButtonEnabled();
+        myStudiesResponseServerTab.saveAndExpectSuccess();
 
         log("Create a new project and try to reuse the study name.");
         _containerHelper.createProject(PROJECT_NAME02, FOLDER_TYPE);
-        forwardingTab = ForwardingTab.beginAt(this);
+        myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
 
         log("Set the study name to a value already saved.");
-        forwardingTab.setInputId(STUDY_NAME02);
+        myStudiesResponseServerTab.setInputId(STUDY_NAME02);
 
-        final Error error = forwardingTab.saveAndExpectError();
+        final Error error = myStudiesResponseServerTab.saveAndExpectError();
 
         assertEquals("Error message text does not match", REUSED_STUDY_NAME_ERROR.replace("$STUDY_NAME$", STUDY_NAME02), error.getBody());
         error.clickOk();
 
         log("Reuse the first study name");
 
-        forwardingTab.setInputId(STUDY_NAME01);
-        forwardingTab.saveAndExpectSuccess();
+        myStudiesResponseServerTab.setInputId(STUDY_NAME01);
+        myStudiesResponseServerTab.saveAndExpectSuccess();
 
         log("Now create some tokens and use them and then validate that the study name cannot be changed.");
 
@@ -149,28 +149,28 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         _containerHelper.createProject(PROJECT_NAME03, FOLDER_TYPE);
 
         goToProjectHome(PROJECT_NAME03);
-        ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
 
         //Validate collection checkbox behavior
         log("Collection is initially disabled");
-        assertFalse("Response collection is enabled at study creation", forwardingTab.isResponseCollectionChecked());
-        forwardingTab.validateSaveButtonDisabled();
+        assertFalse("Response collection is enabled at study creation", myStudiesResponseServerTab.isResponseCollectionChecked());
+        myStudiesResponseServerTab.validateSaveButtonDisabled();
 
         log("Enabling response collection doesn't allow save prior to a valid study name");
-        forwardingTab.checkResponseCollection();
-        forwardingTab.validateSaveButtonDisabled();
+        myStudiesResponseServerTab.checkResponseCollection();
+        myStudiesResponseServerTab.validateSaveButtonDisabled();
 
         log("Set a study name.");
-        forwardingTab.setInputId(STUDY_NAME01);
-        forwardingTab.validateSaveButtonEnabled();
+        myStudiesResponseServerTab.setInputId(STUDY_NAME01);
+        myStudiesResponseServerTab.validateSaveButtonEnabled();
 
         log("Disabling response collection allows study config submission");
-        forwardingTab.uncheckResponseCollection();
-        forwardingTab.validateSaveButtonEnabled();
+        myStudiesResponseServerTab.uncheckResponseCollection();
+        myStudiesResponseServerTab.validateSaveButtonEnabled();
 
         log("Clearing StudyId disables save button");
-        forwardingTab.setInputId("");
-        forwardingTab.validateSaveButtonDisabled();
+        myStudiesResponseServerTab.setInputId("");
+        myStudiesResponseServerTab.validateSaveButtonDisabled();
     }
 
     @Test
@@ -194,11 +194,11 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         goToProjectHome(PROJECT_NAME04);
 
         SetupPage setupPage = new SetupPage(this);
-        ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
 
         log("Set a study name.");
-        forwardingTab.setInputId(PROJECT01_STUDY_NAME);
-        forwardingTab.saveAndExpectSuccess();
+        myStudiesResponseServerTab.setInputId(PROJECT01_STUDY_NAME);
+        myStudiesResponseServerTab.saveAndExpectSuccess();
 
         log("Create " + proj01_tokenCount01 + " tokens.");
         SetupPage.beginAt(this, PROJECT_NAME04);
@@ -308,11 +308,11 @@ public class ConfigAndEnrollTest extends BaseResponseTest
         goToProjectHome(PROJECT_NAME05);
 
         setupPage = new SetupPage(this);
-        forwardingTab = ForwardingTab.beginAt(this);
+        myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
 
         log("Set a study name.");
-        forwardingTab.setInputId(PROJECT02_STUDY_NAME);
-        forwardingTab.saveAndExpectSuccess();
+        myStudiesResponseServerTab.setInputId(PROJECT02_STUDY_NAME);
+        myStudiesResponseServerTab.saveAndExpectSuccess();
 
         log("Create " + proj02_tokenCount01 + " tokens.");
         SetupPage.beginAt(this, PROJECT_NAME05);

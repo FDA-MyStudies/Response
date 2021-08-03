@@ -23,7 +23,7 @@ import org.junit.experimental.categories.Category;
 import org.labkey.test.Locator;
 import org.labkey.test.TestFileUtils;
 import org.labkey.test.categories.Git;
-import org.labkey.test.components.response.ForwardingTab;
+import org.labkey.test.components.response.MyStudiesResponseServerTab;
 import org.labkey.test.data.response.AbstractQuestionResponse.SupportedResultType;
 import org.labkey.test.data.response.ChoiceQuestionResponse;
 import org.labkey.test.data.response.GroupedQuestionResponse;
@@ -68,11 +68,11 @@ public class ResponseProcessingTest extends BaseResponseTest
         //Setup a study
         _containerHelper.createProject(PROJECT_NAME01, FOLDER_TYPE);
         goToProjectHome(PROJECT_NAME01);
-        ForwardingTab forwardingTab = ForwardingTab.beginAt(this);
-        forwardingTab.checkResponseCollection();
-        forwardingTab.setInputId(STUDY_NAME01);
-        forwardingTab.validateSaveButtonEnabled();
-        forwardingTab.saveAndExpectSuccess();
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.checkResponseCollection();
+        myStudiesResponseServerTab.setInputId(STUDY_NAME01);
+        myStudiesResponseServerTab.validateSaveButtonEnabled();
+        myStudiesResponseServerTab.saveAndExpectSuccess();
 
         SetupPage.beginAt(this, PROJECT_NAME01);
         setupLists();

@@ -17,26 +17,26 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class ForwardingTab extends LabKeyPage<ForwardingTab.ElementCache> implements FolderManagementTab
+public class MyStudiesResponseServerTab extends LabKeyPage<MyStudiesResponseServerTab.ElementCache> implements FolderManagementTab
 {
     private WebDriver _driver;
 
-    public ForwardingTab() {}
+    public MyStudiesResponseServerTab() {}
 
-    public ForwardingTab(BaseWebDriverTest driver)
+    public MyStudiesResponseServerTab(BaseWebDriverTest driver)
     {
         super(driver);
     }
 
-    public static ForwardingTab beginAt(BaseWebDriverTest driver)
+    public static MyStudiesResponseServerTab beginAt(BaseWebDriverTest driver)
     {
         return beginAt(driver, driver.getCurrentContainerPath());
     }
 
-    public static ForwardingTab beginAt(BaseWebDriverTest driver, String containerPath)
+    public static MyStudiesResponseServerTab beginAt(BaseWebDriverTest driver, String containerPath)
     {
         driver.beginAt(WebTestHelper.buildURL("mobileappstudy", containerPath, "forwardingSettings"));
-        return new ForwardingTab(driver);
+        return new MyStudiesResponseServerTab(driver);
     }
 
     @Override

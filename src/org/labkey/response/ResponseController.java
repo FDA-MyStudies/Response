@@ -969,7 +969,7 @@ public class ResponseController extends SpringActionController
     }
 
     @RequiresPermission(AdminPermission.class)
-    public static class MyStudiesResponseServerAction extends FolderManagementViewPostAction<ForwardingSettingsForm>
+    public static class ForwardingSettingsAction extends FolderManagementViewPostAction<ForwardingSettingsForm>
     {
         @Override
         protected HttpView getTabView(ForwardingSettingsForm form, boolean reshow, BindException errors)
@@ -1087,7 +1087,7 @@ public class ResponseController extends SpringActionController
 
     public static ActionURL getResponseForwardingSettingsURL(Container c)
     {
-        return new ActionURL(MyStudiesResponseServerAction.class, c);
+        return new ActionURL(ForwardingSettingsAction.class, c);
     }
 
     /**
