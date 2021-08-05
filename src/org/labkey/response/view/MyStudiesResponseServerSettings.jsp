@@ -240,7 +240,7 @@
             }
         }
 
-        if (($('#studyId').val() !== "<%=h(shortName)%>")) {
+        if (($('#studyId').val() !== "<%=h(shortName)%>") || ($('#studyId').val().length === 0 && $('#studyId').val().trim().length === 0)) {
             $('#updateMetadataButton').addClass("labkey-disabled-button");
         } else {
             $('#updateMetadataButton').removeClass("labkey-disabled-button");

@@ -131,11 +131,6 @@ public class MyStudiesResponseServerTab extends LabKeyPage<MyStudiesResponseServ
         warning.clickOk();
     }
 
-    public String getPrompt()
-    {
-        return elementCache().shortNamePrompt.getText();
-    }
-
     public void saveStudySetup()
     {
         if (!isSaveEnabled())
@@ -198,7 +193,6 @@ public class MyStudiesResponseServerTab extends LabKeyPage<MyStudiesResponseServ
         WebElement saveStudySetup = new LazyWebElement(Locator.lkButton("Save"),this);
         WebElement updateMetadata = new LazyWebElement(Locator.lkButton("Update Metadata"),this);
         WebElement successMessage = Locator.tagWithText("span", "Configuration Saved").findWhenNeeded(this);
-        final WebElement shortNamePrompt = Locator.tagWithClass("div", "studysetup-prompt").findWhenNeeded(this);
 
         OAuthWebPart oAuthWebPart = new OAuthWebPart(getDriver(), new LazyWebElement(Locator.id("oauthPanel"), this));
         BasicAuthWebPart basicAuthWebPart = new BasicAuthWebPart(getDriver(), new LazyWebElement(Locator.id("basicAuthPanel"), this));

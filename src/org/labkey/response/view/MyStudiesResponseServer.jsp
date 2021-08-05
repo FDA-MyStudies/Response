@@ -30,6 +30,7 @@
 <%@ page import="org.labkey.api.data.PropertyManager" %>
 <%@ page import="static org.labkey.response.ResponseController.ServerConfigurationAction.WCP_BASE_URL" %>
 <%@ page import="static org.labkey.response.ResponseController.ServerConfigurationAction.METADATA_DIRECTORY" %>
+<%@ page import="org.labkey.api.security.permissions.AdminPermission" %>
 <%@ page extends="org.labkey.api.jsp.JspBase" %>
 <%@ taglib prefix="labkey" uri="http://www.labkey.org/taglib" %>
 
@@ -64,6 +65,7 @@
 <%
     JspView<MobileAppStudy> me = (JspView<MobileAppStudy>) HttpView.currentView();
     MobileAppStudy bean = me.getModelBean();
+    boolean hasPermission = getContainer().hasPermission(getUser(), AdminPermission.class);
 
     String renderId = "labkey-mobileappstudy-studysetup";
     String shortName = bean.getShortName();
@@ -84,13 +86,20 @@
 
 <% if (!responseServerAdminConfigured) { %>
     <div>
-        Response Server Site Settings are not configured. Click <a href="<%=h(responseServerAdminConfigPage)%>"> here </a> to configure them.
+        Response Server Site Settings are not configured.
+        <% if (hasPermission) { %>
+            Click <a href="<%=h(responseServerAdminConfigPage)%>"> here </a> to configure them.
+        <% } %>
         <i class="fa fa-times-circle study-configuration-times-circle"></i>
     </div>
 <% } %>
 
 <h4>
-    Study Configuration
+    <% if (hasPermission) { %>
+        <a href="<%=h(responseForwardingTab)%>"> Study Configuration </a>
+    <% } else { %>
+        Study Configuration
+    <% } %>
 
     <% if (shortName == null || shortName.isEmpty()) { %>
         <i class="fa fa-times-circle study-configuration-times-circle"></i>
@@ -103,7 +112,11 @@
     <div class="study-configuration-row">
         <span class="study-configuration-row-title"> StudyId associated with this folder: </span>
         <% if (shortName == null || shortName.isEmpty()) { %>
-        Study Id is not set. Click <a href="<%=h(responseForwardingTab)%>"> here </a> to set Study Id.
+            Study Id is not set.
+
+            <% if (hasPermission) { %>
+                Click <a href="<%=h(responseForwardingTab)%>"> here </a> to set Study Id.
+            <% } %>
         <% } else { %>
             <%= h(shortName)%>
         <% } %>

@@ -1244,9 +1244,12 @@ public class ResponseController extends SpringActionController
         @Override
         public boolean handlePost(ServerConfigurationForm form, BindException errors) throws Exception
         {
-            if (form.getMetadataLoadLocation() != null && form.getMetadataLoadLocation().equals(FILE) && !Files.exists(Paths.get(form.getMetadataDirectory())))
+            if (form.getMetadataLoadLocation() != null && form.getMetadataLoadLocation().equals(FILE))
             {
-                errors.addError(new LabKeyError("Metadata Directory path is invalid"));
+                if (form.getMetadataDirectory() == null)
+                    errors.addError(new LabKeyError("Metadata Directory path must not be blank"));
+                else if (!Files.exists(Paths.get(form.getMetadataDirectory())))
+                    errors.addError(new LabKeyError("Metadata Directory path is invalid"));
             }
             else if (form.getMetadataLoadLocation() != null && form.getMetadataLoadLocation().equals(WCP_SERVER))
             {
