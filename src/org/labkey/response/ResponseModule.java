@@ -89,6 +89,7 @@ public class ResponseModule extends DefaultModule
         SimpleWebPartFactory studySetupFactory = new SimpleWebPartFactory("MyStudies Response Server",
             WebPartFactory.LOCATION_BODY, MyStudiesResponseServerWebPart.class, null);
         studySetupFactory.addLegacyNames("Mobile App Study Setup");
+        studySetupFactory.addLegacyNames("MyStudies Study Setup");
         return List.of(
             new SimpleWebPartFactory("Enrollment Token Batches", WebPartFactory.LOCATION_BODY, EnrollmentTokenBatchesWebPart.class, null),
             studySetupFactory
