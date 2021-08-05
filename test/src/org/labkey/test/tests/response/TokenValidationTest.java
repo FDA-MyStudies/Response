@@ -22,6 +22,7 @@ import org.labkey.test.categories.Git;
 import org.labkey.test.commands.response.EnrollParticipantCommand;
 import org.labkey.test.commands.response.EnrollmentTokenValidationCommand;
 import org.labkey.test.commands.response.ResolveEnrollmentTokenCommand;
+import org.labkey.test.components.response.MyStudiesResponseServerTab;
 import org.labkey.test.components.response.TokenBatchPopup;
 import org.labkey.test.components.response.TokenBatchesWebPart;
 import org.labkey.test.pages.response.SetupPage;
@@ -59,28 +60,31 @@ public class TokenValidationTest extends BaseResponseTest
 
         goToProjectHome(PROJECT_NAME01);
         SetupPage setupPage = new SetupPage(this);
-        setupPage.getStudySetupWebPart().setShortName(STUDY_NAME01);
-        setupPage.validateSubmitButtonEnabled();
-        setupPage.getStudySetupWebPart().clickSubmit();
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.setInputId(STUDY_NAME01);
+        myStudiesResponseServerTab.validateSaveButtonEnabled();
+        myStudiesResponseServerTab.saveAndExpectSuccess();
 
         log("Create tokens.");
+        SetupPage.beginAt(this, PROJECT_NAME01);
         TokenBatchPopup tokenBatchPopup = setupPage.getTokenBatchesWebPart().openNewBatchPopup();
         tokenBatchPopup.createNewBatch("100");
 
         goToProjectHome(PROJECT_NAME02);
-        setupPage = new SetupPage(this);
-        setupPage.getStudySetupWebPart().setShortName(STUDY_NAME02);
-        setupPage.validateSubmitButtonEnabled();
-        setupPage.getStudySetupWebPart().clickSubmit();
+        myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.setInputId(STUDY_NAME02);
+        myStudiesResponseServerTab.validateSaveButtonEnabled();
+        myStudiesResponseServerTab.saveAndExpectSuccess();
 
         // Third project to test resolving enrollment tokens in another study
         goToProjectHome(PROJECT_NAME03);
-        setupPage = new SetupPage(this);
-        setupPage.getStudySetupWebPart().setShortName(STUDY_NAME03);
-        setupPage.validateSubmitButtonEnabled();
-        setupPage.getStudySetupWebPart().clickSubmit();
+        myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.setInputId(STUDY_NAME03);
+        myStudiesResponseServerTab.validateSaveButtonEnabled();
+        myStudiesResponseServerTab.saveAndExpectSuccess();
 
         log("Create tokens.");
+        SetupPage.beginAt(this, PROJECT_NAME03);
         tokenBatchPopup = setupPage.getTokenBatchesWebPart().openNewBatchPopup();
         tokenBatchPopup.createNewBatch("100");
     }
@@ -227,20 +231,22 @@ public class TokenValidationTest extends BaseResponseTest
         // Test for Administrator
         assertTrue(batchesWebPart.isNewBatchPresent());
         assertTrue(batchesWebPart.isNewBatchEnabled());
-        setupPage.validateSubmitButtonDisabled();  // Submit button should be present
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.validateSaveButtonDisabled();  // Save button should be present
+        SetupPage.beginAt(this, PROJECT_NAME01);
 
         // Test for Reader
         impersonateRole("Reader");
         assertTrue(batchesWebPart.isNewBatchPresent());
         assertFalse(batchesWebPart.isNewBatchEnabled());
-        assertFalse(setupPage.isSubmitButtonVisible());  // Submit button should NOT be present
+        MyStudiesResponseServerTab.beginAt(this);
+        assertTextPresent("User does not have permission to perform this operation.");  // Not authorized
         stopImpersonating(false);
 
         // Test for MyStudies Coordinator
         impersonateRoles("Reader", "MyStudies Coordinator");
         assertTrue(batchesWebPart.isNewBatchPresent());
         assertTrue(batchesWebPart.isNewBatchEnabled());  // Should be able to create a new batch
-        assertFalse(setupPage.isSubmitButtonVisible());  // Submit button should NOT be present
         TokenBatchPopup tokenBatchPopup = batchesWebPart.openNewBatchPopup();
         TokenListPage tokenListPage = tokenBatchPopup.createNewBatch("100");
         assertEquals("Wrong number of tokens generated for MyStudies Coordinator", 100, tokenListPage.getNumTokens());

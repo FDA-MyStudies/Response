@@ -24,12 +24,12 @@ import org.labkey.response.data.MobileAppStudy;
 /**
  * Web part for associating a study short name with a container.
  */
-public class StudyConfigWebPart extends JspView<MobileAppStudy>
+public class MyStudiesResponseServerWebPart extends JspView<MobileAppStudy>
 {
-    public StudyConfigWebPart(ViewContext viewContext)
+    public MyStudiesResponseServerWebPart(ViewContext viewContext)
     {
-        super("/org/labkey/response/view/studySetup.jsp");
-        setTitle("Study Setup");
+        super("/org/labkey/response/view/MyStudiesResponseServer.jsp");
+        setTitle("MyStudies Response Server");
 
         MobileAppStudy bean = ResponseManager.get().getStudy(viewContext.getContainer());
         bean = bean != null ? bean : new MobileAppStudy();

@@ -11,7 +11,7 @@
             </requiredWebParts>
             <preferredWebParts>
                 <webPart>
-                    <name>MyStudies Study Setup</name>
+                    <name>MyStudies Response Server</name>
                     <location>body</location>
                 </webPart>
                 <webPart>

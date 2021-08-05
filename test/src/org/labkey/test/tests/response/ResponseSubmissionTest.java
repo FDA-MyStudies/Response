@@ -19,7 +19,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.test.categories.Git;
 import org.labkey.test.commands.response.SubmitResponseCommand;
-import org.labkey.test.pages.response.SetupPage;
+import org.labkey.test.components.response.MyStudiesResponseServerTab;
 import org.labkey.test.util.ListHelper;
 
 import static org.junit.Assert.assertEquals;
@@ -154,12 +154,12 @@ public class ResponseSubmissionTest extends BaseResponseTest
         //refresh the page
         goToProjectHome(PROJECT_NAME01);
         String appToken = getNewAppToken(PROJECT_NAME01, STUDY_NAME01, null);
-        SetupPage setupPage = new SetupPage(this);
-        if (setupPage.getStudySetupWebPart().isResponseCollectionChecked())
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        if (myStudiesResponseServerTab.isResponseCollectionChecked())
         {
-            setupPage.getStudySetupWebPart().uncheckResponseCollection();
+            myStudiesResponseServerTab.uncheckResponseCollection();
             log("Disabling response collection for " + STUDY_NAME01);
-            setupPage.getStudySetupWebPart().clickSubmit();
+            myStudiesResponseServerTab.saveAndExpectSuccess();
         }
 
         checkErrors();
@@ -175,9 +175,9 @@ public class ResponseSubmissionTest extends BaseResponseTest
         //Enable study collection
         log("Enabling response collection for " + STUDY_NAME01);
         goToProjectHome(PROJECT_NAME01);
-        setupPage = new SetupPage(this);
-        setupPage.getStudySetupWebPart().checkResponseCollection();
-        setupPage.getStudySetupWebPart().clickSubmit();
+        myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.checkResponseCollection();
+        myStudiesResponseServerTab.saveAndExpectSuccess();
         goToProjectHome(PROJECT_NAME01);
 
         log("Testing Response Submission with Study collection turned on");
@@ -187,9 +187,9 @@ public class ResponseSubmissionTest extends BaseResponseTest
 
         goToProjectHome(PROJECT_NAME01);
         log("Disabling response collection for " + STUDY_NAME01);
-        setupPage = new SetupPage(this);
-        setupPage.getStudySetupWebPart().uncheckResponseCollection();
-        setupPage.getStudySetupWebPart().clickSubmit();
+        myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.uncheckResponseCollection();
+        myStudiesResponseServerTab.saveAndExpectSuccess();
         goToProjectHome(PROJECT_NAME01);
 
         //        8. Test submitting to a Study previously collecting, but not currently accepting results
@@ -243,11 +243,11 @@ public class ResponseSubmissionTest extends BaseResponseTest
         _containerHelper.deleteProject(PROJECT_NAME03, false);
         _containerHelper.createProject(PROJECT_NAME03, FOLDER_TYPE);
         goToProjectHome(PROJECT_NAME03);
-        SetupPage setupPage = new SetupPage(this);
-        setupPage.getStudySetupWebPart().checkResponseCollection();
-        setupPage.getStudySetupWebPart().setShortName(STUDY_NAME03);
-        setupPage.validateSubmitButtonEnabled();
-        setupPage.getStudySetupWebPart().clickSubmit();
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.checkResponseCollection();
+        myStudiesResponseServerTab.setInputId(STUDY_NAME03);
+        myStudiesResponseServerTab.validateSaveButtonEnabled();
+        myStudiesResponseServerTab.saveAndExpectSuccess();
         _listHelper.createList(PROJECT_NAME03, SURVEY_NAME, ListHelper.ListColumnType.AutoInteger, "Key" );
         setSurveyMetadataDropDir();
         goToProjectHome(PROJECT_NAME03);
