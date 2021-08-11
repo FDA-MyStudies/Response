@@ -17,7 +17,6 @@ package org.labkey.test.pages.response;
 
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.WebDriverWrapper;
-import org.labkey.test.components.response.StudySetupWebPart;
 import org.labkey.test.components.response.TokenBatchesWebPart;
 import org.labkey.test.pages.LabKeyPage;
 
@@ -44,28 +43,6 @@ public class SetupPage extends LabKeyPage<SetupPage.ElementCache> implements Web
         clearCache();
     }
 
-    public boolean isSubmitButtonVisible()
-    {
-        return elementCache().studySetupWebPart.isSubmitVisible();
-    }
-
-    public void validateSubmitButtonDisabled()
-    {
-        log("Validate that the submit button is disabled.");
-        assertFalse("Submit button is showing as enabled, it should not be.", elementCache().studySetupWebPart.isSubmitEnabled());
-    }
-
-    public void validateSubmitButtonEnabled()
-    {
-        log("Validate that the submit button is now enabled.");
-        assertTrue("Submit button is not showing as enabled, it should be.", elementCache().studySetupWebPart.isSubmitEnabled());
-    }
-
-    public StudySetupWebPart getStudySetupWebPart()
-    {
-        return elementCache().studySetupWebPart;
-    }
-
     public TokenBatchesWebPart getTokenBatchesWebPart()
     {
         return elementCache().tokenBatchesWebPart;
@@ -79,7 +56,6 @@ public class SetupPage extends LabKeyPage<SetupPage.ElementCache> implements Web
 
     public class ElementCache extends LabKeyPage.ElementCache
     {
-        public StudySetupWebPart studySetupWebPart = new StudySetupWebPart(getDriver());
         public TokenBatchesWebPart tokenBatchesWebPart = new TokenBatchesWebPart(getDriver());
     }
 }

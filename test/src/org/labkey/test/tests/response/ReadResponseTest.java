@@ -28,6 +28,7 @@ import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.test.categories.Git;
+import org.labkey.test.components.response.MyStudiesResponseServerTab;
 import org.labkey.test.components.response.TokenBatchPopup;
 import org.labkey.test.pages.response.SetupPage;
 import org.labkey.test.pages.response.TokenListPage;
@@ -118,12 +119,14 @@ public class ReadResponseTest extends BaseResponseTest
         goToProjectHome(PROJECT_NAME);
 
         SetupPage setupPage = new SetupPage(this);
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
 
         log("Set a study name.");
-        setupPage.getStudySetupWebPart().setShortName(PROJECT_STUDY_NAME)
-                .clickSubmit();
+        myStudiesResponseServerTab.setInputId(PROJECT_STUDY_NAME);
+        myStudiesResponseServerTab.saveAndExpectSuccess();
 
         log("Create " + tokenCount + " tokens.");
+        SetupPage.beginAt(this, PROJECT_NAME);
         TokenBatchPopup tokenBatchPopup = setupPage.getTokenBatchesWebPart().openNewBatchPopup();
         TokenListPage tokenListPage = tokenBatchPopup.createNewBatch(tokenCount);
 

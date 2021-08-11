@@ -64,6 +64,11 @@ public class MobileAppStudyQuerySchema extends SimpleUserSchema
         });
     }
 
+    public static DbSchema getSchema()
+    {
+        return DbSchema.get(NAME, DbSchemaType.Module);
+    }
+
     private static final Set<String> enumTables = Set.of(RESPONSE_STATUS_TABLE, PARTICIPANT_STATUS_TABLE, PARTICIPANT_PROPERTY_TYPE_TABLE);
 
     @Override
