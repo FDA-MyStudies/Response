@@ -23,6 +23,7 @@ import org.junit.experimental.categories.Category;
 import org.labkey.test.Locator;
 import org.labkey.test.TestFileUtils;
 import org.labkey.test.categories.Git;
+import org.labkey.test.components.response.MyStudiesResponseServerTab;
 import org.labkey.test.data.response.AbstractQuestionResponse.SupportedResultType;
 import org.labkey.test.data.response.ChoiceQuestionResponse;
 import org.labkey.test.data.response.GroupedQuestionResponse;
@@ -67,12 +68,13 @@ public class ResponseProcessingTest extends BaseResponseTest
         //Setup a study
         _containerHelper.createProject(PROJECT_NAME01, FOLDER_TYPE);
         goToProjectHome(PROJECT_NAME01);
-        SetupPage setupPage = new SetupPage(this);
-        setupPage.getStudySetupWebPart().checkResponseCollection();
-        setupPage.getStudySetupWebPart().setShortName(STUDY_NAME01);
-        setupPage.validateSubmitButtonEnabled();
-        setupPage.getStudySetupWebPart().clickSubmit();
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.checkResponseCollection();
+        myStudiesResponseServerTab.setInputId(STUDY_NAME01);
+        myStudiesResponseServerTab.validateSaveButtonEnabled();
+        myStudiesResponseServerTab.saveAndExpectSuccess();
 
+        SetupPage.beginAt(this, PROJECT_NAME01);
         setupLists();
         setSurveyMetadataDropDir();
         goToProjectHome(PROJECT_NAME01);

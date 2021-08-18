@@ -63,7 +63,6 @@ import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.SiteAdminPermission;
-import org.labkey.api.util.HelpTopic;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
@@ -100,8 +99,6 @@ import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.labkey.api.util.Result.failure;
-import static org.labkey.response.ResponseController.ServerConfigurationAction.FILE;
-import static org.labkey.response.ResponseController.ServerConfigurationAction.WCP_SERVER;
 
 @Marshal(Marshaller.Jackson)
 public class ResponseController extends SpringActionController
@@ -977,7 +974,7 @@ public class ResponseController extends SpringActionController
         @Override
         protected HttpView getTabView(ForwardingSettingsForm form, boolean reshow, BindException errors)
         {
-            return new JspView<>("/org/labkey/response/view/forwarderSettings.jsp", form, errors);
+            return new JspView<>("/org/labkey/response/view/MyStudiesResponseServerSettings.jsp", form, errors);
         }
 
         @Override
@@ -1087,6 +1084,11 @@ public class ResponseController extends SpringActionController
 
     }
 
+
+    public static ActionURL getResponseForwardingSettingsURL(Container c)
+    {
+        return new ActionURL(ForwardingSettingsAction.class, c);
+    }
 
     /**
      * Admin action to allow immediate updating of study metadata
@@ -1242,9 +1244,12 @@ public class ResponseController extends SpringActionController
         @Override
         public boolean handlePost(ServerConfigurationForm form, BindException errors) throws Exception
         {
-            if (form.getMetadataLoadLocation() != null && form.getMetadataLoadLocation().equals(FILE) && !Files.exists(Paths.get(form.getMetadataDirectory())))
+            if (form.getMetadataLoadLocation() != null && form.getMetadataLoadLocation().equals(FILE))
             {
-                errors.addError(new LabKeyError("Metadata Directory path is invalid"));
+                if (form.getMetadataDirectory() == null)
+                    errors.addError(new LabKeyError("Metadata Directory path must not be blank"));
+                else if (!Files.exists(Paths.get(form.getMetadataDirectory())))
+                    errors.addError(new LabKeyError("Metadata Directory path is invalid"));
             }
             else if (form.getMetadataLoadLocation() != null && form.getMetadataLoadLocation().equals(WCP_SERVER))
             {

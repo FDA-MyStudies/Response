@@ -18,6 +18,7 @@ import org.labkey.test.categories.Git;
 import org.labkey.test.commands.response.EnrollmentTokenValidationCommand;
 import org.labkey.test.commands.response.SubmitResponseCommand;
 import org.labkey.test.commands.response.WithdrawParticipantCommand;
+import org.labkey.test.components.response.MyStudiesResponseServerTab;
 import org.labkey.test.components.response.TokenBatchPopup;
 import org.labkey.test.data.response.ParticipantProperty;
 import org.labkey.test.mockserver.response.ParticipantPropertiesSeverGetCallback;
@@ -111,8 +112,8 @@ public class ParticipantPropertiesTest extends BaseResponseTest
         setupProject(STUDY_NAME03, PROJECT_NAME03, null, true);
         setupMockserverResponseServerConfigs(PROJECT_NAME03, STUDY_NAME03); // sets response server configs
         goToProjectHome(PROJECT_NAME03);
-        SetupPage setupPage = new SetupPage(this);
-        setupPage.getStudySetupWebPart().clickUpdateMetadata();
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.clickUpdateMetadata();
         createTokenBatch(PROJECT_NAME03);
 
         //Do this here as other tests will use this basic project, so if it is broken we may as well stop here
@@ -195,8 +196,8 @@ public class ParticipantPropertiesTest extends BaseResponseTest
         goToProjectHome(PROJECT_NAME01);
 
         //Create ParticipantProperties list
-        SetupPage setupPage = new SetupPage(this);
-        setupPage.getStudySetupWebPart().clickUpdateMetadata();
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.clickUpdateMetadata();
 
         beginPage = goToManageLists();
         List<String> lists = beginPage.getGrid().getColumnDataAsText("Name");
@@ -343,8 +344,8 @@ public class ParticipantPropertiesTest extends BaseResponseTest
 
         //Create participant properties before EnrollmentTokens
         goToProjectHome(PROJECT_NAME02);
-        SetupPage setupPage = new SetupPage(this);
-        setupPage.getStudySetupWebPart().clickUpdateMetadata();
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.clickUpdateMetadata();
 
         goToProjectHome(PROJECT_NAME02);
         createTokenBatch(PROJECT_NAME02);
@@ -380,8 +381,8 @@ public class ParticipantPropertiesTest extends BaseResponseTest
         // Easiest way to change response body of mockserver call is to adjust the path,
         // so update the url used to request participant properties metadata
         setupMockserverResponseServerConfigs(project, study, changeUrl);
-        SetupPage setupPage = SetupPage.beginAt(this, project);
-        setupPage.getStudySetupWebPart().clickUpdateMetadata();  //Should load OriginalParticipantProperty.json
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.clickUpdateMetadata(); //Should load OriginalParticipantProperty.json
 
         verifyAddColumn(project, study, token);
     }
@@ -399,8 +400,8 @@ public class ParticipantPropertiesTest extends BaseResponseTest
         // Easiest way to change response body of mockserver call is to adjust the path,
         // so update the url used to request participant properties metadata
         setupMockserverResponseServerConfigs(project, study, changeUrl);
-        SetupPage setupPage = SetupPage.beginAt(this, project);
-        setupPage.getStudySetupWebPart().clickUpdateMetadata();  //Should load OriginalParticipantProperty.json
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.clickUpdateMetadata();  //Should load OriginalParticipantProperty.json
 
         EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(project, study, token, this::log);
         cmd.execute(200);
@@ -424,8 +425,8 @@ public class ParticipantPropertiesTest extends BaseResponseTest
         // Easiest way to change response body of mockserver call is to adjust the path,
         // so update the url used to request participant properties metadata
         setupMockserverResponseServerConfigs(project, study, changeUrl);
-        SetupPage setupPage = SetupPage.beginAt(this, project);
-        setupPage.getStudySetupWebPart().clickUpdateMetadata();  //Should load OriginalParticipantProperty.json
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.clickUpdateMetadata();  //Should load OriginalParticipantProperty.json
 
         EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(project, study, token, this::log);
         cmd.execute(200);
@@ -503,8 +504,8 @@ public class ParticipantPropertiesTest extends BaseResponseTest
         goToProjectHome(project);
         setupMockserverResponseServerConfigs(project, study);
 
-        SetupPage setupPage = SetupPage.beginAt(this, project);
-        setupPage.getStudySetupWebPart().clickUpdateMetadata();  //Should load OriginalParticipantProperty.json
+        MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
+        myStudiesResponseServerTab.clickUpdateMetadata();  //Should load OriginalParticipantProperty.json
         createTokenBatch(project);
 
         TokenListPage tokenListPage = TokenListPage.beginAt(this, project);

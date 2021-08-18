@@ -20,12 +20,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.SqlSelector;
 import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.module.DefaultModule;
 import org.labkey.api.module.ModuleContext;
 import org.labkey.api.security.permissions.ApplicationAdminPermission;
 import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.settings.AdminConsole;
+import org.labkey.api.usageMetrics.UsageMetricsService;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.FolderManagement;
 import org.labkey.api.view.SimpleWebPartFactory;
@@ -34,11 +36,13 @@ import org.labkey.response.query.MobileAppStudyQuerySchema;
 import org.labkey.response.query.ReadResponsesQuerySchema;
 import org.labkey.response.security.MyStudiesCoordinator;
 import org.labkey.response.view.EnrollmentTokenBatchesWebPart;
-import org.labkey.response.view.StudyConfigWebPart;
+import org.labkey.response.view.MyStudiesResponseServerWebPart;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -82,9 +86,10 @@ public class ResponseModule extends DefaultModule
     @NotNull
     protected Collection<WebPartFactory> createWebPartFactories()
     {
-        SimpleWebPartFactory studySetupFactory = new SimpleWebPartFactory("MyStudies Study Setup",
-            WebPartFactory.LOCATION_BODY, StudyConfigWebPart.class, null);
+        SimpleWebPartFactory studySetupFactory = new SimpleWebPartFactory("MyStudies Response Server",
+            WebPartFactory.LOCATION_BODY, MyStudiesResponseServerWebPart.class, null);
         studySetupFactory.addLegacyNames("Mobile App Study Setup");
+        studySetupFactory.addLegacyNames("MyStudies Study Setup");
         return List.of(
             new SimpleWebPartFactory("Enrollment Token Batches", WebPartFactory.LOCATION_BODY, EnrollmentTokenBatchesWebPart.class, null),
             studySetupFactory
@@ -106,13 +111,23 @@ public class ResponseModule extends DefaultModule
 
         ActionURL serverConfigurationURL = new ActionURL(ResponseController.ServerConfigurationAction.class, ContainerManager.getRoot());
         AdminConsole.addLink(AdminConsole.SettingsLinkType.Configuration, "Response Server Configuration", serverConfigurationURL, ApplicationAdminPermission.class);
-        FolderManagement.addTab(FolderManagement.TYPE.FolderManagement, "Response Forwarding", "forwarding",
+        FolderManagement.addTab(FolderManagement.TYPE.FolderManagement, "MyStudies Response Server", "forwarding",
                 IS_ACTIVE, ResponseController.ForwardingSettingsAction.class);
 
         //Startup shredding and forwarder jobs
         ResponseManager.get().doStartup();
 
         RoleManager.registerRole(new MyStudiesCoordinator());
+
+        UsageMetricsService svc = UsageMetricsService.get();
+        if (null != svc)
+        {
+            svc.registerUsageMetrics(NAME, () -> {
+                Map<String, Object> metric = new HashMap<>();
+                metric.put("foldersWithStudyIdConfiguredCount", new SqlSelector(MobileAppStudyQuerySchema.getSchema(), "SELECT COUNT(*) FROM MOBILEAPPSTUDY.STUDY").getObject(Long.class));
+                return metric;
+            });
+        }
     }
 
     @Override
