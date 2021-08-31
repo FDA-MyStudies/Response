@@ -152,7 +152,7 @@ public class MyStudiesResponseServerTab extends LabKeyPage<MyStudiesResponseServ
     public void saveAndExpectSuccess()
     {
         saveStudySetup();
-        shortWait().until(ExpectedConditions.visibilityOf(elementCache().successMessage));
+        shortWait().until(ExpectedConditions.visibilityOf(elementCache().successSaveMessage));
     }
 
     public void clickUpdateMetadata()
@@ -162,7 +162,7 @@ public class MyStudiesResponseServerTab extends LabKeyPage<MyStudiesResponseServ
 
         elementCache().updateMetadata.click();
 
-        shortWait().until(ExpectedConditions.visibilityOf(elementCache().successMessage));
+        shortWait().until(ExpectedConditions.visibilityOf(elementCache().successUpdateMessage));
     }
 
     private boolean isUpdateMetadataEnabled()
@@ -192,7 +192,8 @@ public class MyStudiesResponseServerTab extends LabKeyPage<MyStudiesResponseServ
         Checkbox responseCollection = new Checkbox(Locator.checkboxById("responseCollection").findWhenNeeded(getDriver()));
         WebElement saveStudySetup = new LazyWebElement(Locator.lkButton("Save"),this);
         WebElement updateMetadata = new LazyWebElement(Locator.lkButton("Update Metadata"),this);
-        WebElement successMessage = Locator.tagWithText("span", "Configuration Saved").findWhenNeeded(this);
+        WebElement successSaveMessage = Locator.tagWithText("span", "Configuration Saved").findWhenNeeded(this);
+        WebElement successUpdateMessage = Locator.tagWithText("span", "Metadata Updated").findWhenNeeded(this);
 
         OAuthWebPart oAuthWebPart = new OAuthWebPart(getDriver(), new LazyWebElement(Locator.id("oauthPanel"), this));
         BasicAuthWebPart basicAuthWebPart = new BasicAuthWebPart(getDriver(), new LazyWebElement(Locator.id("basicAuthPanel"), this));
