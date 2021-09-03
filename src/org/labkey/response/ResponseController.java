@@ -72,6 +72,7 @@ import org.labkey.api.view.JspView;
 import org.labkey.api.view.NavTree;
 import org.labkey.api.view.ViewContext;
 import org.labkey.response.data.EnrollmentTokenBatch;
+import org.labkey.response.data.Language;
 import org.labkey.response.data.MobileAppStudy;
 import org.labkey.response.data.Participant;
 import org.labkey.response.data.SurveyMetadata;
@@ -351,7 +352,9 @@ public class ResponseController extends SpringActionController
                 // we allow for the possibility that someone can enroll without using an enrollment token
                 else if (ResponseManager.get().enrollmentTokenRequired(form.getShortName()))
                 {
-                    errors.reject(ERROR_REQUIRED, "Token is required");
+                    // Return the "Token is required" error message in the requested language
+                    Language lang = Language.getLanguage(form.getLanguage());
+                    errors.reject(ERROR_REQUIRED, lang.getTokenIsRequiredErrorMessage());
                 }
             }
         }
@@ -711,6 +714,7 @@ public class ResponseController extends SpringActionController
         private String _token;
         private String _shortName;
         private String _allowDataSharing;
+        private String _language;
 
         public String getToken()
         {
@@ -754,6 +758,16 @@ public class ResponseController extends SpringActionController
         public void setAllowDataSharing(String allowDataSharing)
         {
             _allowDataSharing = allowDataSharing;
+        }
+
+        public String getLanguage()
+        {
+            return _language;
+        }
+
+        public void setLanguage(String language)
+        {
+            _language = language;
         }
     }
 
