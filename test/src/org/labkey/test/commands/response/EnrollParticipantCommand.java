@@ -15,7 +15,6 @@
  */
 package org.labkey.test.commands.response;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.json.simple.JSONObject;
@@ -23,7 +22,6 @@ import org.labkey.test.WebTestHelper;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 
 public class EnrollParticipantCommand extends ResponseCommand
@@ -47,14 +45,12 @@ public class EnrollParticipantCommand extends ResponseCommand
         _projectName = projectName;
     }
 
-    public EnrollParticipantCommand(String project, String studyName, String batchToken, String allowDataSharing, Consumer<String> logger)
+    public EnrollParticipantCommand(String project, String studyName, String batchToken, String allowDataSharing)
     {
         _studyName = studyName;
         _batchToken = batchToken;
         _projectName = project;
         _allowDataSharing = allowDataSharing;
-
-        setLogger(logger);
     }
 
     public String getStudyName()
@@ -97,8 +93,7 @@ public class EnrollParticipantCommand extends ResponseCommand
     {
         Map<String, String> params = new HashMap<>();
         params.put("studyId", getStudyName());
-        if (StringUtils.isNotBlank(getBatchToken()))
-            params.put("token", getBatchToken());
+        params.put("token", getBatchToken());
         params.put("allowDataSharing", getAllowDataSharing());
         return WebTestHelper.buildURL(CONTROLLER_NAME, getProjectName(), ACTION_NAME, params);
     }

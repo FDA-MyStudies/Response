@@ -103,7 +103,7 @@ public class TokenValidationTest extends BaseResponseTest
         String token = tokenListPage.getToken(0);
 
         log("Token validation action: successful token request");
-        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(PROJECT_NAME01, STUDY_NAME01, token, this::log);
+        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(PROJECT_NAME01, STUDY_NAME01, token);
         cmd.execute(200);
         assertTrue("Enrollment token validation failed when it shouldn't have", cmd.getSuccess());
     }
@@ -115,7 +115,7 @@ public class TokenValidationTest extends BaseResponseTest
         String token = tokenListPage.getToken(0);
 
         log("Token validation action: invalid StudyId");
-        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(PROJECT_NAME01, STUDY_NAME01 + "_INVALIDSTUDYNAME", token, this::log);
+        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(PROJECT_NAME01, STUDY_NAME01 + "_INVALIDSTUDYNAME", token);
         cmd.execute(400);
         assertFalse("Enrollment token validation succeeded with an invalid studyId", cmd.getSuccess());
         assertEquals("Unexpected error message", String.format(EnrollmentTokenValidationCommand.INVALID_STUDYID_FORMAT, STUDY_NAME01 + "_INVALIDSTUDYNAME"), cmd.getExceptionMessage());
@@ -128,7 +128,7 @@ public class TokenValidationTest extends BaseResponseTest
         String token = tokenListPage.getToken(0);
 
         log("Token validation action: no StudyId");
-        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(PROJECT_NAME01, null, token, this::log);
+        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(PROJECT_NAME01, null, token);
         cmd.execute(400);
         assertFalse("Enrollment token validation succeeded without the studyId", cmd.getSuccess());
         assertEquals("Unexpected error message", EnrollmentTokenValidationCommand.BLANK_STUDYID, cmd.getExceptionMessage());
@@ -141,7 +141,7 @@ public class TokenValidationTest extends BaseResponseTest
         String token = tokenListPage.getToken(0);
 
         log("Token validation action: Invalid Token");
-        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(PROJECT_NAME01, STUDY_NAME01, token + "thisIsAnInvalidToken", this::log);
+        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(PROJECT_NAME01, STUDY_NAME01, token + "thisIsAnInvalidToken");
         cmd.execute(400);
         assertFalse("Enrollment token validation succeeded when it shouldn't have", cmd.getSuccess());
         assertEquals("Unexpected error message", String.format(EnrollmentTokenValidationCommand.INVALID_TOKEN_FORMAT, token + "thisIsAnInvalidToken".toUpperCase()), cmd.getExceptionMessage());
@@ -151,7 +151,7 @@ public class TokenValidationTest extends BaseResponseTest
     public void testBlankTokenWBatch()
     {
         log("Token validation action: Invalid Blank Token");
-        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(PROJECT_NAME01, STUDY_NAME01, null, this::log);
+        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(PROJECT_NAME01, STUDY_NAME01, null);
         cmd.execute(400);
         assertFalse("Enrollment token validation succeeded when it shouldn't have", cmd.getSuccess());
         assertEquals("Unexpected error message", EnrollmentTokenValidationCommand.TOKEN_REQUIRED, cmd.getExceptionMessage());
@@ -162,7 +162,7 @@ public class TokenValidationTest extends BaseResponseTest
     {
         //Note: This uses the secondary project because once a batch is created blank tokens are no longer accepted
         log("Token validation action: successful blank token request");
-        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(PROJECT_NAME02, STUDY_NAME02, null, this::log);
+        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(PROJECT_NAME02, STUDY_NAME02, null);
         cmd.execute(200);
         assertTrue("Blank Enrollment token validation failed when it shouldn't have", cmd.getSuccess());
     }
@@ -172,7 +172,7 @@ public class TokenValidationTest extends BaseResponseTest
     public void testResolveEnrollmentToken()
     {
         // Always resolve from the /Home project... folder shouldn't matter
-        ResolveEnrollmentTokenCommand resolveCmd = new ResolveEnrollmentTokenCommand("home", null, this::log);
+        ResolveEnrollmentTokenCommand resolveCmd = new ResolveEnrollmentTokenCommand("home", null);
 
         log("Attempt resolving without specifying enrollment token");
         testInvalid(resolveCmd, null, EnrollmentTokenValidationCommand.TOKEN_REQUIRED);
@@ -206,7 +206,7 @@ public class TokenValidationTest extends BaseResponseTest
         assertEquals(STUDY_NAME01, resolveCmd.getStudyId());
 
         log("Enroll and resolve again");
-        EnrollParticipantCommand enrollCmd = new EnrollParticipantCommand(PROJECT_NAME01, STUDY_NAME01, goodToken1, "true", this::log);
+        EnrollParticipantCommand enrollCmd = new EnrollParticipantCommand(PROJECT_NAME01, STUDY_NAME01, goodToken1, "true");
         enrollCmd.execute(200);
         resolveCmd.execute(200);
         assertTrue(resolveCmd.getSuccess());

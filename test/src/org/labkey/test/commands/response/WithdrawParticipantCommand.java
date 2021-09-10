@@ -22,7 +22,6 @@ import org.labkey.test.WebTestHelper;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 /**
  * Created by RyanS on 1/23/2017.
@@ -36,11 +35,10 @@ public class WithdrawParticipantCommand extends ResponseCommand
     private String _participantId;
     private Boolean _delete;
 
-    public WithdrawParticipantCommand(String participantId, Boolean delete, Consumer<String> logger)
+    public WithdrawParticipantCommand(String participantId, Boolean delete)
     {
         _participantId = participantId;
         _delete = delete;
-        setLogger(logger);
     }
 
     public void setParticipantId(String participantId)

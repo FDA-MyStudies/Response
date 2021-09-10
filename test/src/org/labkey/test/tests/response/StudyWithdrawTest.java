@@ -156,27 +156,27 @@ public class StudyWithdrawTest extends BaseResponseTest
 
         //foreach, validate status update, data deletion, appToken null
         //invalid token
-        WithdrawParticipantCommand command = new WithdrawParticipantCommand("BadToken",false, this::log);
+        WithdrawParticipantCommand command = new WithdrawParticipantCommand("BadToken",false);
         HttpResponse httpResponse = command.execute(400);
         SelectRowsResponse selectResponse = getMobileAppData("Participant");
         //valid token, no delete
         log("withdraw participant " + HRD_KEY + " delete responses");
-        command = new WithdrawParticipantCommand(HAS_RESPONSES_DELETE, true, this::log);
+        command = new WithdrawParticipantCommand(HAS_RESPONSES_DELETE, true);
         command.execute(200);
         //valid token, delete
         log("withdraw participant " + HRND_KEY + " do not delete responses");
-        command = new WithdrawParticipantCommand(HAS_RESPONSES_NO_DELETE, false, this::log);
+        command = new WithdrawParticipantCommand(HAS_RESPONSES_NO_DELETE, false);
         command.execute(200);
         //no data
         log("withdraw participant " + NRD_KEY + " delete responses");
-        command = new WithdrawParticipantCommand(NO_RESPONSES_DELETE, true, this::log);
+        command = new WithdrawParticipantCommand(NO_RESPONSES_DELETE, true);
         command.execute(200);
         //valid token, already withdrawn
         log("withdraw participant " + WT_KEY + " do not delete responses");
-        command = new WithdrawParticipantCommand(WITHDRAWS_TWICE, false, this::log);
+        command = new WithdrawParticipantCommand(WITHDRAWS_TWICE, false);
         command.execute(200);
         log("attempt to withdraw participant " + WT_KEY + " delete responses");
-        command = new WithdrawParticipantCommand(WITHDRAWS_TWICE, true, this::log);
+        command = new WithdrawParticipantCommand(WITHDRAWS_TWICE, true);
         command.execute(400);
 
         //all users except STAYS_IN should no longer be enrolled

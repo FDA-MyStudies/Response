@@ -36,8 +36,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 
@@ -131,7 +131,7 @@ public class SharedStudyIdTest extends BaseResponseTest
         assertEquals("Study name not saved for second project", SHORT_NAME.toUpperCase(), myStudiesResponseServerTab.getInputId());
 
         log("Testing enrollment, which should fail without any tokens.");
-        EnrollParticipantCommand enrollCmd = new EnrollParticipantCommand("home", SHORT_NAME, null, "NA", this::log);
+        EnrollParticipantCommand enrollCmd = new EnrollParticipantCommand("home", SHORT_NAME, null, "NA");
         enrollCmd.execute(400);
         assertFalse("Enrollment should fail when two projects share a study id but have no enrollment tokens", enrollCmd.getSuccess());
     }
@@ -145,13 +145,13 @@ public class SharedStudyIdTest extends BaseResponseTest
         TokenListPage tokenListPage = TokenListPage.beginAt(this, CLIENT_1_TOKEN_STUDY);
         String token = tokenListPage.getToken(0);
 
-        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand("home", STUDY_ID, token, this::log);
+        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand("home", STUDY_ID, token);
         cmd.execute(200);
         assertTrue("Enrollment token validation for " + CLIENT_1_TOKEN_STUDY + " failed when it shouldn't have", cmd.getSuccess());
 
         tokenListPage = TokenListPage.beginAt(this, CLIENT_2_TOKEN_STUDY);
         token = tokenListPage.getToken(0);
-        cmd = new EnrollmentTokenValidationCommand("home", STUDY_ID, token, this::log);
+        cmd = new EnrollmentTokenValidationCommand("home", STUDY_ID, token);
         cmd.execute(200);
         assertTrue("Enrollment token validation for " + CLIENT_2_TOKEN_STUDY + " failed when it shouldn't have", cmd.getSuccess());
     }
@@ -164,19 +164,19 @@ public class SharedStudyIdTest extends BaseResponseTest
         TokenListPage tokenListPage = TokenListPage.beginAt(this, CLIENT_1_TOKEN_STUDY);
         String token = tokenListPage.getToken(0);
 
-        EnrollParticipantCommand enrollCmd = new EnrollParticipantCommand("home", STUDY_ID, token, "true", this::log);
+        EnrollParticipantCommand enrollCmd = new EnrollParticipantCommand("home", STUDY_ID, token, "true");
         enrollCmd.execute(200);
         assertTrue("Enrollment with token '" + token + "' for " + CLIENT_1_TOKEN_STUDY + " failed when it shouldn't have", enrollCmd.getSuccess());
-        EnrollmentTokenValidationCommand validateCmd = new EnrollmentTokenValidationCommand("home", STUDY_ID, token, this::log);
+        EnrollmentTokenValidationCommand validateCmd = new EnrollmentTokenValidationCommand("home", STUDY_ID, token);
         validateCmd.execute(400);
         assertFalse("Enrollment token validation for " + CLIENT_1_TOKEN_STUDY + " with token '" + token + "' should fail after enrollment succeeds", validateCmd.getSuccess());
 
         tokenListPage = TokenListPage.beginAt(this, CLIENT_2_TOKEN_STUDY);
         token = tokenListPage.getToken(0);
-        enrollCmd = new EnrollParticipantCommand("home", STUDY_ID, token, "false", this::log);
+        enrollCmd = new EnrollParticipantCommand("home", STUDY_ID, token, "false");
         enrollCmd.execute(200);
         assertTrue("Enrollment with token '" + token + "' for  " + CLIENT_2_TOKEN_STUDY + " failed when it shouldn't have", enrollCmd.getSuccess());
-        validateCmd = new EnrollmentTokenValidationCommand("home", STUDY_ID, token, this::log);
+        validateCmd = new EnrollmentTokenValidationCommand("home", STUDY_ID, token);
         validateCmd.execute(400);
         assertFalse("Enrollment token validation for " + CLIENT_2_TOKEN_STUDY + " with token '" + token + "' should fail after enrollment succeeds", validateCmd.getSuccess());
     }
@@ -191,7 +191,7 @@ public class SharedStudyIdTest extends BaseResponseTest
         String token3 = tokenListPage.getToken(3);
 
         // test null, blank, and invalid values - all should fail
-        EnrollParticipantCommand enrollCmd = new EnrollParticipantCommand("home", STUDY_ID, token1, null, this::log);
+        EnrollParticipantCommand enrollCmd = new EnrollParticipantCommand("home", STUDY_ID, token1, null);
         testRequired(enrollCmd, null);
         testRequired(enrollCmd, "");
         testRequired(enrollCmd, "%20%20%20");

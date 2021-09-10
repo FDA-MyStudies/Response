@@ -26,7 +26,6 @@ import org.labkey.test.data.response.ResolveEnrollmentTokenResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 
 public class ResolveEnrollmentTokenCommand extends ResponseCommand
@@ -49,12 +48,10 @@ public class ResolveEnrollmentTokenCommand extends ResponseCommand
         _projectName = projectName;
     }
 
-    public ResolveEnrollmentTokenCommand(String project, String batchToken, Consumer<String> logger)
+    public ResolveEnrollmentTokenCommand(String project, String batchToken)
     {
         _batchToken = batchToken;
         _projectName = project;
-
-        setLogger(logger);
     }
 
     public String getBatchToken()

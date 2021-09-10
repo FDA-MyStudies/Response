@@ -22,6 +22,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.data.response.Survey;
+import org.labkey.test.util.TestLogger;
 
 import java.util.function.Consumer;
 
@@ -65,15 +66,13 @@ public class SubmitResponseCommand extends ResponseCommand
     private boolean _logRequest = false;
     private String targetUrl = WebTestHelper.buildURL(CONTROLLER_NAME, ACTION_NAME);
 
-    public SubmitResponseCommand(Consumer<String> logger)
+    public SubmitResponseCommand()
     {
-        setLogger(logger);
         setBody("");
     }
 
-    public SubmitResponseCommand(Consumer<String> logger, String activityId, String version, String languageCode, String appToken, String surveyResponses)
+    public SubmitResponseCommand(String activityId, String version, String languageCode, String appToken, String surveyResponses)
     {
-        setLogger(logger);
         if (StringUtils.isNotBlank(activityId) || StringUtils.isNotBlank(version) || StringUtils.isNotBlank(languageCode))
         {
             String metadata = String.format(SURVEY_METADATA_FORMAT, StringUtils.defaultString(activityId, ""),
@@ -87,7 +86,7 @@ public class SubmitResponseCommand extends ResponseCommand
 
     public SubmitResponseCommand(Consumer<String> logger, Survey survey)
     {
-        this(logger, survey.getActivityId(), survey.getVersion(), null, survey.getAppToken(), survey.getResponseJson());
+        this(survey.getActivityId(), survey.getVersion(), null, survey.getAppToken(), survey.getResponseJson());
     }
 
     public boolean getLogRequest()
@@ -108,9 +107,9 @@ public class SubmitResponseCommand extends ResponseCommand
             post.setEntity(new StringEntity(getBody(), ContentType.APPLICATION_JSON));
 
         if (getLogRequest())
-            log("Request body:\n\n" + getBody() + "\n\n");
+            TestLogger.log("Request body:\n\n" + getBody() + "\n\n");
 
-        log("Posting response to LabKey");
+        TestLogger.log("Posting response to LabKey");
         return execute(post, expectedStatusCode);
     }
 

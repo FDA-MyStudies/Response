@@ -28,12 +28,10 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 
 public class EnrollmentTokenValidationCommand extends ResponseCommand
 {
-    protected static final String CONTROLLER_NAME = ResponseCommand.CONTROLLER_NAME;
     protected static final String ACTION_NAME = "validateenrollmenttoken";
     public static final String INVALID_STUDYID_FORMAT = "Study with StudyId '%1$s' does not exist";
     public static final String INVALID_TOKEN_FORMAT = "Invalid token: '%1$s'";
@@ -65,13 +63,11 @@ public class EnrollmentTokenValidationCommand extends ResponseCommand
         _projectName = projectName;
     }
 
-    public EnrollmentTokenValidationCommand(String project, String studyName, String batchToken, Consumer<String> logger)
+    public EnrollmentTokenValidationCommand(String project, String studyName, String batchToken)
     {
         _studyName = studyName;
         _batchToken = batchToken;
         _projectName = project;
-
-        setLogger(logger);
     }
 
     public String getStudyName()

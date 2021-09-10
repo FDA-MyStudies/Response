@@ -104,7 +104,7 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
     String getNewAppToken(String project, String studyShortName, String batchToken)
     {
         log("Requesting app token for project [" + project +"] and study [" + studyShortName + "]");
-        EnrollParticipantCommand cmd = new EnrollParticipantCommand(project, studyShortName, batchToken, "true", this::log);
+        EnrollParticipantCommand cmd = new EnrollParticipantCommand(project, studyShortName, batchToken, "true");
 
         cmd.execute(200);
         String appToken = cmd.getAppToken();
