@@ -70,7 +70,7 @@ public class ResponseSubmissionTest extends BaseResponseTest
         log("Testing bad request body");
         SubmitResponseCommand cmd = new SubmitResponseCommand(this::log);
         cmd.execute(400);
-        assertEquals("Unexpected error message: " + cmd.getExceptionMessage(), SubmitResponseCommand.METADATA_MISSING_MESSAGE, cmd.getExceptionMessage());
+        assertEquals("Unexpected error message", SubmitResponseCommand.METADATA_MISSING_MESSAGE, cmd.getExceptionMessage());
         checkExpectedErrors(1);
     }
 
@@ -86,14 +86,14 @@ public class ResponseSubmissionTest extends BaseResponseTest
         log("Testing AppToken not present");
         SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", null, "", BASE_RESULTS);
         cmd.execute(400);
-        assertEquals("Unexpected error message: " + cmd.getExceptionMessage(), SubmitResponseCommand.PARTICIPANTID_MISSING_MESSAGE, cmd.getExceptionMessage());
+        assertEquals("Unexpected error message", SubmitResponseCommand.PARTICIPANTID_MISSING_MESSAGE, cmd.getExceptionMessage());
         expectedErrorCount++;
 
         //        3. Invalid AppToken Participant
         log("Testing invalid apptoken");
         cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", null, "INVALIDPARTICIPANTID", BASE_RESULTS);
         cmd.execute(400);
-        assertEquals("Unexpected error message: " + cmd.getExceptionMessage(), SubmitResponseCommand.NO_PARTICIPANT_MESSAGE, cmd.getExceptionMessage());
+        assertEquals("Unexpected error message", SubmitResponseCommand.NO_PARTICIPANT_MESSAGE, cmd.getExceptionMessage());
         expectedErrorCount++;
 
         checkExpectedErrors(expectedErrorCount);
@@ -115,21 +115,21 @@ public class ResponseSubmissionTest extends BaseResponseTest
         log("Testing Metadata element not present");
         SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, null, null, null, appToken, BASE_RESULTS);
         cmd.execute(400);
-        assertEquals("Unexpected error message: " + cmd.getExceptionMessage(), SubmitResponseCommand.METADATA_MISSING_MESSAGE, cmd.getExceptionMessage());
+        assertEquals("Unexpected error message", SubmitResponseCommand.METADATA_MISSING_MESSAGE, cmd.getExceptionMessage());
         expectedErrorCount++;
 
         //            B. Survey Version
         log("Testing SurveyVersion not present");
         cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, null, null, appToken, BASE_RESULTS);
         cmd.execute(400);
-        assertEquals("Unexpected error message: " + cmd.getExceptionMessage(), SubmitResponseCommand.SURVEYVERSION_MISSING_MESSAGE, cmd.getExceptionMessage());
+        assertEquals("Unexpected error message", SubmitResponseCommand.SURVEYVERSION_MISSING_MESSAGE, cmd.getExceptionMessage());
         expectedErrorCount++;
 
         //            C. Survey ActivityId
         log("Testing ActivityId not present");
         cmd = new SubmitResponseCommand(this::log, null, "1", null, appToken, BASE_RESULTS);
         cmd.execute(400);
-        assertEquals("Unexpected error message: " + cmd.getExceptionMessage(), SubmitResponseCommand.ACTIVITYID_MISSING_MESSAGE, cmd.getExceptionMessage());
+        assertEquals("Unexpected error message", SubmitResponseCommand.ACTIVITYID_MISSING_MESSAGE, cmd.getExceptionMessage());
         expectedErrorCount++;
 
         checkExpectedErrors(expectedErrorCount);
@@ -147,7 +147,7 @@ public class ResponseSubmissionTest extends BaseResponseTest
         SubmitResponseCommand cmd = new SubmitResponseCommand(this::log);
         cmd.setBody(String.format(SubmitResponseCommand.MISSING_RESPONSE_JSON_FORMAT, SURVEY_NAME, "1", appToken));
         cmd.execute(400);
-        assertEquals("Unexpected error message: " + cmd.getExceptionMessage(), SubmitResponseCommand.RESPONSE_MISSING_MESSAGE, cmd.getExceptionMessage());
+        assertEquals("Unexpected error message", SubmitResponseCommand.RESPONSE_MISSING_MESSAGE, cmd.getExceptionMessage());
         checkExpectedErrors(1);
     }
 
@@ -293,7 +293,7 @@ public class ResponseSubmissionTest extends BaseResponseTest
         log("Verifying Response Submission after study deletion");
         cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", null, appToken, BASE_RESULTS );
         cmd.execute(400);
-        assertEquals("Unexpected error message: " + cmd.getExceptionMessage(), SubmitResponseCommand.NO_PARTICIPANT_MESSAGE, cmd.getExceptionMessage());
+        assertEquals("Unexpected error message", SubmitResponseCommand.NO_PARTICIPANT_MESSAGE, cmd.getExceptionMessage());
         checkExpectedErrors(1);
     }
 
