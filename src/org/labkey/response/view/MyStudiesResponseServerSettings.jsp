@@ -160,9 +160,9 @@
 </labkey:panel>
 
 <script type="text/javascript">
-    let pulseSuccessMessage = () => {
+    let pulseSuccessMessage = (message) => {
         let successMessage = $('.lk-response-update-metadata-success');
-        successMessage.text("Configuration Saved");
+        successMessage.text(message);
         successMessage.fadeIn(3000).delay(3000).fadeOut("slow");
     }
 
@@ -184,7 +184,7 @@
                 $('#submitStudySetupButton').addClass("labkey-disabled-button");
                 $('#updateMetadataButton').removeClass("labkey-disabled-button");
 
-                pulseSuccessMessage();
+                pulseSuccessMessage("Configuration Saved");
             },
             failure: (response) => {
                 let errorMessage = "There was a problem.  Please check the logs or contact an administrator.";
@@ -222,7 +222,7 @@
             url: LABKEY.ActionURL.buildURL("response", "UpdateStudyMetadata"),
             method: 'POST',
             jsonData: { studyId: $('#studyId').val() },
-            success: (r) => { pulseSuccessMessage(); },
+            success: (r) => { pulseSuccessMessage("Metadata Updated"); },
             failure: (r) => {
                 LABKEY.Utils.alert("Error", "There was a problem updating the study metadata.  Please check the logs or contact an administrator.");
             }
