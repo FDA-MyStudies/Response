@@ -27,7 +27,6 @@ import java.util.Map;
 public class EnrollParticipantCommand extends ResponseCommand
 {
     private static final String APP_TOKEN_JSON_FIELD = "appToken";
-    protected static final String CONTROLLER_NAME = ResponseCommand.CONTROLLER_NAME;
     protected static final String ACTION_NAME = "enroll";
 
     private String _batchToken;
@@ -35,6 +34,7 @@ public class EnrollParticipantCommand extends ResponseCommand
     private String _appToken;
     private String _projectName;
     private String _allowDataSharing;
+    private String _language;
 
     public String getProjectName()
     {
@@ -81,6 +81,16 @@ public class EnrollParticipantCommand extends ResponseCommand
         _allowDataSharing = allowDataSharing;
     }
 
+    public String getLanguage()
+    {
+        return _language;
+    }
+
+    public void setLanguage(String language)
+    {
+        _language = language;
+    }
+
     @Override
     public HttpResponse execute(int expectedStatusCode)
     {
@@ -95,6 +105,10 @@ public class EnrollParticipantCommand extends ResponseCommand
         params.put("studyId", getStudyName());
         params.put("token", getBatchToken());
         params.put("allowDataSharing", getAllowDataSharing());
+        if (getLanguage() != null)
+        {
+            params.put("language", getLanguage());
+        }
         return WebTestHelper.buildURL(CONTROLLER_NAME, getProjectName(), ACTION_NAME, params);
     }
 

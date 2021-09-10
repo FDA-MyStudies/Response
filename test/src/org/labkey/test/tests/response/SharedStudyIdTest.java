@@ -84,8 +84,7 @@ public class SharedStudyIdTest extends BaseResponseTest
         myStudiesResponseServerTab.setInputId(studyId);
         myStudiesResponseServerTab.saveAndExpectSuccess();
 
-        SetupPage setupPage = new SetupPage(this);
-        SetupPage.beginAt(this, projectPath);
+        SetupPage setupPage = SetupPage.beginAt(this, projectPath);
         if (addTokens)
         {
             log("Creating 10 tokens for " + projectPath);

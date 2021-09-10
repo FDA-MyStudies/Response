@@ -40,6 +40,7 @@ public class EnrollmentTokenValidationCommand extends ResponseCommand
     private String _batchToken;
     private String _studyName;
     private String _projectName;
+    private String _language;
 
     private Collection<ParticipantProperty> _preEnrollmentParticipantProperties;
 
@@ -87,6 +88,16 @@ public class EnrollmentTokenValidationCommand extends ResponseCommand
         _batchToken = batchToken;
     }
 
+    public String getLanguage()
+    {
+        return _language;
+    }
+
+    public void setLanguage(String language)
+    {
+        _language = language;
+    }
+
     @Override
     public HttpResponse execute(int expectedStatusCode)
     {
@@ -100,6 +111,10 @@ public class EnrollmentTokenValidationCommand extends ResponseCommand
         Map<String, String> params = new HashMap<>();
         params.put("studyId", getStudyName());
         params.put("token", getBatchToken());
+        if (getLanguage() != null)
+        {
+            params.put("language", getLanguage());
+        }
         return WebTestHelper.buildURL(CONTROLLER_NAME, getProjectName(), ACTION_NAME, params);
     }
 

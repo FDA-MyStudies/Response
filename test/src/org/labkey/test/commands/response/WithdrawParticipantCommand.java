@@ -28,7 +28,6 @@ import java.util.Map;
 public class WithdrawParticipantCommand extends ResponseCommand
 {
     private static final String APP_TOKEN_JSON_FIELD = "appToken";
-    protected static final String CONTROLLER_NAME = ResponseCommand.CONTROLLER_NAME;
     protected static final String ACTION_NAME = "withdrawfromstudy";
 
     private String _participantId;
