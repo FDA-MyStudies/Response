@@ -281,7 +281,8 @@ public class ResponseController extends SpringActionController
                     form.getParticipantId(),
                     form.getData().toString(),
                     form.getMetadata().getActivityId(),
-                    form.getMetadata().getVersion()
+                    form.getMetadata().getVersion(),
+                    form.getMetadata().getLanguage()
             );
             resp = manager.insertResponse(resp);
 
@@ -1182,12 +1183,6 @@ public class ResponseController extends SpringActionController
             // Or, if you prefer, you could put the modules you want in Set.of().
             c.setActiveModules(Set.of());
             c.setFolderType(FolderTypeManager.get().getFolderType("Mobile App Study"), getUser());
-
-            // An example of setting a module property -- in this case, to an invalid value
-            Module module = ModuleLoader.getInstance().getModule(ResponseModule.NAME);
-            Map<String, ModuleProperty> props = module.getModuleProperties();
-            ModuleProperty mp = props.get(ResponseModule.METADATA_SERVICE_BASE_URL);
-            mp.saveValue(getUser(), getContainer(), "This is a test");
 
             return success();
         }

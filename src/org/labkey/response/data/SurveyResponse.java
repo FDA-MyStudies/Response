@@ -57,6 +57,7 @@ public class SurveyResponse
     private Integer _participantId;
     private String _surveyVersion;
     private String _activityId;
+    private String _language;
     private ResponseStatus _status;
     private Date _processed;
     private User _processedBy;
@@ -69,13 +70,14 @@ public class SurveyResponse
     {
     }
 
-    public SurveyResponse(String participantId, String data, String activityId, String version)
+    public SurveyResponse(String participantId, String data, String activityId, String version, String language)
     {
         setStatus(SurveyResponse.ResponseStatus.PENDING);
         setAppToken(participantId);
         setData(data);
         setSurveyVersion(version);
         setActivityId(activityId);
+        setLanguage(language);
     }
 
     public Container getContainer()
@@ -170,6 +172,16 @@ public class SurveyResponse
     public void setParticipantId(Integer participantId)
     {
         _participantId = participantId;
+    }
+
+    public String getLanguage()
+    {
+        return _language;
+    }
+
+    public void setLanguage(String language)
+    {
+        _language = language;
     }
 
     public String getData()

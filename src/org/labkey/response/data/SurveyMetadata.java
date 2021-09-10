@@ -27,7 +27,7 @@ public class SurveyMetadata
     private String _activityId;
     private String _version;
     private String _studyVersion;
-    private Language _language;
+    private Language _language = Language.en;  // Default to English if not provided
 
     public String getVersion()
     {
