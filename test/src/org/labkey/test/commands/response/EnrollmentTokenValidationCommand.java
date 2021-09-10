@@ -16,7 +16,6 @@
 package org.labkey.test.commands.response;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.json.simple.JSONObject;
@@ -100,8 +99,7 @@ public class EnrollmentTokenValidationCommand extends ResponseCommand
     {
         Map<String, String> params = new HashMap<>();
         params.put("studyId", getStudyName());
-        if (StringUtils.isNotBlank(getBatchToken()))
-            params.put("token", getBatchToken());
+        params.put("token", getBatchToken());
         return WebTestHelper.buildURL(CONTROLLER_NAME, getProjectName(), ACTION_NAME, params);
     }
 

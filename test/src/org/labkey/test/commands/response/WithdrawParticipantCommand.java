@@ -15,7 +15,6 @@
  */
 package org.labkey.test.commands.response;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.labkey.test.WebTestHelper;
@@ -59,8 +58,7 @@ public class WithdrawParticipantCommand extends ResponseCommand
     {
         Map<String, String> params = new HashMap<>();
         params.put("delete", String.valueOf(getDelete()));
-        if (StringUtils.isNotBlank(getParticipantId()))
-            params.put("participantId", getParticipantId());
+        params.put("participantId", getParticipantId());
         return WebTestHelper.buildURL(CONTROLLER_NAME, ACTION_NAME, params);
     }
 
