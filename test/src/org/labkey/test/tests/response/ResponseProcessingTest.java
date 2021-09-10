@@ -18,6 +18,7 @@ package org.labkey.test.tests.response;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.test.Locator;
@@ -62,8 +63,15 @@ public class ResponseProcessingTest extends BaseResponseTest
         return PROJECT_NAME01;
     }
 
-    @Override
-    void setupProjects()
+    @BeforeClass
+    public static void setupProject()
+    {
+        ResponseProcessingTest init = (ResponseProcessingTest) getCurrentTest();
+
+        init.doSetup();
+    }
+
+    private void doSetup()
     {
         //Setup a study
         _containerHelper.createProject(PROJECT_NAME01, FOLDER_TYPE);

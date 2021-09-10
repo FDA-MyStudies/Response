@@ -15,6 +15,7 @@
  */
 package org.labkey.test.tests.response;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.test.categories.Git;
@@ -48,8 +49,15 @@ public class ResponseSubmissionTest extends BaseResponseTest
         return null;
     }
 
-    @Override
-    void setupProjects()
+    @BeforeClass
+    public static void setupProject()
+    {
+        ResponseSubmissionTest init = (ResponseSubmissionTest) getCurrentTest();
+
+        init.doSetup();
+    }
+
+    private void doSetup()
     {
         doCleanup(false);
 

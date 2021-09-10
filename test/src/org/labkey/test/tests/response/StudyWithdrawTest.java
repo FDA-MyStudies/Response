@@ -18,6 +18,7 @@ package org.labkey.test.tests.response;
 import org.apache.http.HttpResponse;
 import org.jetbrains.annotations.Nullable;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.remoteapi.query.SelectRowsResponse;
@@ -68,8 +69,15 @@ public class StudyWithdrawTest extends BaseResponseTest
     private static String WT_KEY;
     private static String SI_KEY;
 
-    @Override
-    void setupProjects()
+    @BeforeClass
+    public static void setupProject()
+    {
+        StudyWithdrawTest init = (StudyWithdrawTest) getCurrentTest();
+
+        init.doSetup();
+    }
+
+    private void doSetup()
     {
         _containerHelper.deleteProject(getProjectName(),false);
         _containerHelper.createProject(getProjectName(), FOLDER_TYPE);

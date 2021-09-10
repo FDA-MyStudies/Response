@@ -16,6 +16,7 @@
 package org.labkey.test.tests.response;
 
 import org.jetbrains.annotations.Nullable;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.test.categories.Git;
@@ -57,8 +58,15 @@ public class DynamicSchemaTest extends BaseResponseTest
         return PROJECT_NAME;
     }
 
-    @Override
-    void setupProjects()
+    @BeforeClass
+    public static void setupProject()
+    {
+        DynamicSchemaTest init = (DynamicSchemaTest) getCurrentTest();
+
+        init.doSetup();
+    }
+
+    private void doSetup()
     {
         //Setup a study
         _containerHelper.deleteProject(PROJECT_NAME, false);

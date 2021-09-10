@@ -16,6 +16,7 @@
 package org.labkey.test.tests.response;
 
 import org.jetbrains.annotations.Nullable;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.test.categories.Git;
@@ -48,8 +49,15 @@ public class TokenValidationTest extends BaseResponseTest
     static final String PROJECT_NAME03 = "TokenValidationTest Project 3";
     static final String STUDY_NAME03 = "RESOLVEVALIDATION";
 
-    @Override
-    void setupProjects()
+    @BeforeClass
+    public static void setupProject()
+    {
+        TokenValidationTest init = (TokenValidationTest) getCurrentTest();
+
+        init.doSetup();
+    }
+
+    private void doSetup()
     {
         _containerHelper.deleteProject(PROJECT_NAME01, false);
         _containerHelper.createProject(PROJECT_NAME01, FOLDER_TYPE);
@@ -176,7 +184,7 @@ public class TokenValidationTest extends BaseResponseTest
 
         log("Attempt resolving without specifying enrollment token");
         testInvalid(resolveCmd, null, EnrollmentTokenValidationCommand.TOKEN_REQUIRED);
-        testInvalid(resolveCmd, "   ", EnrollmentTokenValidationCommand.TOKEN_REQUIRED);
+        testInvalid(resolveCmd, "", EnrollmentTokenValidationCommand.TOKEN_REQUIRED);
 
         log("Attempt resolving a couple invalid tokens");
         String badToken = "ABCDEFGH"; // Wrong format - too short

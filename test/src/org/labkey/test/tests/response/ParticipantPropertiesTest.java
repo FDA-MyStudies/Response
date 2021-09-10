@@ -5,6 +5,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.remoteapi.CommandException;
@@ -93,8 +94,15 @@ public class ParticipantPropertiesTest extends BaseResponseTest
     }
     protected static ClientAndServer mockServer = null;
 
-    @Override
-    void setupProjects()
+    @BeforeClass
+    public static void setupProject()
+    {
+        ParticipantPropertiesTest init = (ParticipantPropertiesTest) getCurrentTest();
+
+        init.doSetup();
+    }
+
+    private void doSetup()
     {
         initMockserver();
         setupProject(STUDY_NAME01, PROJECT_NAME01, null, true);

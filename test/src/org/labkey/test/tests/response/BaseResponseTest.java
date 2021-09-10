@@ -19,7 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.CommandResponse;
@@ -230,22 +229,6 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
         command.setParameters(params);
         log("Assigning token: " + token);
         return command.execute(connection, projectName);
-    }
-
-    @BeforeClass
-    public static void doSetup()
-    {
-        BaseResponseTest initTest = (BaseResponseTest) getCurrentTest();
-        initTest.setupProjects();
-    }
-
-    /**
-     * @deprecated This adds unnecessary dependency between test classes.
-     */
-    @Deprecated
-    void setupProjects()
-    {
-        //Do nothing as default, Tests can override if needed
     }
 
     /**

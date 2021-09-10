@@ -16,6 +16,7 @@
 package org.labkey.test.tests.response;
 
 import org.jetbrains.annotations.Nullable;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.remoteapi.CommandException;
@@ -95,8 +96,15 @@ public class SharedStudyIdTest extends BaseResponseTest
         }
     }
 
-    @Override
-    void setupProjects()
+    @BeforeClass
+    public static void setupProject()
+    {
+        SharedStudyIdTest init = (SharedStudyIdTest) getCurrentTest();
+
+        init.doSetup();
+    }
+
+    private void doSetup()
     {
         _containerHelper.deleteProject(CLIENT_1_PROJECT_NAME, false);
         _containerHelper.deleteProject(CLIENT_2_PROJECT_NAME, false);

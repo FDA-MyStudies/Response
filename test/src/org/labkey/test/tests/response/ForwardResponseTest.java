@@ -19,6 +19,7 @@ import com.google.common.net.MediaType;
 import org.apache.http.HttpStatus;
 import org.jetbrains.annotations.Nullable;
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.remoteapi.CommandException;
@@ -144,8 +145,15 @@ public class ForwardResponseTest extends BaseResponseTest
         addRequestMatcher(mockServer, requestPath, log, "POST", MOCKSERVER_CALL_MATCHER_CLASS);
     }
 
-    @Override
-    void setupProjects()
+    @BeforeClass
+    public static void setupProject()
+    {
+        ForwardResponseTest init = (ForwardResponseTest) getCurrentTest();
+
+        init.doSetup();
+    }
+
+    private void doSetup()
     {
         setupProject(STUDY_NAME01, PROJECT_NAME01, SURVEY_NAME, true);
         setupProject(STUDY_NAME02, PROJECT_NAME02, SURVEY_NAME, true);
