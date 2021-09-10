@@ -20,7 +20,10 @@ import org.junit.experimental.categories.Category;
 import org.labkey.test.categories.Git;
 import org.labkey.test.commands.response.SubmitResponseCommand;
 import org.labkey.test.components.response.MyStudiesResponseServerTab;
+import org.labkey.test.pages.response.ResponseQueryPage;
 import org.labkey.test.util.ListHelper;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -67,7 +70,7 @@ public class ResponseSubmissionTest extends BaseResponseTest
         log("Testing bad request body");
         SubmitResponseCommand cmd = new SubmitResponseCommand(this::log);
         cmd.execute(400);
-        assertEquals("Unexpected error message", SubmitResponseCommand.METADATA_MISSING_MESSAGE, cmd.getExceptionMessage());
+        assertEquals("Unexpected error message: " + cmd.getExceptionMessage(), SubmitResponseCommand.METADATA_MISSING_MESSAGE, cmd.getExceptionMessage());
         checkExpectedErrors(1);
     }
 
@@ -81,16 +84,16 @@ public class ResponseSubmissionTest extends BaseResponseTest
         int expectedErrorCount = 0;
         //        2. AppToken not present
         log("Testing AppToken not present");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", "", BASE_RESULTS);
+        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", null, "", BASE_RESULTS);
         cmd.execute(400);
-        assertEquals("Unexpected error message", SubmitResponseCommand.PARTICIPANTID_MISSING_MESSAGE, cmd.getExceptionMessage());
+        assertEquals("Unexpected error message: " + cmd.getExceptionMessage(), SubmitResponseCommand.PARTICIPANTID_MISSING_MESSAGE, cmd.getExceptionMessage());
         expectedErrorCount++;
 
         //        3. Invalid AppToken Participant
         log("Testing invalid apptoken");
-        cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", "INVALIDPARTICIPANTID", BASE_RESULTS);
+        cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", null, "INVALIDPARTICIPANTID", BASE_RESULTS);
         cmd.execute(400);
-        assertEquals("Unexpected error message", SubmitResponseCommand.NO_PARTICIPANT_MESSAGE, cmd.getExceptionMessage());
+        assertEquals("Unexpected error message: " + cmd.getExceptionMessage(), SubmitResponseCommand.NO_PARTICIPANT_MESSAGE, cmd.getExceptionMessage());
         expectedErrorCount++;
 
         checkExpectedErrors(expectedErrorCount);
@@ -110,23 +113,23 @@ public class ResponseSubmissionTest extends BaseResponseTest
         //        4. Invalid Metadata
         //            A. Metadata element missing
         log("Testing Metadata element not present");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, null, null, appToken, BASE_RESULTS);
+        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, null, null, null, appToken, BASE_RESULTS);
         cmd.execute(400);
-        assertEquals("Unexpected error message", SubmitResponseCommand.METADATA_MISSING_MESSAGE, cmd.getExceptionMessage());
+        assertEquals("Unexpected error message: " + cmd.getExceptionMessage(), SubmitResponseCommand.METADATA_MISSING_MESSAGE, cmd.getExceptionMessage());
         expectedErrorCount++;
 
         //            B. Survey Version
         log("Testing SurveyVersion not present");
-        cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, null, appToken, BASE_RESULTS);
+        cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, null, null, appToken, BASE_RESULTS);
         cmd.execute(400);
-        assertEquals("Unexpected error message", SubmitResponseCommand.SURVEYVERSION_MISSING_MESSAGE, cmd.getExceptionMessage());
+        assertEquals("Unexpected error message: " + cmd.getExceptionMessage(), SubmitResponseCommand.SURVEYVERSION_MISSING_MESSAGE, cmd.getExceptionMessage());
         expectedErrorCount++;
 
         //            C. Survey ActivityId
         log("Testing ActivityId not present");
-        cmd = new SubmitResponseCommand(this::log, null, "1", appToken, BASE_RESULTS);
+        cmd = new SubmitResponseCommand(this::log, null, "1", null, appToken, BASE_RESULTS);
         cmd.execute(400);
-        assertEquals("Unexpected error message", SubmitResponseCommand.ACTIVITYID_MISSING_MESSAGE, cmd.getExceptionMessage());
+        assertEquals("Unexpected error message: " + cmd.getExceptionMessage(), SubmitResponseCommand.ACTIVITYID_MISSING_MESSAGE, cmd.getExceptionMessage());
         expectedErrorCount++;
 
         checkExpectedErrors(expectedErrorCount);
@@ -144,7 +147,7 @@ public class ResponseSubmissionTest extends BaseResponseTest
         SubmitResponseCommand cmd = new SubmitResponseCommand(this::log);
         cmd.setBody(String.format(SubmitResponseCommand.MISSING_RESPONSE_JSON_FORMAT, SURVEY_NAME, "1", appToken));
         cmd.execute(400);
-        assertEquals("Unexpected error message", SubmitResponseCommand.RESPONSE_MISSING_MESSAGE, cmd.getExceptionMessage());
+        assertEquals("Unexpected error message: " + cmd.getExceptionMessage(), SubmitResponseCommand.RESPONSE_MISSING_MESSAGE, cmd.getExceptionMessage());
         checkExpectedErrors(1);
     }
 
@@ -165,9 +168,9 @@ public class ResponseSubmissionTest extends BaseResponseTest
         checkErrors();
         //        6. Study not collecting
         log("Testing Response Submission with Study collection turned off");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", appToken, BASE_RESULTS);
+        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", null, appToken, BASE_RESULTS);
         cmd.execute(400);
-        assertTrue("Unexpected error message", String.format(SubmitResponseCommand.COLLECTION_DISABLED_MESSAGE_FORMAT, STUDY_NAME01)
+        assertTrue("Unexpected error message: " + cmd.getExceptionMessage(), String.format(SubmitResponseCommand.COLLECTION_DISABLED_MESSAGE_FORMAT, STUDY_NAME01)
                 .equalsIgnoreCase(cmd.getExceptionMessage()));
         checkExpectedErrors(1);
 
@@ -180,10 +183,31 @@ public class ResponseSubmissionTest extends BaseResponseTest
         myStudiesResponseServerTab.saveAndExpectSuccess();
         goToProjectHome(PROJECT_NAME01);
 
-        log("Testing Response Submission with Study collection turned on");
-        cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", appToken, BASE_RESULTS);
+        log("Testing Response Submission with Study collection turned on. Also testing language capture.");
+        // Language: unspecified, which should result in English (US)
+        cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", null, appToken, BASE_RESULTS);
         cmd.execute(200);
         assertTrue("Submission failed, expected success", cmd.getSuccess());
+
+        // Language: English (US)
+        cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", "en", appToken, BASE_RESULTS);
+        cmd.execute(200);
+        assertTrue("Submission failed, expected success", cmd.getSuccess());
+
+        // Language: Spanish
+        cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", "es", appToken, BASE_RESULTS);
+        cmd.execute(200);
+        assertTrue("Submission failed, expected success", cmd.getSuccess());
+
+        // Language: French
+        cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", "fr", appToken, BASE_RESULTS);
+        cmd.execute(200);
+        assertTrue("Submission failed, expected success", cmd.getSuccess());
+
+        // Verify responses and language
+        ResponseQueryPage responses = new ResponseQueryPage(this);
+        responses.assertResponseErrorCounts(appToken, 4, 4);
+        assertEquals(List.of("English (US)", "English (US)", "Spanish", "French"), responses.getLanguages());
 
         goToProjectHome(PROJECT_NAME01);
         log("Disabling response collection for " + STUDY_NAME01);
@@ -194,9 +218,9 @@ public class ResponseSubmissionTest extends BaseResponseTest
 
         //        8. Test submitting to a Study previously collecting, but not currently accepting results
         log("Testing Response Submission with Study collection turned off after previously being on");
-        cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", appToken, BASE_RESULTS);
+        cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", null, appToken, BASE_RESULTS);
         cmd.execute(400);
-        assertTrue("Unexpected error message", String.format(SubmitResponseCommand.COLLECTION_DISABLED_MESSAGE_FORMAT, STUDY_NAME01)
+        assertTrue("Unexpected error message: " + cmd.getExceptionMessage(), String.format(SubmitResponseCommand.COLLECTION_DISABLED_MESSAGE_FORMAT, STUDY_NAME01)
                 .equalsIgnoreCase(cmd.getExceptionMessage()));
         checkExpectedErrors(1);
     }
@@ -211,7 +235,7 @@ public class ResponseSubmissionTest extends BaseResponseTest
         String appToken = getNewAppToken(PROJECT_NAME02, STUDY_NAME02, null);
 
         log("Verifying " + STUDY_NAME02 + " collecting responses.");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", appToken, BASE_RESULTS);
+        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", null, appToken, BASE_RESULTS);
         log("Testing submission to root container");
         cmd.execute(200);
         assertTrue("Submission failed, expected success", cmd.getSuccess());
@@ -219,7 +243,7 @@ public class ResponseSubmissionTest extends BaseResponseTest
 
         //Submit API call using apptoken associated to original study
         log("Submitting from " + PROJECT_NAME02 + " container");
-        cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", appToken, BASE_RESULTS);
+        cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", null, appToken, BASE_RESULTS);
         cmd.changeProjectTarget(PROJECT_NAME02);
         assertNotEquals("Attempting to test container agnostic submission and URL targets are the same", originalUrl, cmd.getTargetURL());
         log("Testing submission to matching container");
@@ -228,7 +252,7 @@ public class ResponseSubmissionTest extends BaseResponseTest
 
         //Submit API call using apptoken associated to original study
         log("Submitting from " + PROJECT_NAME01 + " container");
-        cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", appToken, BASE_RESULTS);
+        cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", null, appToken, BASE_RESULTS);
         cmd.changeProjectTarget(PROJECT_NAME01);
         assertNotEquals("Attempting to test container agnostic submission and URL targets are the same", originalUrl, cmd.getTargetURL());
         log("Testing submission to appToken/container mismatch");
@@ -256,7 +280,7 @@ public class ResponseSubmissionTest extends BaseResponseTest
         String appToken = getNewAppToken(PROJECT_NAME03, STUDY_NAME03, null);
 
         log("Verifying Response Submission prior to study deletion");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", appToken, BASE_RESULTS);
+        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", null, appToken, BASE_RESULTS);
         cmd.execute(200);
         assertTrue("Submission failed, expected success", cmd.getSuccess());
         log("successful submission to " + STUDY_NAME03);
@@ -267,9 +291,9 @@ public class ResponseSubmissionTest extends BaseResponseTest
         //Submit API call using appToken associated to deleted study
         checkErrors();
         log("Verifying Response Submission after study deletion");
-        cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", appToken, BASE_RESULTS );
+        cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", null, appToken, BASE_RESULTS );
         cmd.execute(400);
-        assertEquals("Unexpected error message", SubmitResponseCommand.NO_PARTICIPANT_MESSAGE, cmd.getExceptionMessage());
+        assertEquals("Unexpected error message: " + cmd.getExceptionMessage(), SubmitResponseCommand.NO_PARTICIPANT_MESSAGE, cmd.getExceptionMessage());
         checkExpectedErrors(1);
     }
 

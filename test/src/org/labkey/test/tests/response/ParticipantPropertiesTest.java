@@ -467,7 +467,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
 
         String appToken = getNewAppToken(project, study, token);
         String responseString = getResponseFromFile("ParticipantPropertiesMetadata", "Survey_Response.json");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_UPDATE_PATH, "1", appToken, responseString);
+        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_UPDATE_PATH, "1", null, appToken, responseString);
         cmd.execute(200); //Should load AddParticipantProperty.json
 
         TokenListPage tokenListPage = TokenListPage.beginAt(this, project);

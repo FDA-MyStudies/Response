@@ -57,7 +57,8 @@ public class SubmitResponseCommand extends ResponseCommand
 
     private final static String SURVEY_METADATA_FORMAT = "  \"metadata\": { \n" +
             "      \"activityId\": \"%1$s\", \n" +
-            "      \"version\": \"%2$s\" \n" +
+            "      \"version\": \"%2$s\", \n" +
+            "      \"language\": \"%3$s\" \n" +
             "   }, \n";
 
     private String body;
@@ -70,12 +71,13 @@ public class SubmitResponseCommand extends ResponseCommand
         setBody("");
     }
 
-    public SubmitResponseCommand(Consumer<String> logger, String activityId, String version, String appToken, String surveyResponses)
+    public SubmitResponseCommand(Consumer<String> logger, String activityId, String version, String languageCode, String appToken, String surveyResponses)
     {
         setLogger(logger);
-        if (StringUtils.isNotBlank(activityId) || StringUtils.isNotBlank(version))
+        if (StringUtils.isNotBlank(activityId) || StringUtils.isNotBlank(version) || StringUtils.isNotBlank(languageCode))
         {
-            String metadata = String.format(SURVEY_METADATA_FORMAT, StringUtils.defaultString(activityId, ""), StringUtils.defaultString(version,""));
+            String metadata = String.format(SURVEY_METADATA_FORMAT, StringUtils.defaultString(activityId, ""),
+                StringUtils.defaultString(version,""), StringUtils.defaultString(languageCode,""));
             setBody(String.format(BODY_JSON_FORMAT, metadata, appToken, surveyResponses));
         }
         else
@@ -85,7 +87,7 @@ public class SubmitResponseCommand extends ResponseCommand
 
     public SubmitResponseCommand(Consumer<String> logger, Survey survey)
     {
-        this(logger, survey.getActivityId(), survey.getVersion(), survey.getAppToken(), survey.getResponseJson());
+        this(logger, survey.getActivityId(), survey.getVersion(), null, survey.getAppToken(), survey.getResponseJson());
     }
 
     public boolean getLogRequest()

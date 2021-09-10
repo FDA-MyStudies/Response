@@ -362,7 +362,7 @@ public class ForwardResponseTest extends BaseResponseTest
     private String submitResponse(String projectName, String studyName, String batchtoken)
     {
         String appToken = getNewAppToken(projectName, studyName, batchtoken);
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", appToken, BASE_RESULTS);
+        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", null, appToken, BASE_RESULTS);
         cmd.execute(200);
         assertTrue("Submission failed, expected success", cmd.getSuccess());
 

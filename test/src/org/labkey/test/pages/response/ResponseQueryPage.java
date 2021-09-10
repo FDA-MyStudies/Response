@@ -41,6 +41,7 @@ public class ResponseQueryPage extends LabKeyPage
         AppToken("App Token"),
         SurveyVersion("Survey Version"),
         ActivityId("Activity Id"),
+        Language("Language"),
         Processed("Processed"),
         ProcessedBy("Processed By"),
         Error("Error Message"),
@@ -144,6 +145,12 @@ public class ResponseQueryPage extends LabKeyPage
     {
         DataRegionTable table = new DataRegionTable("query", getDriver());
         return table.getColumnDataAsText(ColumnNames.Status.toString());
+    }
+
+    public Collection<String> getLanguages()
+    {
+        DataRegionTable table = new DataRegionTable("query", getDriver());
+        return table.getColumnDataAsText(ColumnNames.Language.toString());
     }
 
     public class SuccessfulReprocessingMessage extends Message
