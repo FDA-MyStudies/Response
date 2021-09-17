@@ -5,6 +5,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.remoteapi.CommandException;
@@ -93,8 +94,15 @@ public class ParticipantPropertiesTest extends BaseResponseTest
     }
     protected static ClientAndServer mockServer = null;
 
-    @Override
-    void setupProjects()
+    @BeforeClass
+    public static void setupProject()
+    {
+        ParticipantPropertiesTest init = (ParticipantPropertiesTest) getCurrentTest();
+
+        init.doSetup();
+    }
+
+    private void doSetup()
     {
         initMockserver();
         setupProject(STUDY_NAME01, PROJECT_NAME01, null, true);
@@ -354,7 +362,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
         String token2 = tokenListPage.getToken(1);
 
         log("Token validation action: successful token request");
-        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(PROJECT_NAME02, STUDY_NAME02, token, this::log);
+        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(PROJECT_NAME02, STUDY_NAME02, token);
         cmd.execute(200);
         assertTrue("Enrollment token validation failed when it shouldn't have", cmd.getSuccess());
         Collection<ParticipantProperty> preenrollmentProperties = cmd.getPreEnrollmentParticipantProperties();
@@ -403,7 +411,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
         MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
         myStudiesResponseServerTab.clickUpdateMetadata();  //Should load OriginalParticipantProperty.json
 
-        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(project, study, token, this::log);
+        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(project, study, token);
         cmd.execute(200);
         assertTrue("Enrollment token validation failed when it shouldn't have", cmd.getSuccess());
         Collection<ParticipantProperty> preenrollmentProperties = cmd.getPreEnrollmentParticipantProperties();
@@ -428,7 +436,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
         MyStudiesResponseServerTab myStudiesResponseServerTab = MyStudiesResponseServerTab.beginAt(this);
         myStudiesResponseServerTab.clickUpdateMetadata();  //Should load OriginalParticipantProperty.json
 
-        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(project, study, token, this::log);
+        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(project, study, token);
         cmd.execute(200);
         assertTrue("Enrollment token validation failed when it shouldn't have", cmd.getSuccess());
         Collection<ParticipantProperty> preenrollmentProperties = cmd.getPreEnrollmentParticipantProperties();
@@ -467,7 +475,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
 
         String appToken = getNewAppToken(project, study, token);
         String responseString = getResponseFromFile("ParticipantPropertiesMetadata", "Survey_Response.json");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_UPDATE_PATH, "1", appToken, responseString);
+        SubmitResponseCommand cmd = new SubmitResponseCommand(SURVEY_UPDATE_PATH, "1", null, appToken, responseString);
         cmd.execute(200); //Should load AddParticipantProperty.json
 
         TokenListPage tokenListPage = TokenListPage.beginAt(this, project);
@@ -482,7 +490,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
 
     private void verifyAddColumn(String project, String study, String token)
     {
-        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(project, study, token, this::log);
+        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(project, study, token);
         cmd.execute(200);
         assertTrue("Enrollment token validation failed when it shouldn't have", cmd.getSuccess());
         Collection<ParticipantProperty> preenrollmentProperties = cmd.getPreEnrollmentParticipantProperties();
@@ -516,7 +524,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
     {
         //Verify base setup
         log("Token validation action: successful token request");
-        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(project, study, enrollmentToken, this::log);
+        EnrollmentTokenValidationCommand cmd = new EnrollmentTokenValidationCommand(project, study, enrollmentToken);
         cmd.execute(200);
         assertTrue("Enrollment token validation failed when it shouldn't have", cmd.getSuccess());
         Collection<ParticipantProperty> preenrollmentProperties = cmd.getPreEnrollmentParticipantProperties();
@@ -527,7 +535,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
 
     private void checkParticipantWithdrawal(String token, String appToken, boolean delete, String deleteMessage)
     {
-        WithdrawParticipantCommand withdrawalCmd = new WithdrawParticipantCommand(appToken, delete, this::log);
+        WithdrawParticipantCommand withdrawalCmd = new WithdrawParticipantCommand(appToken, delete);
         withdrawalCmd.execute(200);
 
         goToProjectHome(PROJECT_NAME02);

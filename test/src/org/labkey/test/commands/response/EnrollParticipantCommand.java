@@ -15,7 +15,6 @@
  */
 package org.labkey.test.commands.response;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.json.simple.JSONObject;
@@ -23,13 +22,11 @@ import org.labkey.test.WebTestHelper;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 
 public class EnrollParticipantCommand extends ResponseCommand
 {
     private static final String APP_TOKEN_JSON_FIELD = "appToken";
-    protected static final String CONTROLLER_NAME = ResponseCommand.CONTROLLER_NAME;
     protected static final String ACTION_NAME = "enroll";
 
     private String _batchToken;
@@ -37,6 +34,7 @@ public class EnrollParticipantCommand extends ResponseCommand
     private String _appToken;
     private String _projectName;
     private String _allowDataSharing;
+    private String _language;
 
     public String getProjectName()
     {
@@ -47,14 +45,12 @@ public class EnrollParticipantCommand extends ResponseCommand
         _projectName = projectName;
     }
 
-    public EnrollParticipantCommand(String project, String studyName, String batchToken, String allowDataSharing, Consumer<String> logger)
+    public EnrollParticipantCommand(String project, String studyName, String batchToken, String allowDataSharing)
     {
         _studyName = studyName;
         _batchToken = batchToken;
         _projectName = project;
         _allowDataSharing = allowDataSharing;
-
-        setLogger(logger);
     }
 
     public String getStudyName()
@@ -85,6 +81,16 @@ public class EnrollParticipantCommand extends ResponseCommand
         _allowDataSharing = allowDataSharing;
     }
 
+    public String getLanguage()
+    {
+        return _language;
+    }
+
+    public void setLanguage(String language)
+    {
+        _language = language;
+    }
+
     @Override
     public HttpResponse execute(int expectedStatusCode)
     {
@@ -97,9 +103,12 @@ public class EnrollParticipantCommand extends ResponseCommand
     {
         Map<String, String> params = new HashMap<>();
         params.put("studyId", getStudyName());
-        if (StringUtils.isNotBlank(getBatchToken()))
-            params.put("token", getBatchToken());
+        params.put("token", getBatchToken());
         params.put("allowDataSharing", getAllowDataSharing());
+        if (getLanguage() != null)
+        {
+            params.put("language", getLanguage());
+        }
         return WebTestHelper.buildURL(CONTROLLER_NAME, getProjectName(), ACTION_NAME, params);
     }
 

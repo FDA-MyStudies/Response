@@ -16,7 +16,6 @@
 package org.labkey.test.commands.response;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.json.simple.JSONObject;
@@ -28,12 +27,10 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 
 public class EnrollmentTokenValidationCommand extends ResponseCommand
 {
-    protected static final String CONTROLLER_NAME = ResponseCommand.CONTROLLER_NAME;
     protected static final String ACTION_NAME = "validateenrollmenttoken";
     public static final String INVALID_STUDYID_FORMAT = "Study with StudyId '%1$s' does not exist";
     public static final String INVALID_TOKEN_FORMAT = "Invalid token: '%1$s'";
@@ -43,6 +40,7 @@ public class EnrollmentTokenValidationCommand extends ResponseCommand
     private String _batchToken;
     private String _studyName;
     private String _projectName;
+    private String _language;
 
     private Collection<ParticipantProperty> _preEnrollmentParticipantProperties;
 
@@ -65,13 +63,11 @@ public class EnrollmentTokenValidationCommand extends ResponseCommand
         _projectName = projectName;
     }
 
-    public EnrollmentTokenValidationCommand(String project, String studyName, String batchToken, Consumer<String> logger)
+    public EnrollmentTokenValidationCommand(String project, String studyName, String batchToken)
     {
         _studyName = studyName;
         _batchToken = batchToken;
         _projectName = project;
-
-        setLogger(logger);
     }
 
     public String getStudyName()
@@ -92,6 +88,16 @@ public class EnrollmentTokenValidationCommand extends ResponseCommand
         _batchToken = batchToken;
     }
 
+    public String getLanguage()
+    {
+        return _language;
+    }
+
+    public void setLanguage(String language)
+    {
+        _language = language;
+    }
+
     @Override
     public HttpResponse execute(int expectedStatusCode)
     {
@@ -104,8 +110,11 @@ public class EnrollmentTokenValidationCommand extends ResponseCommand
     {
         Map<String, String> params = new HashMap<>();
         params.put("studyId", getStudyName());
-        if (StringUtils.isNotBlank(getBatchToken()))
-            params.put("token", getBatchToken());
+        params.put("token", getBatchToken());
+        if (getLanguage() != null)
+        {
+            params.put("language", getLanguage());
+        }
         return WebTestHelper.buildURL(CONTROLLER_NAME, getProjectName(), ACTION_NAME, params);
     }
 

@@ -16,7 +16,6 @@
 package org.labkey.test.commands.response;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.json.simple.JSONObject;
@@ -26,12 +25,10 @@ import org.labkey.test.data.response.ResolveEnrollmentTokenResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 
 public class ResolveEnrollmentTokenCommand extends ResponseCommand
 {
-    protected static final String CONTROLLER_NAME = ResponseCommand.CONTROLLER_NAME;
     protected static final String ACTION_NAME = "resolveenrollmenttoken";
 
     private String _batchToken;
@@ -49,12 +46,10 @@ public class ResolveEnrollmentTokenCommand extends ResponseCommand
         _projectName = projectName;
     }
 
-    public ResolveEnrollmentTokenCommand(String project, String batchToken, Consumer<String> logger)
+    public ResolveEnrollmentTokenCommand(String project, String batchToken)
     {
         _batchToken = batchToken;
         _projectName = project;
-
-        setLogger(logger);
     }
 
     public String getBatchToken()
@@ -87,8 +82,7 @@ public class ResolveEnrollmentTokenCommand extends ResponseCommand
     public String getTargetURL()
     {
         Map<String, String> params = new HashMap<>();
-        if (StringUtils.isNotBlank(getBatchToken()))
-            params.put("token", getBatchToken());
+        params.put("token", getBatchToken());
         return WebTestHelper.buildURL(CONTROLLER_NAME, getProjectName(), ACTION_NAME, params);
     }
 

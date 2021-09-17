@@ -27,6 +27,7 @@ public class SurveyMetadata
     private String _activityId;
     private String _version;
     private String _studyVersion;
+    private Language _language = Language.en;  // Default to English if not provided
 
     public String getVersion()
     {
@@ -60,9 +61,20 @@ public class SurveyMetadata
     {
         return _studyVersion;
     }
-
     public void setStudyVersion(String studyVersion)
     {
         _studyVersion = studyVersion;
+    }
+
+    // Note: inconsistent with setter: returns friendly name for storage
+    public String getLanguage()
+    {
+        return _language.getFriendlyName();
+    }
+
+    // Note: inconsistent with getter: expects a two-character code
+    public void setLanguage(String code)
+    {
+        _language = Language.getLanguage(code);
     }
 }

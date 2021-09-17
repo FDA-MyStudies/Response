@@ -41,12 +41,13 @@ public class ResponseQueryPage extends LabKeyPage
         AppToken("App Token"),
         SurveyVersion("Survey Version"),
         ActivityId("Activity Id"),
+        Language("Language"),
         Processed("Processed"),
         ProcessedBy("Processed By"),
         Error("Error Message"),
         Status("Status");
 
-        private String _columnLabel;
+        private final String _columnLabel;
 
         public String getLabel()
         {
@@ -106,7 +107,7 @@ public class ResponseQueryPage extends LabKeyPage
         filterByAppToken(appToken);
 
         DataRegionTable table = new DataRegionTable("query", getDriver());
-        List statusValues = table.getColumnDataAsText(ColumnNames.Status.toString());
+        List<String> statusValues = table.getColumnDataAsText(ColumnNames.Status.toString());
         assertEquals("Unexpected number of requests", submissionCount, statusValues.size());
         assertEquals("Unexpected number of successfully processed requests", successfulProcessingExpected, Collections.frequency(statusValues, "PROCESSED"));
         assertEquals("Unexpected number of unsuccessful requests", submissionCount - successfulProcessingExpected, Collections.frequency(statusValues, "ERROR"));
@@ -122,7 +123,7 @@ public class ResponseQueryPage extends LabKeyPage
         filterByAppToken(appToken);
 
         DataRegionTable table = new DataRegionTable("query", getDriver());
-        List statusValues = table.getColumnDataAsText(ColumnNames.Status.toString());
+        List<String> statusValues = table.getColumnDataAsText(ColumnNames.Status.toString());
         assertEquals("Unexpected number of requests", submissionCount, statusValues.size());
         assertEquals("Unexpected number of unsuccessful requests", submissionCount, Collections.frequency(statusValues, "ERROR"));
         table.clearAllFilters(ColumnNames.AppToken.toString());
@@ -144,6 +145,12 @@ public class ResponseQueryPage extends LabKeyPage
     {
         DataRegionTable table = new DataRegionTable("query", getDriver());
         return table.getColumnDataAsText(ColumnNames.Status.toString());
+    }
+
+    public Collection<String> getLanguages()
+    {
+        DataRegionTable table = new DataRegionTable("query", getDriver());
+        return table.getColumnDataAsText(ColumnNames.Language.toString());
     }
 
     public class SuccessfulReprocessingMessage extends Message
