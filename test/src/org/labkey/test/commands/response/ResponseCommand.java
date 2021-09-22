@@ -24,9 +24,9 @@ import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.labkey.test.util.TestLogger;
 
 import java.io.IOException;
-import java.util.function.Consumer;
 
 import static org.junit.Assert.assertEquals;
 
@@ -61,7 +61,6 @@ public abstract class ResponseCommand
         _exceptionMessage = exceptionMessage;
     }
 
-    private Consumer<String> logger;
     protected boolean isExecuted = false;
     protected JSONObject _jsonResponse;
 
@@ -97,34 +96,24 @@ public abstract class ResponseCommand
         setExceptionMessage((String) response.get(EXCEPTION_MESSAGE_TAG));
     }
 
-    public void log(String text)
-    {
-        logger.accept(text);
-    }
-
-    public void setLogger(Consumer<String> logger)
-    {
-        this.logger = logger;
-    }
-
     protected HttpResponse execute(HttpUriRequest request, int expectedStatusCode)
     {
         setExceptionMessage(null); // Clear out previous exception message, in case we're reusing this Command
         HttpResponse response = null;
-        log("Submitting request using url: " + request.getURI());
+        TestLogger.log("Submitting request using url: " + request.getURI());
 
         try (CloseableHttpClient client = HttpClients.createDefault())
         {
             response = client.execute(request);
             isExecuted = true;
-            log("Post completed. Response body: " + getBody());
+            TestLogger.log("Post completed. Response body: " + getBody());
 
             int statusCode = response.getStatusLine().getStatusCode();
             String body = EntityUtils.toString(response.getEntity());
             parseResponse(body);
 
             if (expectedStatusCode < 400 && StringUtils.isNotBlank(getExceptionMessage()))
-                log("Unexpected error message: " + getExceptionMessage());
+                TestLogger.log("Unexpected error message: " + getExceptionMessage());
 
             assertEquals("Unexpected response status", expectedStatusCode, statusCode);
             return response;

@@ -654,7 +654,7 @@ public class ReadResponseTest extends BaseResponseTest
     @Test
     public void validateExecuteSqlBasic() throws CommandException, IOException
     {
-        Long participantId = ReadResponseTest.participantWithMultipleRow.getId();
+        long participantId = ReadResponseTest.participantWithMultipleRow.getId();
         String participantAppToken = ReadResponseTest.participantWithMultipleRow.getAppToken();
         String sql = "select * from TestListDiffDataTypes";
 
@@ -865,7 +865,7 @@ public class ReadResponseTest extends BaseResponseTest
     }
 
     @Test
-    public void validateExecuteSqlErrorConditions() throws IOException
+    public void validateExecuteSqlErrorConditions()
     {
         final String ERROR_NO_PARTICIPANTID = "ParticipantId not included in request";
         final String ERROR_TABLE_NOT_FOUND = "Query or table not found: core.Users";

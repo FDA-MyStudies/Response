@@ -17,7 +17,7 @@
 package org.labkey.test.tests.response;
 
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.test.categories.Git;
@@ -30,17 +30,18 @@ import java.util.Map;
 @Category({Git.class})
 public class EnrollmentTokensTest extends BaseResponseTest
 {
-    @Override
-    void setupProjects()
+    @BeforeClass
+    public static void setupProject()
+    {
+        EnrollmentTokensTest init = (EnrollmentTokensTest) getCurrentTest();
+
+        init.doSetup();
+    }
+
+    private void doSetup()
     {
         _containerHelper.createProject(getProjectName(), null);
         _containerHelper.enableModule("Response");
-    }
-
-    @Before
-    public void preTest()
-    {
-        goToProjectHome();
     }
 
     @Test

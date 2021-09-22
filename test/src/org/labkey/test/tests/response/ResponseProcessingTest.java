@@ -18,6 +18,7 @@ package org.labkey.test.tests.response;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.test.Locator;
@@ -62,8 +63,15 @@ public class ResponseProcessingTest extends BaseResponseTest
         return PROJECT_NAME01;
     }
 
-    @Override
-    void setupProjects()
+    @BeforeClass
+    public static void setupProject()
+    {
+        ResponseProcessingTest init = (ResponseProcessingTest) getCurrentTest();
+
+        init.doSetup();
+    }
+
+    private void doSetup()
     {
         //Setup a study
         _containerHelper.createProject(PROJECT_NAME01, FOLDER_TYPE);
@@ -576,7 +584,7 @@ public class ResponseProcessingTest extends BaseResponseTest
         click(Locator.linkWithText(SURVEY_NAME));
         assertBlankValue(skipToken, fieldHeader, "Invalid skipped value");
         assertBlankValue(nullToken, fieldHeader, "Invalid null value");
-        assertSubmittedValue(valToken, fieldHeader, "Submitted value not present", String.valueOf(value));
+        assertSubmittedValue(valToken, fieldHeader, "Submitted value not present", value);
         assertBlankValue(emptyToken, fieldHeader, "Invalid empty string value");
         assertBlankValue(wsToken, fieldHeader, "Invalid whitespace string value");
         assertSubmittedValue(dateToken, fieldHeader, "Date value not treated as string", String.valueOf(dateVal));
@@ -708,7 +716,7 @@ public class ResponseProcessingTest extends BaseResponseTest
         checkExpectedErrors(1);
     }
 
-    private void assertExpectedValueCount(List list, String value, int rowCount)
+    private void assertExpectedValueCount(List<String> list, String value, int rowCount)
     {
         assertEquals("Value [\"" + value +"\"] found an unexpected number of times", rowCount, Collections.frequency(list, value));
     }
@@ -833,8 +841,7 @@ public class ResponseProcessingTest extends BaseResponseTest
         table.getCustomizeView().addFilter("ParticipantId/AppToken", "Equals", appToken);
         table.getCustomizeView().applyCustomView(WAIT_FOR_PAGE);
 
-
-        List values = table.getColumnDataAsText("MedName");
+        List<String> values = table.getColumnDataAsText("MedName");
         assertEquals("Unexpected number of meds", 5, Collections.frequency(values, "Advil"));
         assertEquals("Unexpected number of meds", 1, Collections.frequency(values, "Tylenol"));
         assertEquals("Unexpected number of meds", 1, Collections.frequency(values, "Aspirin"));
@@ -1038,7 +1045,7 @@ public class ResponseProcessingTest extends BaseResponseTest
 
     private String submitQuestion(QuestionResponse qr, String appToken, int expectedStatusCode)
     {
-        return super.submitQuestion(qr, appToken, SURVEY_NAME, SURVEY_VERSION, 200);
+        return super.submitQuestion(qr, appToken, SURVEY_NAME, SURVEY_VERSION, expectedStatusCode);
     }
 }
 
