@@ -49,9 +49,6 @@ import java.util.function.Predicate;
 public class ResponseModule extends DefaultModule
 {
     public static final String NAME = "Response";
-    public static final String SURVEY_METADATA_DIRECTORY = "SurveyMetadataDirectory";
-    public static final String METADATA_SERVICE_BASE_URL = "MetadataServiceBaseUrl";
-    public static final String METADATA_SERVICE_ACCESS_TOKEN = "MetadataServiceAccessToken";
 
     /**
      * Predicate that can be used to check if a container has this module active
@@ -67,7 +64,7 @@ public class ResponseModule extends DefaultModule
     @Override
     public @Nullable Double getSchemaVersion()
     {
-        return 21.001;
+        return 21.002;
     }
 
     @Override

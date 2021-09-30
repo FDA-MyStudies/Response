@@ -16,6 +16,7 @@
 package org.labkey.test.tests.response;
 
 import org.jetbrains.annotations.Nullable;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.test.categories.Git;
@@ -57,8 +58,15 @@ public class DynamicSchemaTest extends BaseResponseTest
         return PROJECT_NAME;
     }
 
-    @Override
-    void setupProjects()
+    @BeforeClass
+    public static void setupProject()
+    {
+        DynamicSchemaTest init = (DynamicSchemaTest) getCurrentTest();
+
+        init.doSetup();
+    }
+
+    private void doSetup()
     {
         //Setup a study
         _containerHelper.deleteProject(PROJECT_NAME, false);
@@ -80,7 +88,7 @@ public class DynamicSchemaTest extends BaseResponseTest
         log("Setting initial state, response txt 1");
         String appToken = getNewAppToken(PROJECT_NAME,STUDY_NAME,null);
         String responseString = getResponseFromFile("DYNAMICSCHEMASTUDY_NewSurvey_1--RESPONSE.json");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "1", appToken, responseString);
+        SubmitResponseCommand cmd = new SubmitResponseCommand(SURVEY_NAME, "1", null, appToken, responseString);
         cmd.execute(200);
 
         getMobileAppDataWithRetry("NewSurvey", "lists");
@@ -94,7 +102,7 @@ public class DynamicSchemaTest extends BaseResponseTest
         log("Submitting response with single question added. Response text 2");
         String appToken = getNewAppToken(PROJECT_NAME,STUDY_NAME,null);
         String responseString = getResponseFromFile("DYNAMICSCHEMASTUDY_NewSurvey_2--RESPONSE.json");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "2", appToken, responseString);
+        SubmitResponseCommand cmd = new SubmitResponseCommand(SURVEY_NAME, "2", null, appToken, responseString);
         cmd.execute(200);
         waitForResults(newSurveyMap, "NewSurvey");
         assertEquals("Unexpected new row count in NewSurvey after adding single response with single question added. Response text 2",1,getNewRowCount(newSurveyMap,getTableData("NewSurvey")));
@@ -117,7 +125,7 @@ public class DynamicSchemaTest extends BaseResponseTest
         log("Submitting response with single question removed. Response text 3");
         String appToken = getNewAppToken(PROJECT_NAME,STUDY_NAME,null);
         String responseString = getResponseFromFile("DYNAMICSCHEMASTUDY_NewSurvey_3--RESPONSE.json");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "3", appToken, responseString);
+        SubmitResponseCommand cmd = new SubmitResponseCommand(SURVEY_NAME, "3", null, appToken, responseString);
         cmd.execute(200);
         waitForResults(newSurveyMap, "NewSurvey");
         assertEquals("Unexpected new row count in NewSurvey after adding response with single question removed. Response text 3",1,getNewRowCount(newSurveyMap,getTableData("NewSurvey")));
@@ -139,7 +147,7 @@ public class DynamicSchemaTest extends BaseResponseTest
         log("Submitting response with a single question added to group. Response text 4");
         String appToken = getNewAppToken(PROJECT_NAME,STUDY_NAME,null);
         String responseString = getResponseFromFile("DYNAMICSCHEMASTUDY_NewSurvey_4--RESPONSE.json");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "4", appToken, responseString);
+        SubmitResponseCommand cmd = new SubmitResponseCommand(SURVEY_NAME, "4", null, appToken, responseString);
         cmd.execute(200);
         waitForResults(newSurveyMap, "NewSurvey");
         assertEquals("Unexpected new row count in NewSurvey after adding single response with a single question added to group. Response text 4",1,getNewRowCount(newSurveyMap,getTableData("NewSurvey")));
@@ -161,7 +169,7 @@ public class DynamicSchemaTest extends BaseResponseTest
         log("Submitting response with single question removed from group. Response text 5");
         String appToken = getNewAppToken(PROJECT_NAME,STUDY_NAME,null);
         String responseString = getResponseFromFile("DYNAMICSCHEMASTUDY_NewSurvey_5--RESPONSE.json");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "5", appToken, responseString);
+        SubmitResponseCommand cmd = new SubmitResponseCommand(SURVEY_NAME, "5", null, appToken, responseString);
         cmd.execute(200);
         waitForResults(newSurveyMap, "NewSurvey");
         assertEquals("Unexpected new row count in NewSurvey after adding single response with single question removed from group. Response text 5",1,getNewRowCount(newSurveyMap,getTableData("NewSurvey")));
@@ -183,7 +191,7 @@ public class DynamicSchemaTest extends BaseResponseTest
         log("Submitting response with single question added to sub subgroup. Response text 6");
         String appToken = getNewAppToken(PROJECT_NAME,STUDY_NAME,null);
         String responseString = getResponseFromFile("DYNAMICSCHEMASTUDY_NewSurvey_6--RESPONSE.json");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "6", appToken, responseString);
+        SubmitResponseCommand cmd = new SubmitResponseCommand(SURVEY_NAME, "6", null, appToken, responseString);
         cmd.execute(200);
         waitForResults(newSurveyMap, "NewSurvey");
         assertEquals("Unexpected new row count in NewSurvey after adding single response with single question added to sub subgroup. Response text 6",1,getNewRowCount(newSurveyMap,getTableData("NewSurvey")));
@@ -207,7 +215,7 @@ public class DynamicSchemaTest extends BaseResponseTest
         log("Submitting response with single question removed from sub. Response text 7");
         String appToken = getNewAppToken(PROJECT_NAME,STUDY_NAME,null);
         String responseString = getResponseFromFile("DYNAMICSCHEMASTUDY_NewSurvey_7--RESPONSE.json");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "7", appToken, responseString);
+        SubmitResponseCommand cmd = new SubmitResponseCommand(SURVEY_NAME, "7", null, appToken, responseString);
         cmd.execute(200);
         waitForResults(newSurveyMap, "NewSurvey");
         assertEquals("Unexpected new row count in NewSurvey after adding single response with single question removed from sub. Response text 7",1,getNewRowCount(newSurveyMap,getTableData("NewSurvey")));
@@ -229,7 +237,7 @@ public class DynamicSchemaTest extends BaseResponseTest
         log("Submitting response with single group added. Response text 8");
         String appToken = getNewAppToken(PROJECT_NAME,STUDY_NAME,null);
         String responseString = getResponseFromFile("DYNAMICSCHEMASTUDY_NewSurvey_8--RESPONSE.json");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "8", appToken, responseString);
+        SubmitResponseCommand cmd = new SubmitResponseCommand(SURVEY_NAME, "8", null, appToken, responseString);
         cmd.execute(200);
         waitForResults(newSurveyMap, "NewSurvey");
         assertEquals("Unexpected new row count in NewSurvey after adding single response with single group added. Response text 8", 1, getNewRowCount(newSurveyMap, getTableData("NewSurvey")));
@@ -254,7 +262,7 @@ public class DynamicSchemaTest extends BaseResponseTest
         log("Submitting response with group removed. Response text 9");
         String appToken = getNewAppToken(PROJECT_NAME,STUDY_NAME,null);
         String responseString = getResponseFromFile("DYNAMICSCHEMASTUDY_NewSurvey_9--RESPONSE.json");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "9", appToken, responseString);
+        SubmitResponseCommand cmd = new SubmitResponseCommand(SURVEY_NAME, "9", null, appToken, responseString);
         cmd.execute(200);
         waitForResults(newSurveyMap, "NewSurvey");
         assertEquals("Unexpected new row count in NewSurvey after adding single response with group removed. Response text 9",1,getNewRowCount(newSurveyMap,getTableData("NewSurvey")));
@@ -277,7 +285,7 @@ public class DynamicSchemaTest extends BaseResponseTest
         String appToken = getNewAppToken(PROJECT_NAME,STUDY_NAME,null);
         String responseString = getResponseFromFile("DYNAMICSCHEMASTUDY_NewSurvey_13--RESPONSE.json");
         log("getResponseFromFile(\"DYNAMICSCHEMASTUDY_NewSurvey_13--RESPONSE.json\"): " + responseString);
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "13", appToken, responseString);
+        SubmitResponseCommand cmd = new SubmitResponseCommand(SURVEY_NAME, "13", null, appToken, responseString);
         cmd.execute(200);
 
         waitForResults(newSurveyGroupedMap, "NewSurveyGroupedList");
@@ -324,7 +332,7 @@ public class DynamicSchemaTest extends BaseResponseTest
         String appToken = getNewAppToken(PROJECT_NAME,STUDY_NAME,null);
         String responseString = getResponseFromFile("DYNAMICSCHEMASTUDY_NewSurvey_10--RESPONSE.json");
         log("getResponseFromFile(\"DYNAMICSCHEMASTUDY_NewSurvey_10--RESPONSE.json\"): " + responseString);
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "10", appToken, responseString); //Schema name in the metadata is: "NewSurvey_Mismatch"
+        SubmitResponseCommand cmd = new SubmitResponseCommand(SURVEY_NAME, "10", null, appToken, responseString); //Schema name in the metadata is: "NewSurvey_Mismatch"
         cmd.execute(200);
         sleep(5000); // wait for response shredder to have time to do its work
 
@@ -395,7 +403,7 @@ public class DynamicSchemaTest extends BaseResponseTest
         log("Submitting response with malformed schema. Response text 11");
         String appToken = getNewAppToken(PROJECT_NAME,STUDY_NAME,null);
         String responseString = getResponseFromFile("DYNAMICSCHEMASTUDY_NewSurvey_11--RESPONSE.json");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, SURVEY_NAME, "11", appToken, responseString);
+        SubmitResponseCommand cmd = new SubmitResponseCommand(SURVEY_NAME, "11", null, appToken, responseString);
         cmd.execute(200);
         sleep(5000);
         assertEquals("Unexpected new row count in NewSurvey after adding single response with malformed schema. Response text 11",0,getNewRows(newSurveyMap,getTableData("NewSurvey")).size());
@@ -420,7 +428,7 @@ public class DynamicSchemaTest extends BaseResponseTest
         log("Submitting response with empty schema object. Response text 11");
         String appToken = getNewAppToken(PROJECT_NAME,STUDY_NAME,null);
         String responseString = getResponseFromFile("DYNAMICSCHEMASTUDY_empty_1.0--RESPONSE.json");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, "empty", "1.0", appToken, responseString);
+        SubmitResponseCommand cmd = new SubmitResponseCommand("empty", "1.0", null, appToken, responseString);
         cmd.execute(200);
         sleep(5000);
         ResponseQueryPage responses = new ResponseQueryPage(this);
@@ -440,7 +448,7 @@ public class DynamicSchemaTest extends BaseResponseTest
         log("Submitting response with fetalKickCounter active task (FKC-74)");
         String appToken = getNewAppToken(PROJECT_NAME,STUDY_NAME,null);
         String responseString = getResponseFromFile("DYNAMICSCHEMASTUDY_FKC-74_1.0--RESPONSE.json");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, "FKC-74", "1.0", appToken, responseString);
+        SubmitResponseCommand cmd = new SubmitResponseCommand("FKC-74", "1.0", null, appToken, responseString);
         cmd.execute(200);
         sleep(5000);
         List<Map<String, Object>> afterTableData = getTableData("FKC-74counter");
@@ -462,7 +470,7 @@ public class DynamicSchemaTest extends BaseResponseTest
         log("Submitting response with towerOfHanoi active task (TOH-75)");
         String appToken = getNewAppToken(PROJECT_NAME,STUDY_NAME,null);
         String responseString = getResponseFromFile("DYNAMICSCHEMASTUDY_TOH-75_1.0--RESPONSE.json");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, "TOH-75", "1.0", appToken, responseString);
+        SubmitResponseCommand cmd = new SubmitResponseCommand("TOH-75", "1.0", null, appToken, responseString);
         cmd.execute(200);
         waitForResults(beforeTableData, tableName);
         List<Map<String, Object>> afterTableData = getTableData(tableName);
@@ -484,7 +492,7 @@ public class DynamicSchemaTest extends BaseResponseTest
         log("Submitting response with spatialSpanMemory active task (SSM-76)");
         String appToken = getNewAppToken(PROJECT_NAME,STUDY_NAME,null);
         String responseString = getResponseFromFile("DYNAMICSCHEMASTUDY_SSM-76_1.0--RESPONSE.json");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, "SSM-76", "1.0", appToken, responseString);
+        SubmitResponseCommand cmd = new SubmitResponseCommand("SSM-76", "1.0", null, appToken, responseString);
         cmd.execute(200);
         waitForResults(beforeTableData, tableName);
         List<Map<String, Object>> afterTableData = getTableData(tableName);
@@ -528,7 +536,7 @@ public class DynamicSchemaTest extends BaseResponseTest
         log("Submitting response with OtherOption active task (OtherOption)");
         String appToken = getNewAppToken(PROJECT_NAME,STUDY_NAME,null);
         String responseString = getResponseFromFile("DYNAMICSCHEMASTUDY_OtherOption_1--RESPONSE.json");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, "OtherOption", "1", appToken, responseString);
+        SubmitResponseCommand cmd = new SubmitResponseCommand("OtherOption", "1", null, appToken, responseString);
         cmd.execute(200);
         waitForResults(baseTableData, baseTableName);
 
@@ -570,7 +578,7 @@ public class DynamicSchemaTest extends BaseResponseTest
         log("Submitting first response with OtherOption for update test");
         String appToken = getNewAppToken(PROJECT_NAME,STUDY_NAME,null);
         String responseString = getResponseFromFile("DYNAMICSCHEMASTUDY_OtherOptionUpdate_1--RESPONSE.json");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, "OtherOptionUpdate", "1", appToken, responseString);
+        SubmitResponseCommand cmd = new SubmitResponseCommand("OtherOptionUpdate", "1", null, appToken, responseString);
         cmd.execute(200);
         waitForResults(baseTableData, baseTableName);
 
@@ -591,7 +599,7 @@ public class DynamicSchemaTest extends BaseResponseTest
         log("Submitting OtherOption v2 update");
         responseString = getResponseFromFile("DYNAMICSCHEMASTUDY_OtherOptionUpdate_2--RESPONSE.json");
         appToken = getNewAppToken(PROJECT_NAME,STUDY_NAME,null);
-        cmd = new SubmitResponseCommand(this::log, "OtherOptionUpdate", "2", appToken, responseString);
+        cmd = new SubmitResponseCommand("OtherOptionUpdate", "2", null, appToken, responseString);
         cmd.execute(200);
         waitForResults(baseTableData, baseTableName);
 
@@ -613,7 +621,7 @@ public class DynamicSchemaTest extends BaseResponseTest
         log("Submitting first response with OtherOption for empty values test");
         String appToken = getNewAppToken(PROJECT_NAME, STUDY_NAME, null);
         String responseString = getResponseFromFile("DYNAMICSCHEMASTUDY_OtherOptionBlanks_1--RESPONSE.json");
-        SubmitResponseCommand cmd = new SubmitResponseCommand(this::log, baseTableName, "1", appToken, responseString);
+        SubmitResponseCommand cmd = new SubmitResponseCommand(baseTableName, "1", null, appToken, responseString);
         cmd.execute(200);
         waitForResults(baseTableData, baseTableName);
 

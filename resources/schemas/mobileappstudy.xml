@@ -128,6 +128,7 @@
             <ns:column columnName="Container"/>
             <ns:column columnName="Created"/>
             <ns:column columnName="CreatedBy"/>
+            <ns:column columnName="Language"/>
         </ns:columns>
     </ns:table>
     <ns:table tableName="ResponseMetadata" tableDbType="TABLE">
