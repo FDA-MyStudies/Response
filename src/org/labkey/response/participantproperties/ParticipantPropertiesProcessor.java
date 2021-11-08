@@ -20,8 +20,8 @@ import org.labkey.api.query.FieldKey;
 import org.labkey.api.security.LimitedUser;
 import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
+import org.labkey.api.security.roles.AuthorRole;
 import org.labkey.api.security.roles.RoleManager;
-import org.labkey.api.security.roles.SubmitterRole;
 import org.labkey.response.DynamicListProcessor;
 import org.labkey.response.MobileAppStudySchema;
 import org.labkey.response.ResponseManager;
@@ -45,8 +45,8 @@ public class ParticipantPropertiesProcessor extends DynamicListProcessor
     {
         EnrollmentToken("EnrollmentToken", JdbcType.VARCHAR);
 
-        private String key;
-        private JdbcType type;
+        private final String key;
+        private final JdbcType type;
 
         BaseProperties(String key, JdbcType type)
         {
@@ -106,7 +106,6 @@ public class ParticipantPropertiesProcessor extends DynamicListProcessor
 
     public void updateParticipantPropertiesDesign(@NotNull MobileAppStudy study, @Nullable User user) throws Exception
     {
-
         SurveyDesignProvider provider = ResponseManager.get().getSurveyDesignProvider(study.getContainer());
         if (provider == null)
             throw new InvalidDesignException(LogMessageFormats.PROVIDER_NULL);
@@ -125,7 +124,7 @@ public class ParticipantPropertiesProcessor extends DynamicListProcessor
 
         // if a user isn't provided, need to create a LimitedUser to use for checking permissions, wrapping the Guest user
         User insertUser = new LimitedUser((user == null)? UserManager.getGuestUser() : user,
-                new int[0], Collections.singleton(RoleManager.getRole(SubmitterRole.class)), false);
+                new int[0], Collections.singleton(RoleManager.getRole(AuthorRole.class)), false);
 
         String currentVersion = getParticipantPropertiesDesignVersion(user, study.getContainer());
         logger.debug(String.format(LogMessageFormats.START_UPDATE_PARTICIPANT_PROPERTIES, study.getShortName(), currentVersion, design.getStudyVersion()));
@@ -144,8 +143,8 @@ public class ParticipantPropertiesProcessor extends DynamicListProcessor
      * Compare each section of a version string
      *
      * Adapted from: https://stackoverflow.com/a/11024200
-     * @param a left side of comparision
-     * @param b right side of comparision
+     * @param a left side of comparison
+     * @param b right side of comparison
      * @return comparable int value
      */
     private int compareVersionString(@NotNull String a, @NotNull String b)
