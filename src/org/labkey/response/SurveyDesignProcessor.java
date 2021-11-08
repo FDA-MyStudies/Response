@@ -30,8 +30,8 @@ import org.labkey.api.exp.property.Lookup;
 import org.labkey.api.security.LimitedUser;
 import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
+import org.labkey.api.security.roles.AuthorRole;
 import org.labkey.api.security.roles.RoleManager;
-import org.labkey.api.security.roles.SubmitterRole;
 import org.labkey.response.data.MobileAppStudy;
 import org.labkey.response.data.SurveyResponse;
 import org.labkey.response.surveydesign.InvalidDesignException;
@@ -152,7 +152,7 @@ public class SurveyDesignProcessor extends DynamicListProcessor
 
         // if a user isn't provided, need to create a LimitedUser to use for checking permissions, wrapping the Guest user
         User insertUser = new LimitedUser((user == null)? UserManager.getGuestUser() : user,
-                new int[0], Collections.singleton(RoleManager.getRole(SubmitterRole.class)), false);
+                new int[0], Collections.singleton(RoleManager.getRole(AuthorRole.class)), false);
 
         ListDefinition listDef = ensureList(study.getContainer(), insertUser, design.getSurveyName(), null);
         applySurveyUpdate(study.getContainer(), insertUser, listDef.getDomain(), design.getSteps(), design.getSurveyName(), "");

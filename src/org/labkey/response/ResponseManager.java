@@ -585,7 +585,7 @@ public class ResponseManager
     /**
      * Method to process Survey Responses
      * @param rowId mobileappstudy.Response.RowId to process
-     * @param user the user initiating the shredding request
+     * @param user the user initiating the shredding request, often guest or null
      */
     void shredSurveyResponse(@NotNull Integer rowId, @Nullable User user)
     {
