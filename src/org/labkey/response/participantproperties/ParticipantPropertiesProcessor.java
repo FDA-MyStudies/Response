@@ -144,8 +144,8 @@ public class ParticipantPropertiesProcessor extends DynamicListProcessor
      * Compare each section of a version string
      *
      * Adapted from: https://stackoverflow.com/a/11024200
-     * @param a left side of comparision
-     * @param b right side of comparision
+     * @param a left side of comparison
+     * @param b right side of comparison
      * @return comparable int value
      */
     private int compareVersionString(@NotNull String a, @NotNull String b)
