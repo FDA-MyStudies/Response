@@ -391,12 +391,15 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
             // If the query returned all columns there are a few columns to ignore.
             // Ignore the 'Created', 'Key', 'EntityId', 'lastIndexed' and 'Modified' fields. These fields can be tricky to get an accurate expected value especially the timestamp fields.
             if ((!expectedValues.containsKey(column)) &&
-                    (!column.equals("Key") &&
-                            !column.equals("Created") &&
-                            !column.equals("Modified") &&
-                            !column.equals("lastIndexed") &&
-                            !column.equals("diImportHash") &&
-                            !column.equals("EntityId")))
+                (
+                    !column.equals("Key") &&
+                    !column.equals("Created") &&
+                    !column.equals("Modified") &&
+                    !column.equals("lastIndexed") &&
+                    !column.equals("diImportHash") &&
+                    !column.equals("EntityId") &&
+                    !column.equals("_labkeyurl_user")
+                ))
             {
                 unexpectedJsonColumn.append("Found unexpected column '").append(column).append("' in jsonObject.\r\n");
                 pass = false;

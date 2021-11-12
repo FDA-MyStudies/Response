@@ -32,16 +32,20 @@ import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.FilteredTable;
 import org.labkey.api.query.QuerySchema;
 import org.labkey.api.query.UserSchema;
+import org.labkey.api.security.LimitedUser;
 import org.labkey.api.security.User;
 import org.labkey.api.security.UserPrincipal;
 import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.security.permissions.ReadPermission;
+import org.labkey.api.security.roles.ReaderRole;
+import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.util.StringExpression;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.UnauthorizedException;
 import org.labkey.response.MobileAppStudySchema;
 import org.labkey.response.data.Participant;
 
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -87,7 +91,8 @@ public class ReadResponsesQuerySchema extends UserSchema
 
     public static ReadResponsesQuerySchema get(Participant participant)
     {
-        return new ReadResponsesQuerySchema(User.guest, participant.getContainer(), participant);
+        User user = new LimitedUser(User.guest, new int[0], Collections.singleton(RoleManager.getRole(ReaderRole.class)), false);
+        return new ReadResponsesQuerySchema(user, participant.getContainer(), participant);
     }
 
     @Override
