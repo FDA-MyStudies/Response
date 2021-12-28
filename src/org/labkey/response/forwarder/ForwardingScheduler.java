@@ -19,7 +19,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.labkey.api.collections.ConcurrentHashSet;
 import org.labkey.api.data.Container;
-import org.labkey.api.data.ContainerManager;
 import org.labkey.api.util.DateUtil;
 import org.labkey.response.ResponseManager;
 import org.quartz.DailyTimeIntervalScheduleBuilder;
@@ -33,8 +32,8 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class ForwardingScheduler
@@ -43,7 +42,8 @@ public class ForwardingScheduler
     private static final Logger logger = LogManager.getLogger(ForwardingScheduler.class);
     private static final int INTERVAL_MINUTES = 5;
     private static final ForwardingScheduler instance = new ForwardingScheduler();
-    private static  Set<String> enabledContainers = new ConcurrentHashSet<>();
+    private static final Set<String> enabledContainers = new ConcurrentHashSet<>();
+
     private TriggerKey triggerKey;
 
     private ForwardingScheduler()
@@ -57,7 +57,8 @@ public class ForwardingScheduler
 
     public synchronized void schedule()
     {
-        enabledContainers = refreshEnabledContainers();
+        enabledContainers.clear();
+        enabledContainers.addAll(refreshEnabledContainers());
 
         if (job == null)
         {
@@ -101,14 +102,10 @@ public class ForwardingScheduler
 
     private Set<String> refreshEnabledContainers()
     {
-        Set<String> refreshedContainers = new HashSet<>();
-        Collection<String> containers = ResponseManager.get().getStudyContainers();
-        containers.stream().distinct().forEach(c -> {
-            if (ResponseManager.get().isForwardingEnabled(ContainerManager.getForId(c)))
-                refreshedContainers.add(c);
-        });
-
-        return refreshedContainers;
+        return ResponseManager.get().getStudyContainers().stream()
+            .filter(c -> ResponseManager.get().isForwardingEnabled(c))
+            .map(Container::getId)
+            .collect(Collectors.toSet());
     }
 
     public Collection<String> enabledContainers()
