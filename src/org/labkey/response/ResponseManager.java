@@ -90,6 +90,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -1491,14 +1492,18 @@ public class ResponseManager
     }
 
     /**
-     * Get set of containers
-     * @return List of container id strings
+     * Get a set of containers that have MyStudies studies. Some corresponding containers may no longer exist
+     * (e.g., folders deleted when module is not present on a dev machine), so nulls are filtered out.
+     *
+     * @return Set of containers
      */
-    public List<String> getStudyContainers()
+    public Set<Container> getStudyContainers()
     {
         MobileAppStudySchema schema = MobileAppStudySchema.getInstance();
-        TableSelector selector = new TableSelector(schema.getTableInfoStudy(), Collections.singleton("Container"), null, null);
-        return selector.getArrayList(String.class);
+        return new TableSelector(schema.getTableInfoStudy(), Collections.singleton("Container"), null, null).stream(String.class)
+            .map(ContainerManager::getForId)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet());
     }
 
     public String getEnrollmentToken(Container container, Integer participantId)
