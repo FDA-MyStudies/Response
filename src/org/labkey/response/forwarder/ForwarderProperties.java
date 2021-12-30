@@ -16,15 +16,20 @@
 package org.labkey.response.forwarder;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.Logger;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.PropertyManager;
+import org.labkey.api.security.Encryption;
+import org.labkey.api.util.logging.LogHelper;
 
 import java.util.Map;
 import java.util.Set;
 
 public class ForwarderProperties
 {
+    private static final Logger LOG = LogHelper.getLogger(ForwarderProperties.class, "Reading response forwarding properties");
     private static final String FORWARDER_CATEGORY = "MobileAppForwarder";
+
     public static final String PASSWORD_PLACEHOLDER = "***REDACTED***";
     public static final String URL_PROPERTY_NAME = "URL";
     public static final String USER_PROPERTY_NAME = "USER";
@@ -90,14 +95,21 @@ public class ForwarderProperties
     }
 
     /**
-     * Check is forwarding enabled for the study container
+     * Check forwarding type for a given study container
      * @param container to check
-     * @return True if forwarding is enabled
+     * @return ForwardingType enum constant (Disabled, OAuth, Basic)
      */
     public static ForwardingType getForwardingType(Container container)
     {
-        String authType = PropertyManager.getEncryptedStore().getProperties(container, FORWARDER_CATEGORY).getOrDefault(FORWARDING_TYPE, ForwardingType.Disabled.name());
-        return ForwardingType.valueOf(authType);
+        try
+        {
+            String authType = PropertyManager.getEncryptedStore().getProperties(container, FORWARDER_CATEGORY).getOrDefault(FORWARDING_TYPE, ForwardingType.Disabled.name());
+            return ForwardingType.valueOf(authType);
+        }
+        catch (Encryption.DecryptionException e)
+        {
+            LOG.error("Can't read response forwarding properties from encrypted store", e);
+            return ForwardingType.Disabled;
+        }
     }
-
 }
