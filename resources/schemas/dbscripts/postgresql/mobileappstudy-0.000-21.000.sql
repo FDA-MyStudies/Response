@@ -158,3 +158,22 @@ ALTER TABLE mobileappstudy.response
 
 ALTER TABLE mobileappstudy.responsemetadata
   RENAME COLUMN surveyid TO activityid;
+
+CREATE TABLE mobileappstudy.ParticipantPropertyMetadata
+(
+    RowId SERIAL,
+    ListId INTEGER NOT NULL,
+    PropertyURI VARCHAR NOT NULL,
+    PropertyType INTEGER NOT NULL,
+
+    Created TIMESTAMP NOT NULL,
+    Modified TIMESTAMP NULL,
+    Container ENTITYID NOT NULL,
+
+    CONSTRAINT PK_ParticipantPropertiesMetadata PRIMARY KEY (RowId)
+);
+
+-- Add new column and populate existing rows with INVALID
+ALTER TABLE mobileappstudy.Participant ADD COLUMN AllowDataSharing VARCHAR(20) NOT NULL DEFAULT 'INVALID';
+-- No longer need that default constraint; insert must supply this value
+ALTER TABLE mobileappstudy.Participant ALTER COLUMN AllowDataSharing DROP DEFAULT;
