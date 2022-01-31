@@ -19,6 +19,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.labkey.response.surveydesign.SurveyStep;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -102,13 +104,13 @@ public class SurveyResult extends ResponseMetadata
                     // first try to parse it as a DateTime value
                     try
                     {
-                        _parsedValue = DATE_TIME_FORMAT.parse((String) _value);
+                        _parsedValue = LocalDateTime.parse((String)_value, DATE_TIME_FORMAT);
                     }
                     catch (DateTimeParseException e1) // then try as a Date value
                     {
                         try
                         {
-                            _parsedValue = DATE_FORMAT.parse((String) _value);
+                            _parsedValue = LocalDate.parse((String) _value, DATE_FORMAT);
                         }
                         catch (DateTimeParseException e2)
                         {
