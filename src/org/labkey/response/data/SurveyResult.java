@@ -19,9 +19,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.labkey.response.surveydesign.SurveyStep;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -32,8 +31,10 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SurveyResult extends ResponseMetadata
 {
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-    private static final DateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    // DateTimeFormatter is thread-safe (unlike SimpleDateFormat)
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
     private String _resultType;
     private String _key;
     private Object _value;
@@ -103,13 +104,13 @@ public class SurveyResult extends ResponseMetadata
                     {
                         _parsedValue = DATE_TIME_FORMAT.parse((String) _value);
                     }
-                    catch (ParseException e1) // then try as a Date value
+                    catch (DateTimeParseException e1) // then try as a Date value
                     {
                         try
                         {
                             _parsedValue = DATE_FORMAT.parse((String) _value);
                         }
-                        catch (ParseException e2)
+                        catch (DateTimeParseException e2)
                         {
                             throw new IllegalArgumentException("Invalid date string format for field '" + getKey() + "' (" + _value + ")");
                         }
@@ -127,7 +128,7 @@ public class SurveyResult extends ResponseMetadata
             case TextChoice:
                 if (_value instanceof List)
                 {
-                    List<TextChoiceResult> tcrList = new ArrayList<TextChoiceResult>();
+                    List<TextChoiceResult> tcrList = new ArrayList<>();
                     for(Object val : (List)_value)
                     {
                         tcrList.add(new TextChoiceResult(val));
