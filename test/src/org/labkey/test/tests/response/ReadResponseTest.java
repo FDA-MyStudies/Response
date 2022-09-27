@@ -16,8 +16,8 @@
 package org.labkey.test.tests.response;
 
 import org.jetbrains.annotations.Nullable;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -342,7 +342,7 @@ public class ReadResponseTest extends BaseResponseTest
         log("Validate 3 rows were returned.");
 
         JSONArray jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithMultipleRow.getId() + " (" + ReadResponseTest.participantWithMultipleRow.getAppToken() + ") not as expected.", 3, jsonArray.size());
+        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithMultipleRow.getId() + " (" + ReadResponseTest.participantWithMultipleRow.getAppToken() + ") not as expected.", 3, jsonArray.length());
 
         log("Validate the first item returned in the json.");
         Map<String, Object> expectedValues = new HashMap<>();
@@ -415,7 +415,7 @@ public class ReadResponseTest extends BaseResponseTest
         log("Validate that 1 row is returned.");
 
         JSONArray jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, jsonArray.size());
+        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, jsonArray.length());
 
         log("Validate the row returned.");
         Map<String, Object> expectedValues = new HashMap<>();
@@ -460,7 +460,7 @@ public class ReadResponseTest extends BaseResponseTest
         log("Validate that no rows are returned.");
 
         JSONArray jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantToSkip.getId() + " (" + ReadResponseTest.participantToSkip.getAppToken() + ") not as expected.", 0, jsonArray.size());
+        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantToSkip.getId() + " (" + ReadResponseTest.participantToSkip.getAppToken() + ") not as expected.", 0, jsonArray.length());
 
         log("Looks good. Go home.");
         goToHome();
@@ -487,7 +487,7 @@ public class ReadResponseTest extends BaseResponseTest
         CommandResponse rowsResponse = callSelectRows(params);
 
         JSONArray jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, jsonArray.size());
+        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, jsonArray.length());
 
         log("Validate row returned. Verify that only the expected columns are returned.");
 
@@ -515,7 +515,7 @@ public class ReadResponseTest extends BaseResponseTest
         log("Validate that 1 row.");
 
         jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, jsonArray.size());
+        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, jsonArray.length());
 
         log("Validate that the row returned has all of the columns.");
 
@@ -554,7 +554,7 @@ public class ReadResponseTest extends BaseResponseTest
         log("Validate that 1 row is returned.");
 
         jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, jsonArray.size());
+        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, jsonArray.length());
 
         log("Since only invalid column names were passed no columns should be returned (other than the 'Key' column).");
 
@@ -577,7 +577,7 @@ public class ReadResponseTest extends BaseResponseTest
         log("Validate that 1 row is returned.");
 
         jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, jsonArray.size());
+        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, jsonArray.length());
 
         log("Validate row returned.");
         expectedValues = new HashMap<>();
@@ -609,7 +609,7 @@ public class ReadResponseTest extends BaseResponseTest
         log("Validate 1 row was returned.");
 
         jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, jsonArray.size());
+        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, jsonArray.length());
 
         log("Validate that the columns have the expected values.");
         expectedValues = new HashMap<>();
@@ -670,7 +670,7 @@ public class ReadResponseTest extends BaseResponseTest
         log("Validate 3 rows were returned.");
 
         JSONArray jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + participantId + " (" + participantAppToken + ") not as expected.", 3, jsonArray.size());
+        Assert.assertEquals("Number of rows returned for participant " + participantId + " (" + participantAppToken + ") not as expected.", 3, jsonArray.length());
 
         log("Validate the first item returned in the json.");
         Map<String, Object> expectedValues = new HashMap<>();
@@ -725,7 +725,7 @@ public class ReadResponseTest extends BaseResponseTest
         log("Validate no rows were returned.");
 
         JSONArray jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + participantId + " (" + participantAppToken + ") not as expected.", 0, jsonArray.size());
+        Assert.assertEquals("Number of rows returned for participant " + participantId + " (" + participantAppToken + ") not as expected.", 0, jsonArray.length());
 
         log("Looks good. Go home.");
         goToHome();
@@ -752,7 +752,7 @@ public class ReadResponseTest extends BaseResponseTest
         log("Validate that 2 rows were returned.");
 
         JSONArray jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + participantId + " (" + participantAppToken + ") not as expected.", 2, jsonArray.size());
+        Assert.assertEquals("Number of rows returned for participant " + participantId + " (" + participantAppToken + ") not as expected.", 2, jsonArray.length());
 
         log("Validate the first item returned in the json.");
         Map<String, Object> expectedValues = new HashMap<>();
@@ -794,7 +794,7 @@ public class ReadResponseTest extends BaseResponseTest
         log("Validate 2 rows returned.");
 
         jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + participantId + " (" + participantAppToken + ") not as expected.", 2, jsonArray.size());
+        Assert.assertEquals("Number of rows returned for participant " + participantId + " (" + participantAppToken + ") not as expected.", 2, jsonArray.length());
 
         log("Validate the first item returned in the json.");
         expectedValues = new HashMap<>();
@@ -836,7 +836,7 @@ public class ReadResponseTest extends BaseResponseTest
         log("Again validate that 2 rows are returned.");
 
         jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + participantId + " (" + participantAppToken + ") not as expected.", 2, jsonArray.size());
+        Assert.assertEquals("Number of rows returned for participant " + participantId + " (" + participantAppToken + ") not as expected.", 2, jsonArray.length());
 
         log("Validate the first item returned in the json.");
         expectedValues = new HashMap<>();

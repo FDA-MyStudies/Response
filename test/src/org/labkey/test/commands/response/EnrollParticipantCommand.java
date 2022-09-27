@@ -17,7 +17,7 @@ package org.labkey.test.commands.response;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.labkey.test.WebTestHelper;
 
 import java.util.HashMap;

@@ -16,7 +16,7 @@
 package org.labkey.response.surveydesign;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpStatus;
+import org.apache.hc.core5.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.ResponseHandler;

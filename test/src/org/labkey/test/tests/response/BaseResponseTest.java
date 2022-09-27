@@ -17,7 +17,7 @@ package org.labkey.test.tests.response;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandException;
@@ -339,7 +339,7 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
 
         for(String column : columns)
         {
-            Assert.assertTrue("Expected column " + column + " was not in the jsonObject.", jsonObject.containsKey(column));
+            Assert.assertTrue("Expected column " + column + " was not in the jsonObject.", jsonObject.has(column));
 
             Object  jsonObjectValue;
             if(jsonObject.get(column).getClass().getSimpleName().equals("JSONObject"))
