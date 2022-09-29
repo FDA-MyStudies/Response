@@ -751,8 +751,8 @@ public class ReadResponseTest extends BaseResponseTest
 
         log("Validate that 2 rows were returned.");
 
-        JSONArray jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + participantId + " (" + participantAppToken + ") not as expected.", 2, jsonArray.length());
+        List<Map<String, Object>> rows = rowsResponse.getProperty("rows");
+        Assert.assertEquals("Number of rows returned for participant " + participantId + " (" + participantAppToken + ") not as expected.", 2, rows.size());
 
         log("Validate the first item returned in the json.");
         Map<String, Object> expectedValues = new HashMap<>();
@@ -760,10 +760,10 @@ public class ReadResponseTest extends BaseResponseTest
         expectedValues.put("Description", DESCRIPTION_VALUE_SECOND_LIST + (participantId + FIRST_INT_OFFSET));
         expectedValues.put("integerField", participantId + FIRST_INT_OFFSET);
 
-        JSONObject jsonArrayEntry = (JSONObject)jsonArray.get(0);
-        JSONObject jsonData = (JSONObject)jsonArrayEntry.get("data");
+        Map<String, Object> row = rows.get(0);
+        Map<String, Object> data = (Map<String, Object>)row.get("data");
 
-        checkJsonObjectAgainstExpectedValues(expectedValues, jsonData);
+        checkJsonMapAgainstExpectedValues(expectedValues, data);
 
         log("Validate the second item returned in the json.");
         expectedValues = new HashMap<>();
@@ -771,10 +771,10 @@ public class ReadResponseTest extends BaseResponseTest
         expectedValues.put("Description", DESCRIPTION_VALUE_SECOND_LIST + (participantId + SECOND_INT_OFFSET));
         expectedValues.put("integerField", participantId + SECOND_INT_OFFSET);
 
-        jsonArrayEntry = (JSONObject)jsonArray.get(1);
-        jsonData = (JSONObject)jsonArrayEntry.get("data");
+        row = rows.get(1);
+        data = (Map<String, Object>)row.get("data");
 
-        checkJsonObjectAgainstExpectedValues(expectedValues, jsonData);
+        checkJsonMapAgainstExpectedValues(expectedValues, data);
 
         log("Now call executeSql with a union clause.");
 
@@ -793,8 +793,8 @@ public class ReadResponseTest extends BaseResponseTest
 
         log("Validate 2 rows returned.");
 
-        jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + participantId + " (" + participantAppToken + ") not as expected.", 2, jsonArray.length());
+        rows = rowsResponse.getProperty("rows");
+        Assert.assertEquals("Number of rows returned for participant " + participantId + " (" + participantAppToken + ") not as expected.", 2, rows.size());
 
         log("Validate the first item returned in the json.");
         expectedValues = new HashMap<>();
@@ -802,10 +802,10 @@ public class ReadResponseTest extends BaseResponseTest
         expectedValues.put("stringField", DESCRIPTION_VALUE_THIRD_LIST + (participantId + FIRST_INT_OFFSET));
         expectedValues.put("integerField", participantId + FIRST_INT_OFFSET);
 
-        jsonArrayEntry = (JSONObject)jsonArray.get(0);
-        jsonData = (JSONObject)jsonArrayEntry.get("data");
+        row = rows.get(0);
+        data = (Map<String, Object>)row.get("data");
 
-        checkJsonObjectAgainstExpectedValues(expectedValues, jsonData);
+        checkJsonMapAgainstExpectedValues(expectedValues, data);
 
         log("Validate the second item returned in the json.");
         expectedValues = new HashMap<>();
@@ -813,10 +813,10 @@ public class ReadResponseTest extends BaseResponseTest
         expectedValues.put("stringField", FIRST_STRING_FIELD_VALUE + participantId);
         expectedValues.put("integerField", participantId + FIRST_INT_OFFSET);
 
-        jsonArrayEntry = (JSONObject)jsonArray.get(1);
-        jsonData = (JSONObject)jsonArrayEntry.get("data");
+        row = rows.get(1);
+        data = (Map<String, Object>)row.get("data");
 
-        checkJsonObjectAgainstExpectedValues(expectedValues, jsonData);
+        checkJsonMapAgainstExpectedValues(expectedValues, data);
 
         log("Finally validate a join clause that includes all three lists.");
 
@@ -835,8 +835,8 @@ public class ReadResponseTest extends BaseResponseTest
 
         log("Again validate that 2 rows are returned.");
 
-        jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + participantId + " (" + participantAppToken + ") not as expected.", 2, jsonArray.length());
+        rows = rowsResponse.getProperty("rows");
+        Assert.assertEquals("Number of rows returned for participant " + participantId + " (" + participantAppToken + ") not as expected.", 2, rows.size());
 
         log("Validate the first item returned in the json.");
         expectedValues = new HashMap<>();
@@ -844,10 +844,10 @@ public class ReadResponseTest extends BaseResponseTest
         expectedValues.put("Description", DESCRIPTION_VALUE_SECOND_LIST + (participantId + FIRST_INT_OFFSET));
         expectedValues.put("integerField", participantId + SECOND_INT_OFFSET);
 
-        jsonArrayEntry = (JSONObject)jsonArray.get(0);
-        jsonData = (JSONObject)jsonArrayEntry.get("data");
+        row = rows.get(0);
+        data = (Map<String, Object>)row.get("data");
 
-        checkJsonObjectAgainstExpectedValues(expectedValues, jsonData);
+        checkJsonMapAgainstExpectedValues(expectedValues, data);
 
         log("Validate the second item returned in the json.");
         expectedValues = new HashMap<>();
@@ -855,10 +855,10 @@ public class ReadResponseTest extends BaseResponseTest
         expectedValues.put("Description", DESCRIPTION_VALUE_SECOND_LIST + (participantId + SECOND_INT_OFFSET));
         expectedValues.put("integerField", participantId + SECOND_INT_OFFSET);
 
-        jsonArrayEntry = (JSONObject)jsonArray.get(1);
-        jsonData = (JSONObject)jsonArrayEntry.get("data");
+        row = rows.get(1);
+        data = (Map<String, Object>)row.get("data");
 
-        checkJsonObjectAgainstExpectedValues(expectedValues, jsonData);
+        checkJsonMapAgainstExpectedValues(expectedValues, data);
 
         log("Looks good. Go home.");
         goToHome();
