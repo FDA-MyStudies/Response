@@ -16,8 +16,6 @@
 package org.labkey.test.tests.response;
 
 import org.jetbrains.annotations.Nullable;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -183,22 +181,20 @@ public class ReadResponseTest extends BaseResponseTest
             {
                 if (participantInfo.getId() != ReadResponseTest.participantToSkip.getId())
                 {
-
-                    // Convert the id to an int because it will be used in some of the numeric fields below.
-                    long participantId = participantInfo.getId();
+                    int participantId = participantInfo.getId();
 
                     Map<String, Object> rowData = new HashMap<>();
 
                     rowData.put("participantId", participantId);
                     rowData.put("stringField", FIRST_STRING_FIELD_VALUE + participantInfo.getId());
-                    rowData.put("multiLineField", FIRST_MULTILINE_STRING_FIELD.replace("$", Long.toString(participantId)));
+                    rowData.put("multiLineField", FIRST_MULTILINE_STRING_FIELD.replace("$", Integer.toString(participantId)));
 
                     if ((participantId & 1) == 0)
                         rowData.put("booleanField", "true");
                     else
                         rowData.put("booleanField", "false");
 
-                    rowData.put("integerField", Long.toString(participantId + FIRST_INT_OFFSET));
+                    rowData.put("integerField", Integer.toString(participantId + FIRST_INT_OFFSET));
 
                     rowData.put("doubleField", participantInfo.getId() + FIRST_MANTISSA);
 
@@ -214,16 +210,16 @@ public class ReadResponseTest extends BaseResponseTest
 
             log("Now add a few more rows in the list for participant: " + ReadResponseTest.participantWithMultipleRow.getId() + " (" + ReadResponseTest.participantWithMultipleRow
                 .getAppToken() + "). This is the only participant with multiple rows in the list.");
-            long participantId = ReadResponseTest.participantWithMultipleRow.getId();
+            int participantId = ReadResponseTest.participantWithMultipleRow.getId();
 
             dataGenerator.addCustomRow(Map.of("participantId", participantId, "stringField", SECOND_STRING_FIELD_VALUE + ReadResponseTest.participantWithMultipleRow.getId(),
-                "multiLineField", SECOND_MULTILINE_STRING_FIELD.replace("$", Long.toString(participantId)),
+                "multiLineField", SECOND_MULTILINE_STRING_FIELD.replace("$", Integer.toString(participantId)),
                 "booleanField", true, "integerField", participantId + SECOND_INT_OFFSET, "doubleField", ReadResponseTest.participantWithMultipleRow.getId() + SECOND_MANTISSA,
                 "dateTimeField", SECOND_DATE, "flagField", SECOND_FLAG_FIELD + ReadResponseTest.participantWithMultipleRow.getId(),
                 "user", userId));
 
             dataGenerator.addCustomRow(Map.of("participantId", participantId, "stringField", THIRD_STRING_FIELD_VALUE + ReadResponseTest.participantWithMultipleRow.getId(),
-                "multiLineField", THIRD_MULTILINE_STRING_FIELD.replace("$", Long.toString(participantId)),
+                "multiLineField", THIRD_MULTILINE_STRING_FIELD.replace("$", Integer.toString(participantId)),
                 "booleanField", false, "integerField", participantId + THIRD_INT_OFFSET, "doubleField", ReadResponseTest.participantWithMultipleRow.getId() + THIRD_MANTISSA,
                 "dateTimeField", THIRD_DATE, "flagField", THIRD_FLAG_FIELD + ReadResponseTest.participantWithMultipleRow.getId(),
                 "user", userId));
@@ -240,16 +236,15 @@ public class ReadResponseTest extends BaseResponseTest
 
             log("Now add two rows to " + LIST_SECOND);
 
-            long idAsLong;
-            idAsLong = participantWithMultipleRow.getId();
+            int id = participantWithMultipleRow.getId();
 
             dataGenerator.addCustomRow(Map.of(
-                "Description", DESCRIPTION_VALUE_SECOND_LIST + (idAsLong + FIRST_INT_OFFSET),
-                "integerField", Long.toString(idAsLong + FIRST_INT_OFFSET)
+                "Description", DESCRIPTION_VALUE_SECOND_LIST + (id + FIRST_INT_OFFSET),
+                "integerField", Integer.toString(id + FIRST_INT_OFFSET)
             ));
             dataGenerator.addCustomRow(Map.of(
-                "Description", DESCRIPTION_VALUE_SECOND_LIST + (idAsLong + SECOND_INT_OFFSET),
-                "integerField", Long.toString(idAsLong + SECOND_INT_OFFSET)
+                "Description", DESCRIPTION_VALUE_SECOND_LIST + (id + SECOND_INT_OFFSET),
+                "integerField", Integer.toString(id + SECOND_INT_OFFSET)
             ));
             dataGenerator.insertRows();
         }
@@ -265,26 +260,26 @@ public class ReadResponseTest extends BaseResponseTest
 
             log("Now add a couple of rows to " + LIST_THIRD);
 
-            long idAsLong = ReadResponseTest.participantWithMultipleRow.getId();
+            int id = ReadResponseTest.participantWithMultipleRow.getId();
 
             dataGenerator.addCustomRow(Map.of(
-                "participantId", idAsLong,
-                "Description", DESCRIPTION_VALUE_THIRD_LIST + (idAsLong + SECOND_INT_OFFSET),
-                "integerField", idAsLong + SECOND_INT_OFFSET
+                "participantId", id,
+                "Description", DESCRIPTION_VALUE_THIRD_LIST + (id + SECOND_INT_OFFSET),
+                "integerField", id + SECOND_INT_OFFSET
             ));
 
-            idAsLong = ReadResponseTest.participantForSql.getId();
+            id = ReadResponseTest.participantForSql.getId();
             dataGenerator.addCustomRow(Map.of(
-                "participantId", idAsLong,
-                "Description", DESCRIPTION_VALUE_THIRD_LIST + (idAsLong + FIRST_INT_OFFSET),
-                "integerField", idAsLong + FIRST_INT_OFFSET
+                "participantId", id,
+                "Description", DESCRIPTION_VALUE_THIRD_LIST + (id + FIRST_INT_OFFSET),
+                "integerField", id + FIRST_INT_OFFSET
             ));
 
-            idAsLong = ReadResponseTest.participantWithOneRow.getId();
+            id = ReadResponseTest.participantWithOneRow.getId();
             dataGenerator.addCustomRow(Map.of(
-                "participantId", idAsLong,
-                "Description", DESCRIPTION_VALUE_THIRD_LIST + (idAsLong + FIRST_INT_OFFSET),
-                "integerField", idAsLong + FIRST_INT_OFFSET
+                "participantId", id,
+                "Description", DESCRIPTION_VALUE_THIRD_LIST + (id + FIRST_INT_OFFSET),
+                "integerField", id + FIRST_INT_OFFSET
             ));
 
             dataGenerator.insertRows();
@@ -341,56 +336,56 @@ public class ReadResponseTest extends BaseResponseTest
 
         log("Validate 3 rows were returned.");
 
-        JSONArray jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithMultipleRow.getId() + " (" + ReadResponseTest.participantWithMultipleRow.getAppToken() + ") not as expected.", 3, jsonArray.length());
+        List<Map<String, Object>> rows = rowsResponse.getProperty("rows");
+        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithMultipleRow.getId() + " (" + ReadResponseTest.participantWithMultipleRow.getAppToken() + ") not as expected.", 3, rows.size());
 
         log("Validate the first item returned in the json.");
         Map<String, Object> expectedValues = new HashMap<>();
         expectedValues.put("participantId", ReadResponseTest.participantWithMultipleRow.getId());
         expectedValues.put("stringField", FIRST_STRING_FIELD_VALUE + ReadResponseTest.participantWithMultipleRow.getId());
-        expectedValues.put("multiLineField", FIRST_MULTILINE_STRING_FIELD.replace("$", Long.toString(ReadResponseTest.participantWithMultipleRow.getId())));
+        expectedValues.put("multiLineField", FIRST_MULTILINE_STRING_FIELD.replace("$", Integer.toString(ReadResponseTest.participantWithMultipleRow.getId())));
 
-        long idAsInt = ReadResponseTest.participantWithMultipleRow.getId();
-        if ((idAsInt & 1) == 0)
+        int id = ReadResponseTest.participantWithMultipleRow.getId();
+        if ((id & 1) == 0)
             expectedValues.put("booleanField", true);
         else
             expectedValues.put("booleanField", false);
 
-        expectedValues.put("integerField", idAsInt + FIRST_INT_OFFSET);
+        expectedValues.put("integerField", id + FIRST_INT_OFFSET);
         expectedValues.put("doubleField", Double.parseDouble(ReadResponseTest.participantWithMultipleRow.getId() + FIRST_MANTISSA));
         expectedValues.put("dateTimeField", FIRST_DATE);
         expectedValues.put("flagField", FIRST_FLAG_FIELD + ReadResponseTest.participantWithMultipleRow.getId());
 
-        JSONObject jsonObject = (JSONObject)jsonArray.get(0);
-        checkJsonObjectAgainstExpectedValues(expectedValues, jsonObject);
+        Map<String, Object> row = rows.get(0);
+        checkJsonMapAgainstExpectedValues(expectedValues, row);
 
         log("Validate the second item returned in the json.");
         expectedValues = new HashMap<>();
         expectedValues.put("participantId", ReadResponseTest.participantWithMultipleRow.getId());
         expectedValues.put("stringField", SECOND_STRING_FIELD_VALUE + ReadResponseTest.participantWithMultipleRow.getId());
-        expectedValues.put("multiLineField", SECOND_MULTILINE_STRING_FIELD.replace("$", Long.toString(ReadResponseTest.participantWithMultipleRow.getId())));
+        expectedValues.put("multiLineField", SECOND_MULTILINE_STRING_FIELD.replace("$", Integer.toString(ReadResponseTest.participantWithMultipleRow.getId())));
         expectedValues.put("booleanField", true);
-        expectedValues.put("integerField", idAsInt + SECOND_INT_OFFSET);
+        expectedValues.put("integerField", id + SECOND_INT_OFFSET);
         expectedValues.put("doubleField", Double.parseDouble(ReadResponseTest.participantWithMultipleRow.getId() + SECOND_MANTISSA));
         expectedValues.put("dateTimeField", SECOND_DATE);
         expectedValues.put("flagField", SECOND_FLAG_FIELD + ReadResponseTest.participantWithMultipleRow.getId());
 
-        jsonObject = (JSONObject)jsonArray.get(1);
-        checkJsonObjectAgainstExpectedValues(expectedValues, jsonObject);
+        row = rows.get(1);
+        checkJsonMapAgainstExpectedValues(expectedValues, row);
 
         log("Validate the third item returned in the json.");
         expectedValues = new HashMap<>();
         expectedValues.put("participantId", ReadResponseTest.participantWithMultipleRow.getId());
         expectedValues.put("stringField", THIRD_STRING_FIELD_VALUE + ReadResponseTest.participantWithMultipleRow.getId());
-        expectedValues.put("multiLineField", THIRD_MULTILINE_STRING_FIELD.replace("$", Long.toString(ReadResponseTest.participantWithMultipleRow.getId())));
+        expectedValues.put("multiLineField", THIRD_MULTILINE_STRING_FIELD.replace("$", Integer.toString(ReadResponseTest.participantWithMultipleRow.getId())));
         expectedValues.put("booleanField", false);
-        expectedValues.put("integerField", idAsInt + THIRD_INT_OFFSET);
+        expectedValues.put("integerField", id + THIRD_INT_OFFSET);
         expectedValues.put("doubleField", Double.parseDouble(ReadResponseTest.participantWithMultipleRow.getId() + THIRD_MANTISSA));
         expectedValues.put("dateTimeField", THIRD_DATE);
         expectedValues.put("flagField", THIRD_FLAG_FIELD + ReadResponseTest.participantWithMultipleRow.getId());
 
-        jsonObject = (JSONObject)jsonArray.get(2);
-        checkJsonObjectAgainstExpectedValues(expectedValues, jsonObject);
+        row = rows.get(2);
+        checkJsonMapAgainstExpectedValues(expectedValues, row);
 
         log("Looks good. Go home.");
         goToHome();
@@ -414,28 +409,28 @@ public class ReadResponseTest extends BaseResponseTest
 
         log("Validate that 1 row is returned.");
 
-        JSONArray jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, jsonArray.length());
+        List<Map<String, Object>> rows = rowsResponse.getProperty("rows");
+        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, rows.size());
 
         log("Validate the row returned.");
         Map<String, Object> expectedValues = new HashMap<>();
         expectedValues.put("participantId", ReadResponseTest.participantWithOneRow.getId());
         expectedValues.put("stringField", FIRST_STRING_FIELD_VALUE + ReadResponseTest.participantWithOneRow.getId());
-        expectedValues.put("multiLineField", FIRST_MULTILINE_STRING_FIELD.replace("$", Long.toString(ReadResponseTest.participantWithOneRow.getId())));
+        expectedValues.put("multiLineField", FIRST_MULTILINE_STRING_FIELD.replace("$", Integer.toString(ReadResponseTest.participantWithOneRow.getId())));
 
-        long idAsInt = ReadResponseTest.participantWithOneRow.getId();
-        if ((idAsInt & 1) == 0)
+        int id = ReadResponseTest.participantWithOneRow.getId();
+        if ((id & 1) == 0)
             expectedValues.put("booleanField", true);
         else
             expectedValues.put("booleanField", false);
 
-        expectedValues.put("integerField", idAsInt + FIRST_INT_OFFSET);
+        expectedValues.put("integerField", id + FIRST_INT_OFFSET);
         expectedValues.put("doubleField", Double.parseDouble(ReadResponseTest.participantWithOneRow.getId() + FIRST_MANTISSA));
         expectedValues.put("dateTimeField", FIRST_DATE);
         expectedValues.put("flagField", FIRST_FLAG_FIELD + ReadResponseTest.participantWithOneRow.getId());
 
-        JSONObject jsonObject = (JSONObject)jsonArray.get(0);
-        checkJsonObjectAgainstExpectedValues(expectedValues, jsonObject);
+        Map<String, Object> row = rows.get(0);
+        checkJsonMapAgainstExpectedValues(expectedValues, row);
 
         log("Looks good. Go home.");
         goToHome();
@@ -459,8 +454,8 @@ public class ReadResponseTest extends BaseResponseTest
 
         log("Validate that no rows are returned.");
 
-        JSONArray jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantToSkip.getId() + " (" + ReadResponseTest.participantToSkip.getAppToken() + ") not as expected.", 0, jsonArray.length());
+        List<?> rows = rowsResponse.getProperty("rows");
+        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantToSkip.getId() + " (" + ReadResponseTest.participantToSkip.getAppToken() + ") not as expected.", 0, rows.size());
 
         log("Looks good. Go home.");
         goToHome();
@@ -494,9 +489,9 @@ public class ReadResponseTest extends BaseResponseTest
         Map<String, Object> expectedValues = new HashMap<>();
         expectedValues.put("participantId", ReadResponseTest.participantWithOneRow.getId());
         expectedValues.put("stringField", FIRST_STRING_FIELD_VALUE + ReadResponseTest.participantWithOneRow.getId());
-        expectedValues.put("multiLineField", FIRST_MULTILINE_STRING_FIELD.replace("$", Long.toString(ReadResponseTest.participantWithOneRow.getId())));
+        expectedValues.put("multiLineField", FIRST_MULTILINE_STRING_FIELD.replace("$", Integer.toString(ReadResponseTest.participantWithOneRow.getId())));
 
-        long idAsInt = ReadResponseTest.participantWithOneRow.getId();
+        int idAsInt = ReadResponseTest.participantWithOneRow.getId();
         expectedValues.put("integerField", idAsInt + FIRST_INT_OFFSET);
 
         expectedValues.put("dateTimeField", FIRST_DATE);
@@ -522,7 +517,7 @@ public class ReadResponseTest extends BaseResponseTest
         expectedValues = new HashMap<>();
         expectedValues.put("participantId", ReadResponseTest.participantWithOneRow.getId());
         expectedValues.put("stringField", FIRST_STRING_FIELD_VALUE + ReadResponseTest.participantWithOneRow.getId());
-        expectedValues.put("multiLineField", FIRST_MULTILINE_STRING_FIELD.replace("$", Long.toString(ReadResponseTest.participantWithOneRow.getId())));
+        expectedValues.put("multiLineField", FIRST_MULTILINE_STRING_FIELD.replace("$", Integer.toString(ReadResponseTest.participantWithOneRow.getId())));
 
         if ((idAsInt & 1) == 0)
             expectedValues.put("booleanField", true);
@@ -583,7 +578,7 @@ public class ReadResponseTest extends BaseResponseTest
         expectedValues = new HashMap<>();
         expectedValues.put("participantId", ReadResponseTest.participantWithOneRow.getId());
         expectedValues.put("stringField", FIRST_STRING_FIELD_VALUE + ReadResponseTest.participantWithOneRow.getId());
-        expectedValues.put("multiLineField", FIRST_MULTILINE_STRING_FIELD.replace("$", Long.toString(ReadResponseTest.participantWithOneRow.getId())));
+        expectedValues.put("multiLineField", FIRST_MULTILINE_STRING_FIELD.replace("$", Integer.toString(ReadResponseTest.participantWithOneRow.getId())));
 
         expectedValues.put("integerField", idAsInt + FIRST_INT_OFFSET);
 
@@ -654,7 +649,7 @@ public class ReadResponseTest extends BaseResponseTest
     @Test
     public void validateExecuteSqlBasic() throws CommandException, IOException
     {
-        long participantId = ReadResponseTest.participantWithMultipleRow.getId();
+        int participantId = ReadResponseTest.participantWithMultipleRow.getId();
         String participantAppToken = ReadResponseTest.participantWithMultipleRow.getAppToken();
         String sql = "select * from TestListDiffDataTypes";
 
@@ -669,14 +664,14 @@ public class ReadResponseTest extends BaseResponseTest
 
         log("Validate 3 rows were returned.");
 
-        List<?> rows = rowsResponse.getProperty("rows");
+        List<Map<String, Object>> rows = rowsResponse.getProperty("rows");
         Assert.assertEquals("Number of rows returned for participant " + participantId + " (" + participantAppToken + ") not as expected.", 3, rows.size());
 
         log("Validate the first item returned in the json.");
         Map<String, Object> expectedValues = new HashMap<>();
         expectedValues.put("participantId", participantId);
         expectedValues.put("stringField", FIRST_STRING_FIELD_VALUE + participantId);
-        expectedValues.put("multiLineField", FIRST_MULTILINE_STRING_FIELD.replace("$", Long.toString(participantId)));
+        expectedValues.put("multiLineField", FIRST_MULTILINE_STRING_FIELD.replace("$", Integer.toString(participantId)));
 
         if ((participantId & 1) == 0)
             expectedValues.put("booleanField", true);
@@ -697,10 +692,10 @@ public class ReadResponseTest extends BaseResponseTest
         expectedValues.put("ModifiedBy", userId);
         expectedValues.put("container", containerId);
 
-        JSONObject jsonArrayEntry = (JSONObject)rows.get(0);
-        JSONObject jsonData = (JSONObject)jsonArrayEntry.get("data");
+        Map<String, Object> row = rows.get(0);
+        Map<String, Object> jsonData = (Map<String, Object>)row.get("data");
 
-        checkJsonObjectAgainstExpectedValues(expectedValues, jsonData);
+        checkJsonMapAgainstExpectedValues(expectedValues, jsonData);
 
         log("Looks good. Go home.");
         goToHome();
@@ -709,7 +704,7 @@ public class ReadResponseTest extends BaseResponseTest
     @Test
     public void validateExecuteSqlNoRows() throws CommandException, IOException
     {
-        long participantId = ReadResponseTest.participantToSkip.getId();
+        int participantId = ReadResponseTest.participantToSkip.getId();
         String participantAppToken = ReadResponseTest.participantToSkip.getAppToken();
         String sql = "select * from TestListDiffDataTypes";
 
@@ -736,7 +731,7 @@ public class ReadResponseTest extends BaseResponseTest
     {
         goToProjectHome();
 
-        long participantId = ReadResponseTest.participantWithMultipleRow.getId();
+        int participantId = ReadResponseTest.participantWithMultipleRow.getId();
         String participantAppToken = ReadResponseTest.participantWithMultipleRow.getAppToken();
 
         log("First validate with a join clause.");
@@ -873,7 +868,7 @@ public class ReadResponseTest extends BaseResponseTest
 
         goToProjectHome();
 
-        long participantId = ReadResponseTest.participantWithMultipleRow.getId();
+        int participantId = ReadResponseTest.participantWithMultipleRow.getId();
         String participantAppToken = ReadResponseTest.participantWithMultipleRow.getAppToken();
 
         testExecuteSql("without a participantId.",
@@ -897,7 +892,7 @@ public class ReadResponseTest extends BaseResponseTest
         goToHome();
     }
 
-    private void testExecuteSql(String task, String sql, long participantId, @Nullable String participantAppToken, String expectedErrorMessage)
+    private void testExecuteSql(String task, String sql, int participantId, @Nullable String participantAppToken, String expectedErrorMessage)
     {
         String details = "Call executeSql with sql: '" + sql + "' and ";
         if (null == participantAppToken)

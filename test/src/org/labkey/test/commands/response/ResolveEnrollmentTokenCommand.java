@@ -96,7 +96,7 @@ public class ResolveEnrollmentTokenCommand extends ResponseCommand
     protected void parseErrorResponse(JSONObject response)
     {
         super.parseErrorResponse(response);
-        _message = (String)response.get("message");
+        _message = response.optString("message", null);
     }
 
     @Override

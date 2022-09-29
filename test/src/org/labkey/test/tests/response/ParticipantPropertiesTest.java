@@ -1,8 +1,6 @@
 package org.labkey.test.tests.response;
 
 import org.jetbrains.annotations.Nullable;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -39,8 +37,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
@@ -259,9 +255,9 @@ public class ParticipantPropertiesTest extends BaseResponseTest
         CommandResponse selectRowsResponse = callSelectRows(params);
         Map<String, Object> results = selectRowsResponse.getParsedData();
         assertEquals("Unexpected rowcount returned participant id", 1, results.get("rowCount"));
-        JSONArray rows = selectRowsResponse.getProperty("rows");
-        JSONObject row = (JSONObject)rows.get(0);
-        checkJsonObjectAgainstExpectedValues(values, row);
+        List<Map<String, Object>> rows = selectRowsResponse.getProperty("rows");
+        Map<String, Object> row = rows.get(0);
+        checkJsonMapAgainstExpectedValues(values, row);
     }
 
 
@@ -304,11 +300,11 @@ public class ParticipantPropertiesTest extends BaseResponseTest
         CommandResponse executeSqlResponse = callExecuteSql(params);
         Map<String, Object> results = executeSqlResponse.getParsedData();
         assertEquals("Unexpected row returned w/o participant id", 1, results.get("rowCount"));
-        JSONArray rows = executeSqlResponse.getProperty("rows");
-        JSONObject jsonArrayEntry = (JSONObject)rows.get(0);
-        JSONObject rowData = (JSONObject)jsonArrayEntry.get("data");
+        List<Map<String, Object>> rows = executeSqlResponse.getProperty("rows");
+        Map<String, Object> row = rows.get(0);
+        Map<String, Object> rowData = (Map<String, Object>)row.get("data");
         assertNotNull("No ParticipantProperties row data returned by execute sql", rowData);
-        for (String propertyId : (Set<String>)rowData.keySet())
+        for (String propertyId : rowData.keySet())
         {
             assertTrue(String.format("Unexpected column found: " + propertyId), POSTENROLLMENT_FIELD_NAMES.contains(propertyId)
                     || PREENROLLMENT_FIELD_NAMES.contains(propertyId) || STANDARD_FIELD_NAMES.contains(propertyId));
@@ -451,8 +447,8 @@ public class ParticipantPropertiesTest extends BaseResponseTest
         CommandResponse selectRowsResponse = callSelectRows(params);
         Map<String, Object> results = selectRowsResponse.getParsedData();
         assertEquals("Unexpected row returned w/o participant id", 1, results.get("rowCount"));
-        JSONArray rows = selectRowsResponse.getProperty("rows");
-        Map<String, Object> row = (Map<String, Object>)rows.get(0);
+        List<Map<String, Object>> rows = selectRowsResponse.getProperty("rows");
+        Map<String, Object> row = rows.get(0);
         for (String propertyId : row.keySet())
         {
             assertTrue(String.format("Expected column not found: " + propertyId), "SingleProperty".equalsIgnoreCase(propertyId) || ENROLLMENTTOKEN_FIELD_KEY.equalsIgnoreCase(propertyId));
