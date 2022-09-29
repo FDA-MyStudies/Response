@@ -315,7 +315,7 @@ public class ReadResponseTest extends BaseResponseTest
 
         for(Map<String, Object> row: rowsResponse.getRows())
         {
-            _participantInfos.add(new ParticipantInfo(Integer.parseInt(row.get("RowId").toString()), row.get("AppToken").toString()));
+            _participantInfos.add(new ParticipantInfo((int)row.get("RowId"), row.get("AppToken").toString()));
         }
 
         log("Number of participants with AppTokens: " + _participantInfos.size());
@@ -486,8 +486,8 @@ public class ReadResponseTest extends BaseResponseTest
 
         CommandResponse rowsResponse = callSelectRows(params);
 
-        JSONArray jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, jsonArray.length());
+        List<Map<String, Object>> rows = rowsResponse.getProperty("rows");
+        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, rows.size());
 
         log("Validate row returned. Verify that only the expected columns are returned.");
 
@@ -501,8 +501,8 @@ public class ReadResponseTest extends BaseResponseTest
 
         expectedValues.put("dateTimeField", FIRST_DATE);
 
-        JSONObject jsonObject = (JSONObject)jsonArray.get(0);
-        checkJsonObjectAgainstExpectedValues(expectedValues, jsonObject);
+        Map<String, Object> row = rows.get(0);
+        checkJsonMapAgainstExpectedValues(expectedValues, row);
 
         log("Call selectRows with no columns parameter, this should return all columns.");
 
@@ -514,8 +514,8 @@ public class ReadResponseTest extends BaseResponseTest
 
         log("Validate that 1 row.");
 
-        jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, jsonArray.length());
+        rows = rowsResponse.getProperty("rows");
+        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, rows.size());
 
         log("Validate that the row returned has all of the columns.");
 
@@ -538,8 +538,8 @@ public class ReadResponseTest extends BaseResponseTest
         int userId = userHelper.getUserId(getCurrentUser());
         expectedValues.put("user", userId);
 
-        jsonObject = (JSONObject)jsonArray.get(0);
-        checkJsonObjectAgainstExpectedValues(expectedValues, jsonObject);
+        row = rows.get(0);
+        checkJsonMapAgainstExpectedValues(expectedValues, row);
 
         log("Now call selectRows with only bad column names.");
         params = new HashMap<>();
@@ -553,16 +553,16 @@ public class ReadResponseTest extends BaseResponseTest
 
         log("Validate that 1 row is returned.");
 
-        jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, jsonArray.length());
+        rows = rowsResponse.getProperty("rows");
+        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, rows.size());
 
         log("Since only invalid column names were passed no columns should be returned (other than the 'Key' column).");
 
         // If only invalid columns were provided no columns should be returned.
         expectedValues = new HashMap<>();
 
-        jsonObject = (JSONObject)jsonArray.get(0);
-        checkJsonObjectAgainstExpectedValues(expectedValues, jsonObject);
+        row = rows.get(0);
+        checkJsonMapAgainstExpectedValues(expectedValues, row);
 
         columnsToReturn = "integerField, participantId, foo, stringField, dateTimeField, bar, multiLineField";
 
@@ -576,8 +576,8 @@ public class ReadResponseTest extends BaseResponseTest
 
         log("Validate that 1 row is returned.");
 
-        jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, jsonArray.length());
+        rows = rowsResponse.getProperty("rows");
+        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, rows.size());
 
         log("Validate row returned.");
         expectedValues = new HashMap<>();
@@ -589,8 +589,8 @@ public class ReadResponseTest extends BaseResponseTest
 
         expectedValues.put("dateTimeField", FIRST_DATE);
 
-        jsonObject = (JSONObject)jsonArray.get(0);
-        checkJsonObjectAgainstExpectedValues(expectedValues, jsonObject);
+        row = rows.get(0);
+        checkJsonMapAgainstExpectedValues(expectedValues, row);
 
         log("Look at the 'special' columns. Specifically CreatedBy, ModifiedBy and Container. These are columns with FK into other lists outside of this project.");
 
@@ -608,8 +608,8 @@ public class ReadResponseTest extends BaseResponseTest
 
         log("Validate 1 row was returned.");
 
-        jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, jsonArray.length());
+        rows = rowsResponse.getProperty("rows");
+        Assert.assertEquals("Number of rows returned for participant " + ReadResponseTest.participantWithOneRow.getId() + " (" + ReadResponseTest.participantWithOneRow.getAppToken() + ") not as expected.", 1, rows.size());
 
         log("Validate that the columns have the expected values.");
         expectedValues = new HashMap<>();
@@ -618,8 +618,8 @@ public class ReadResponseTest extends BaseResponseTest
         expectedValues.put("ModifiedBy", userId);
         expectedValues.put("container", containerId);
 
-        jsonObject = (JSONObject)jsonArray.get(0);
-        checkJsonObjectAgainstExpectedValues(expectedValues, jsonObject);
+        row = rows.get(0);
+        checkJsonMapAgainstExpectedValues(expectedValues, row);
 
         log("Looks good. Go home.");
         goToHome();
@@ -669,8 +669,8 @@ public class ReadResponseTest extends BaseResponseTest
 
         log("Validate 3 rows were returned.");
 
-        JSONArray jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + participantId + " (" + participantAppToken + ") not as expected.", 3, jsonArray.length());
+        List<?> rows = rowsResponse.getProperty("rows");
+        Assert.assertEquals("Number of rows returned for participant " + participantId + " (" + participantAppToken + ") not as expected.", 3, rows.size());
 
         log("Validate the first item returned in the json.");
         Map<String, Object> expectedValues = new HashMap<>();
@@ -697,7 +697,7 @@ public class ReadResponseTest extends BaseResponseTest
         expectedValues.put("ModifiedBy", userId);
         expectedValues.put("container", containerId);
 
-        JSONObject jsonArrayEntry = (JSONObject)jsonArray.get(0);
+        JSONObject jsonArrayEntry = (JSONObject)rows.get(0);
         JSONObject jsonData = (JSONObject)jsonArrayEntry.get("data");
 
         checkJsonObjectAgainstExpectedValues(expectedValues, jsonData);
@@ -724,8 +724,8 @@ public class ReadResponseTest extends BaseResponseTest
 
         log("Validate no rows were returned.");
 
-        JSONArray jsonArray = rowsResponse.getProperty("rows");
-        Assert.assertEquals("Number of rows returned for participant " + participantId + " (" + participantAppToken + ") not as expected.", 0, jsonArray.length());
+        List<?> rows = rowsResponse.getProperty("rows");
+        Assert.assertEquals("Number of rows returned for participant " + participantId + " (" + participantAppToken + ") not as expected.", 0, rows.size());
 
         log("Looks good. Go home.");
         goToHome();
@@ -942,7 +942,7 @@ public class ReadResponseTest extends BaseResponseTest
 
     private static class ParticipantInfo
     {
-        protected long _participantId;
+        protected int _participantId;
         protected String _appToken;
 
         public ParticipantInfo()
@@ -950,18 +950,18 @@ public class ReadResponseTest extends BaseResponseTest
             // Do nothing constructor.
         }
 
-        public ParticipantInfo(long participantId, String appToken)
+        public ParticipantInfo(int participantId, String appToken)
         {
             _participantId = participantId;
             _appToken = appToken;
         }
 
-        public void setId(long id)
+        public void setId(int id)
         {
             _participantId = id;
         }
 
-        public long getId()
+        public int getId()
         {
             return _participantId;
         }

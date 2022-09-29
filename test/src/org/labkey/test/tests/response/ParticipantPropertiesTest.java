@@ -71,7 +71,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
             "decimalPreEnroll", "datePreEnroll", "timePreEnroll", "booleanPreEnroll");
     private final static List<String> STANDARD_FIELD_NAMES = Arrays.asList("Modified", "lastIndexed",
             "ModifiedBy", "Created", "CreatedBy", "container", "EntityId", "diImportHash");
-    private final static List<String> ALL_FIELDS = Stream.of(PREENROLLMENT_FIELD_NAMES, POSTENROLLMENT_FIELD_NAMES, STANDARD_FIELD_NAMES).flatMap(Collection::stream).collect(Collectors.toList());
+    private final static List<String> ALL_FIELDS = Stream.of(PREENROLLMENT_FIELD_NAMES, POSTENROLLMENT_FIELD_NAMES, STANDARD_FIELD_NAMES).flatMap(Collection::stream).toList();
     private final static String TOKEN_BATCH_SIZE = "10";
 
     private final static int EXECUTE_SQL_INDEX = 0;
@@ -258,7 +258,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
         log(String.format("Query ParticipantProperties list, via select rows using participantId [%1$s] and enrollmentToken [%2$s]", participantAppToken, token));
         CommandResponse selectRowsResponse = callSelectRows(params);
         Map<String, Object> results = selectRowsResponse.getParsedData();
-        assertEquals("Unexpected rowcount returned participant id", 1L, results.get("rowCount"));
+        assertEquals("Unexpected rowcount returned participant id", 1, results.get("rowCount"));
         JSONArray rows = selectRowsResponse.getProperty("rows");
         JSONObject row = (JSONObject)rows.get(0);
         checkJsonObjectAgainstExpectedValues(values, row);
@@ -283,7 +283,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
 
         CommandResponse executeSqlResponse = callExecuteSql(params);
         Map<String, Object> results = executeSqlResponse.getParsedData();
-        assertEquals("Unexpected row returned across container boundary", 0L, results.get("rowCount"));
+        assertEquals("Unexpected row returned across container boundary", 0, results.get("rowCount"));
     }
 
     /**
@@ -303,7 +303,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
 
         CommandResponse executeSqlResponse = callExecuteSql(params);
         Map<String, Object> results = executeSqlResponse.getParsedData();
-        assertEquals("Unexpected row returned w/o participant id", 1L, results.get("rowCount"));
+        assertEquals("Unexpected row returned w/o participant id", 1, results.get("rowCount"));
         JSONArray rows = executeSqlResponse.getProperty("rows");
         JSONObject jsonArrayEntry = (JSONObject)rows.get(0);
         JSONObject rowData = (JSONObject)jsonArrayEntry.get("data");
@@ -450,7 +450,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
 
         CommandResponse selectRowsResponse = callSelectRows(params);
         Map<String, Object> results = selectRowsResponse.getParsedData();
-        assertEquals("Unexpected row returned w/o participant id", 1L, results.get("rowCount"));
+        assertEquals("Unexpected row returned w/o participant id", 1, results.get("rowCount"));
         JSONArray rows = selectRowsResponse.getProperty("rows");
         Map<String, Object> row = (Map<String, Object>)rows.get(0);
         for (String propertyId : row.keySet())
