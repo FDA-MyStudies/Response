@@ -91,7 +91,7 @@ public abstract class ResponseCommand
 
     protected void parseErrorResponse(JSONObject response)
     {
-        setExceptionMessage((String) response.get(EXCEPTION_MESSAGE_TAG));
+        setExceptionMessage(response.optString(EXCEPTION_MESSAGE_TAG, null));
     }
 
     protected HttpResponse execute(HttpUriRequest request, int expectedStatusCode)
