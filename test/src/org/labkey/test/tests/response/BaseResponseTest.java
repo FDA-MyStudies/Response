@@ -440,7 +440,7 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
                     Assert.assertEquals(column + " not as expected.", expectedValues.get(column), ((Number)value).intValue());
                     break;
                 case "Double":
-                    Assert.assertEquals(column + " not as expected.", Double.parseDouble(expectedValues.get(column).toString()), (double)value, 0.0);
+                    Assert.assertEquals(column + " not as expected.", Double.parseDouble(expectedValues.get(column).toString()), ((Number)value).doubleValue(), 0.0);
                     break;
                 case "Number":
                     Assert.assertEquals(column + " not as expected.", expectedValues.get(column), value);
