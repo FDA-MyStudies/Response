@@ -17,7 +17,6 @@ package org.labkey.test.tests.response;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
-import org.json.JSONObject;
 import org.junit.Assert;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandException;
@@ -224,7 +223,7 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
     @LogMethod
     protected CommandResponse assignToken(Connection connection, @LoggedParam String token, @LoggedParam String projectName, @LoggedParam String studyName) throws IOException, CommandException
     {
-        Command command = new PostCommand("mobileappstudy", "enroll");
+        Command<?> command = new PostCommand<>("mobileappstudy", "enroll");
         HashMap<String, Object> params = new HashMap<>(Maps.of("shortName", studyName, "token", token, "allowDataSharing", "true"));
         command.setParameters(params);
         log("Assigning token: " + token);
@@ -318,7 +317,7 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
 
     protected CommandResponse callCommand(String action, Map<String, Object> params)  throws IOException, CommandException
     {
-        Command selectCmd = new Command("mobileAppStudy", action);
+        Command<?> selectCmd = new Command<>("mobileAppStudy", action);
         selectCmd.setParameters(params);
 
         return selectCmd.execute(createGuestConnection(), getProjectName());
@@ -331,82 +330,6 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
     protected Connection createGuestConnection()
     {
         return new Connection(WebTestHelper.getBaseURL(), new GuestCredentialsProvider());
-    }
-
-    protected void checkJsonObjectAgainstExpectedValues(Map<String, Object> expectedValues, JSONObject jsonObject)
-    {
-        Set<String> columns = expectedValues.keySet();
-
-        for(String column : columns)
-        {
-            Assert.assertTrue("Expected column " + column + " was not in the jsonObject.", jsonObject.has(column));
-
-            Object  jsonObjectValue;
-            if(jsonObject.get(column).getClass().getSimpleName().equals("JSONObject"))
-            {
-                // Need to do this if the object that is being compared came from an executeSql call.
-                JSONObject jObject = (JSONObject)jsonObject.get(column);
-                jsonObjectValue = jObject.get("value");
-            }
-            else
-                jsonObjectValue = jsonObject.get(column);
-
-            log("Validating column '" + column + "' which is a '" + jsonObjectValue.getClass().getName() + "' data type.");
-//            log("Type of value returned by json: " + jsonObjectValue.getClass().getName());
-//            log("Type of value expected: " + expectedValues.get(column).getClass().getName());
-
-            switch(expectedValues.get(column).getClass().getSimpleName())
-            {
-                case "Integer":
-
-                    // There is this odd case where the field is an integer but the json returns a long.
-                    // Not worth worrying about, but will need to account for.
-                    Assert.assertEquals(column + " not as expected.", expectedValues.get(column), ((Number)jsonObjectValue).intValue());
-                    break;
-                case "Double":
-                    Assert.assertEquals(column + " not as expected.", Double.parseDouble(expectedValues.get(column).toString()), (double)jsonObjectValue, 0.0);
-                    break;
-                case "Number":
-                    Assert.assertEquals(column + " not as expected.", expectedValues.get(column), jsonObjectValue);
-                case "Boolean":
-                    if ((boolean)expectedValues.get(column))
-                        Assert.assertTrue(column + " was not true (as expected).",(boolean)jsonObjectValue);
-                    else
-                        Assert.assertFalse(column + " was not false (as expected).",(boolean)jsonObjectValue);
-                    break;
-                default:
-                    // Long and String are the only types that don't need some kind of special casting.
-                    Assert.assertEquals(column + " not as expected.", expectedValues.get(column), jsonObjectValue);
-                    break;
-            }
-        }
-
-        // If we've gotten to this point then we know that all of the expected columns and values were there.
-        // Now we need to check that the jsonObject did not return any unexpected columns.
-        StringBuilder unexpectedJsonColumn = new StringBuilder();
-        boolean pass = true;
-        for(Object jsonColumn : jsonObject.keySet())
-        {
-            String column = (String)jsonColumn;
-            // If the query returned all columns there are a few columns to ignore.
-            // Ignore the 'Created', 'Key', 'EntityId', 'lastIndexed' and 'Modified' fields. These fields can be tricky to get an accurate expected value especially the timestamp fields.
-            if ((!expectedValues.containsKey(column)) &&
-                (
-                    !column.equals("Key") &&
-                    !column.equals("Created") &&
-                    !column.equals("Modified") &&
-                    !column.equals("lastIndexed") &&
-                    !column.equals("diImportHash") &&
-                    !column.equals("EntityId") &&
-                    !column.equals("_labkeyurl_user")
-                ))
-            {
-                unexpectedJsonColumn.append("Found unexpected column '").append(column).append("' in jsonObject.\r\n");
-                pass = false;
-            }
-        }
-
-        Assert.assertTrue(unexpectedJsonColumn.toString(), pass);
     }
 
     protected void checkJsonMapAgainstExpectedValues(Map<String, Object> expectedValues, Map<String, Object> actualValues)
@@ -428,8 +351,6 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
                 value = actualValues.get(column);
 
             log("Validating column '" + column + "' which is a '" + value.getClass().getName() + "' data type.");
-//            log("Type of value returned by json: " + jsonObjectValue.getClass().getName());
-//            log("Type of value expected: " + expectedValues.get(column).getClass().getName());
 
             switch(expectedValues.get(column).getClass().getSimpleName())
             {
