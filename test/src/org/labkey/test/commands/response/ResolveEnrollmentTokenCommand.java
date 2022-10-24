@@ -18,7 +18,7 @@ package org.labkey.test.commands.response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.data.response.ResolveEnrollmentTokenResponse;
 
@@ -96,7 +96,7 @@ public class ResolveEnrollmentTokenCommand extends ResponseCommand
     protected void parseErrorResponse(JSONObject response)
     {
         super.parseErrorResponse(response);
-        _message = (String)response.get("message");
+        _message = response.optString("message", null);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class ResolveEnrollmentTokenCommand extends ResponseCommand
         ObjectMapper mapper = new ObjectMapper();
         try
         {
-            ResolveEnrollmentTokenResponse enrollmentTokenResponse = mapper.readValue(response.toJSONString(), ResolveEnrollmentTokenResponse.class);
+            ResolveEnrollmentTokenResponse enrollmentTokenResponse = mapper.readValue(response.toString(), ResolveEnrollmentTokenResponse.class);
             if (null != enrollmentTokenResponse)
                 _studyId = enrollmentTokenResponse.getStudyId();
         }

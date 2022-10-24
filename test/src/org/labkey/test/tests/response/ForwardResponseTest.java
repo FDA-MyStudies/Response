@@ -16,7 +16,7 @@
 package org.labkey.test.tests.response;
 
 import com.google.common.net.MediaType;
-import org.apache.http.HttpStatus;
+import org.apache.hc.core5.http.HttpStatus;
 import org.jetbrains.annotations.Nullable;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

@@ -21,9 +21,8 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.labkey.test.util.TestLogger;
 
 import java.io.IOException;
@@ -69,12 +68,11 @@ public abstract class ResponseCommand
 
     protected void parseResponse(String response)
     {
-        JSONParser parser = new JSONParser();
         try
         {
-            _jsonResponse = (JSONObject) parser.parse(response);
+            _jsonResponse = new JSONObject(response);
         }
-        catch (ParseException e)
+        catch (JSONException e)
         {
             throw new RuntimeException(e);
         }
@@ -93,7 +91,7 @@ public abstract class ResponseCommand
 
     protected void parseErrorResponse(JSONObject response)
     {
-        setExceptionMessage((String) response.get(EXCEPTION_MESSAGE_TAG));
+        setExceptionMessage(response.optString(EXCEPTION_MESSAGE_TAG, null));
     }
 
     protected HttpResponse execute(HttpUriRequest request, int expectedStatusCode)
