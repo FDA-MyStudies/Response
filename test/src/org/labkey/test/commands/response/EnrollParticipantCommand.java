@@ -15,8 +15,8 @@
  */
 package org.labkey.test.commands.response;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.core5.http.HttpResponse;
 import org.json.JSONObject;
 import org.labkey.test.WebTestHelper;
 

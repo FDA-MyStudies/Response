@@ -16,17 +16,16 @@
 package org.labkey.response.surveydesign;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.hc.client5.http.auth.CredentialsProvider;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.core5.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
+import org.apache.hc.core5.net.URIBuilder;
 import org.apache.logging.log4j.Logger;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
@@ -90,16 +89,15 @@ public class ServiceSurveyDesignProvider extends AbstractSurveyDesignProviderImp
 
             try (CloseableHttpResponse response = httpclient.execute(httpGet))
             {
-                ResponseHandler<String> handler = new BasicResponseHandler();
-                StatusLine status = response.getStatusLine();
+                HttpClientResponseHandler<String> handler = new BasicHttpClientResponseHandler();
 
-                if (status.getStatusCode() == HttpStatus.SC_OK || status.getStatusCode() == HttpStatus.SC_CREATED)
+                if (response.getCode() == HttpStatus.SC_OK || response.getCode() == HttpStatus.SC_CREATED)
                 {
                     return designProcessor.apply(handler.handleResponse(response));
                 }
                 else
                 {
-                    throw new Exception(String.format("Received response status %d using uri %s", status.getStatusCode(), uri));
+                    throw new Exception(String.format("Received response status %d using uri %s", response.getCode(), uri));
                 }
             }
         }
