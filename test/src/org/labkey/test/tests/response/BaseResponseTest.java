@@ -17,7 +17,6 @@ package org.labkey.test.tests.response;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
-import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandException;
@@ -224,7 +223,7 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
     @LogMethod
     protected CommandResponse assignToken(Connection connection, @LoggedParam String token, @LoggedParam String projectName, @LoggedParam String studyName) throws IOException, CommandException
     {
-        Command command = new PostCommand("mobileappstudy", "enroll");
+        Command<?> command = new PostCommand<>("mobileappstudy", "enroll");
         HashMap<String, Object> params = new HashMap<>(Maps.of("shortName", studyName, "token", token, "allowDataSharing", "true"));
         command.setParameters(params);
         log("Assigning token: " + token);
@@ -318,7 +317,7 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
 
     protected CommandResponse callCommand(String action, Map<String, Object> params)  throws IOException, CommandException
     {
-        Command selectCmd = new Command("mobileAppStudy", action);
+        Command<?> selectCmd = new Command<>("mobileAppStudy", action);
         selectCmd.setParameters(params);
 
         return selectCmd.execute(createGuestConnection(), getProjectName());
@@ -333,27 +332,25 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
         return new Connection(WebTestHelper.getBaseURL(), new GuestCredentialsProvider());
     }
 
-    protected void checkJsonObjectAgainstExpectedValues(Map<String, Object> expectedValues, JSONObject jsonObject)
+    protected void checkJsonMapAgainstExpectedValues(Map<String, Object> expectedValues, Map<String, Object> actualValues)
     {
         Set<String> columns = expectedValues.keySet();
 
-        for(String column : columns)
+        for (String column : columns)
         {
-            Assert.assertTrue("Expected column " + column + " was not in the jsonObject.", jsonObject.containsKey(column));
+            Assert.assertTrue("Expected column " + column + " was not in the jsonObject.", actualValues.containsKey(column));
 
-            Object  jsonObjectValue;
-            if(jsonObject.get(column).getClass().getSimpleName().equals("JSONObject"))
+            Object value;
+            if (actualValues.get(column) instanceof Map)
             {
                 // Need to do this if the object that is being compared came from an executeSql call.
-                JSONObject jObject = (JSONObject)jsonObject.get(column);
-                jsonObjectValue = jObject.get("value");
+                Map<String, Object> columnMap = (Map<String, Object>)actualValues.get(column);
+                value = columnMap.get("value");
             }
             else
-                jsonObjectValue = jsonObject.get(column);
+                value = actualValues.get(column);
 
-            log("Validating column '" + column + "' which is a '" + jsonObjectValue.getClass().getName() + "' data type.");
-//            log("Type of value returned by json: " + jsonObjectValue.getClass().getName());
-//            log("Type of value expected: " + expectedValues.get(column).getClass().getName());
+            log("Validating column '" + column + "' which is a '" + value.getClass().getName() + "' data type.");
 
             switch(expectedValues.get(column).getClass().getSimpleName())
             {
@@ -361,22 +358,22 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
 
                     // There is this odd case where the field is an integer but the json returns a long.
                     // Not worth worrying about, but will need to account for.
-                    Assert.assertEquals(column + " not as expected.", expectedValues.get(column), ((Number)jsonObjectValue).intValue());
+                    Assert.assertEquals(column + " not as expected.", expectedValues.get(column), ((Number)value).intValue());
                     break;
                 case "Double":
-                    Assert.assertEquals(column + " not as expected.", Double.parseDouble(expectedValues.get(column).toString()), (double)jsonObjectValue, 0.0);
+                    Assert.assertEquals(column + " not as expected.", Double.parseDouble(expectedValues.get(column).toString()), ((Number)value).doubleValue(), 0.0);
                     break;
                 case "Number":
-                    Assert.assertEquals(column + " not as expected.", expectedValues.get(column), jsonObjectValue);
+                    Assert.assertEquals(column + " not as expected.", expectedValues.get(column), value);
                 case "Boolean":
                     if ((boolean)expectedValues.get(column))
-                        Assert.assertTrue(column + " was not true (as expected).",(boolean)jsonObjectValue);
+                        Assert.assertTrue(column + " was not true (as expected).",(boolean)value);
                     else
-                        Assert.assertFalse(column + " was not false (as expected).",(boolean)jsonObjectValue);
+                        Assert.assertFalse(column + " was not false (as expected).",(boolean)value);
                     break;
                 default:
                     // Long and String are the only types that don't need some kind of special casting.
-                    Assert.assertEquals(column + " not as expected.", expectedValues.get(column), jsonObjectValue);
+                    Assert.assertEquals(column + " not as expected.", expectedValues.get(column), value);
                     break;
             }
         }
@@ -385,7 +382,7 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
         // Now we need to check that the jsonObject did not return any unexpected columns.
         StringBuilder unexpectedJsonColumn = new StringBuilder();
         boolean pass = true;
-        for(Object jsonColumn : jsonObject.keySet())
+        for (Object jsonColumn : actualValues.keySet())
         {
             String column = (String)jsonColumn;
             // If the query returned all columns there are a few columns to ignore.

@@ -15,7 +15,7 @@
  */
 package org.labkey.test.tests.response;
 
-import org.apache.http.HttpResponse;
+import org.apache.hc.core5.http.HttpResponse;
 import org.jetbrains.annotations.Nullable;
 import org.junit.Assert;
 import org.junit.BeforeClass;

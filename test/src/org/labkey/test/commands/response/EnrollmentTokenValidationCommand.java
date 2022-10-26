@@ -16,9 +16,9 @@
 package org.labkey.test.commands.response;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.json.simple.JSONObject;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.core5.http.HttpResponse;
+import org.json.JSONObject;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.data.response.ParticipantPropertiesResponse;
 import org.labkey.test.data.response.ParticipantProperty;
@@ -130,7 +130,7 @@ public class EnrollmentTokenValidationCommand extends ResponseCommand
         ObjectMapper mapper = new ObjectMapper();
         try
         {
-            ParticipantPropertiesResponse ppResponse = mapper.readValue(response.toJSONString(), ParticipantPropertiesResponse.class);
+            ParticipantPropertiesResponse ppResponse = mapper.readValue(response.toString(), ParticipantPropertiesResponse.class);
             if (ppResponse != null)
                 _preEnrollmentParticipantProperties = ppResponse.getPreEnrollmentParticipantProperties();
         }

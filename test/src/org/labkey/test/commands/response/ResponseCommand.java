@@ -16,17 +16,19 @@
 package org.labkey.test.commands.response;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.labkey.test.util.TestLogger;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -69,12 +71,11 @@ public abstract class ResponseCommand
 
     protected void parseResponse(String response)
     {
-        JSONParser parser = new JSONParser();
         try
         {
-            _jsonResponse = (JSONObject) parser.parse(response);
+            _jsonResponse = new JSONObject(response);
         }
-        catch (ParseException e)
+        catch (JSONException e)
         {
             throw new RuntimeException(e);
         }
@@ -93,39 +94,49 @@ public abstract class ResponseCommand
 
     protected void parseErrorResponse(JSONObject response)
     {
-        setExceptionMessage((String) response.get(EXCEPTION_MESSAGE_TAG));
+        setExceptionMessage(response.optString(EXCEPTION_MESSAGE_TAG, null));
     }
 
     protected HttpResponse execute(HttpUriRequest request, int expectedStatusCode)
     {
         setExceptionMessage(null); // Clear out previous exception message, in case we're reusing this Command
-        HttpResponse response = null;
-        TestLogger.log("Submitting request using url: " + request.getURI());
 
-        try (CloseableHttpClient client = HttpClients.createDefault())
+        try
         {
-            response = client.execute(request);
-            isExecuted = true;
-            TestLogger.log("Post completed. Response body: " + getBody());
-
-            int statusCode = response.getStatusLine().getStatusCode();
-            String body = EntityUtils.toString(response.getEntity());
-            parseResponse(body);
-
-            if (expectedStatusCode < 400 && StringUtils.isNotBlank(getExceptionMessage()))
-                TestLogger.log("Unexpected error message: " + getExceptionMessage());
-
-            assertEquals("Unexpected response status", expectedStatusCode, statusCode);
-            return response;
+            TestLogger.log("Submitting request using url: " + request.getUri());
         }
-        catch (IOException e)
+        catch (URISyntaxException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        //CloseableHttpResponse response;
+        try (CloseableHttpClient client = HttpClients.createDefault(); CloseableHttpResponse response = client.execute(request))
+        {
+            try
+            {
+                isExecuted = true;
+                TestLogger.log("Post completed. Response body: " + getBody());
+
+                int statusCode = response.getCode();
+                String body = EntityUtils.toString(response.getEntity());
+                parseResponse(body);
+
+                if (expectedStatusCode < 400 && StringUtils.isNotBlank(getExceptionMessage()))
+                    TestLogger.log("Unexpected error message: " + getExceptionMessage());
+
+                assertEquals("Unexpected response status", expectedStatusCode, statusCode);
+                return response;
+            }
+            finally
+            {
+                if (response != null)
+                    EntityUtils.consumeQuietly(response.getEntity());
+            }
+        }
+        catch (IOException | ParseException e)
         {
             throw new RuntimeException("Test failed requesting the URL,", e);
-        }
-        finally
-        {
-            if (response != null)
-                EntityUtils.consumeQuietly(response.getEntity());
         }
     }
 
