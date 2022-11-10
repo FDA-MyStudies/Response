@@ -26,13 +26,13 @@ _(Commands and paths are relative to your `Response` enlistment)_
 1. Locate distribution archive
    - (Linux/MacOS) `dist/response/LabKey*-response.tar.gz`
    - (Windows) `dist\response\LabKey*-response.tar.gz`
-1. Follow [instructions for manual deployment](https://www.labkey.org/Documentation/22.7/wiki-page.view?name=manualInstall) of the distribution archive
+1. Follow [instructions for manual deployment](https://www.labkey.org/Documentation/22.11/wiki-page.view?name=manualInstall) of the distribution archive
 
 ## Developer Setup Instructions
 
-This module can be developed within the LabKey Server platform (version 22.7.x). To setup a development environment for the Response Server (i.e. a standard LabKey Server distribution plus the Response module), follow these steps:
+This module can be developed within the LabKey Server platform (version 22.11.x). To set up a development environment for the Response Server (i.e. a standard LabKey Server distribution plus the Response module), follow these steps:
 
-1. Checkout the LabKey Server 22.7.x public GitHub repositories: [Set Up a Development Machine](https://www.labkey.org/Documentation/22.7/wiki-page.view?name=devMachine)
+1. Checkout the LabKey Server 22.11.x public GitHub repositories: [Set Up a Development Machine](https://www.labkey.org/Documentation/22.11/wiki-page.view?name=devMachine)
 
 1. Clone the Response module (this repository) into `server/modules`
 
@@ -51,4 +51,4 @@ This module can be developed within the LabKey Server platform (version 22.7.x).
     gradlew :server:modules:Response:distributions:fda:dist
     ```
 
-1. [Build and deploy LabKey](https://www.labkey.org/Documentation/22.7/wiki-page.view?name=buildLabKey) with the Response module.
+1. [Build and deploy LabKey](https://www.labkey.org/Documentation/22.11/wiki-page.view?name=buildLabKey) with the Response module.
