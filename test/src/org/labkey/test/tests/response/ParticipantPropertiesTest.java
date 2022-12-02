@@ -31,6 +31,7 @@ import org.mockserver.integration.ClientAndServer;
 import org.openqa.selenium.support.ui.FluentWait;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -221,7 +222,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
         String dateValue = "2019-02-22 00:00:00.000";
         String timeValue = "12:34:56.789";
         Number intValue = 1;
-        Number doubleValue = 1.1;
+        Number doubleValue = BigDecimal.valueOf(1.1);
         boolean booleanValue = true;
 
         Map<String, Object> values = new HashMap<>();
