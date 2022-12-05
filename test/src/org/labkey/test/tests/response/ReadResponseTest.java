@@ -37,6 +37,7 @@ import org.labkey.test.util.APIUserHelper;
 import org.labkey.test.util.TestDataGenerator;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -352,7 +353,7 @@ public class ReadResponseTest extends BaseResponseTest
             expectedValues.put("booleanField", false);
 
         expectedValues.put("integerField", id + FIRST_INT_OFFSET);
-        expectedValues.put("doubleField", Double.parseDouble(ReadResponseTest.participantWithMultipleRow.getId() + FIRST_MANTISSA));
+        expectedValues.put("doubleField", BigDecimal.valueOf(Double.parseDouble(ReadResponseTest.participantWithMultipleRow.getId() + FIRST_MANTISSA)));
         expectedValues.put("dateTimeField", FIRST_DATE);
         expectedValues.put("flagField", FIRST_FLAG_FIELD + ReadResponseTest.participantWithMultipleRow.getId());
 
@@ -366,7 +367,7 @@ public class ReadResponseTest extends BaseResponseTest
         expectedValues.put("multiLineField", SECOND_MULTILINE_STRING_FIELD.replace("$", Integer.toString(ReadResponseTest.participantWithMultipleRow.getId())));
         expectedValues.put("booleanField", true);
         expectedValues.put("integerField", id + SECOND_INT_OFFSET);
-        expectedValues.put("doubleField", Double.parseDouble(ReadResponseTest.participantWithMultipleRow.getId() + SECOND_MANTISSA));
+        expectedValues.put("doubleField", BigDecimal.valueOf(Double.parseDouble(ReadResponseTest.participantWithMultipleRow.getId() + SECOND_MANTISSA)));
         expectedValues.put("dateTimeField", SECOND_DATE);
         expectedValues.put("flagField", SECOND_FLAG_FIELD + ReadResponseTest.participantWithMultipleRow.getId());
 
@@ -380,7 +381,7 @@ public class ReadResponseTest extends BaseResponseTest
         expectedValues.put("multiLineField", THIRD_MULTILINE_STRING_FIELD.replace("$", Integer.toString(ReadResponseTest.participantWithMultipleRow.getId())));
         expectedValues.put("booleanField", false);
         expectedValues.put("integerField", id + THIRD_INT_OFFSET);
-        expectedValues.put("doubleField", Double.parseDouble(ReadResponseTest.participantWithMultipleRow.getId() + THIRD_MANTISSA));
+        expectedValues.put("doubleField", BigDecimal.valueOf(Double.parseDouble(ReadResponseTest.participantWithMultipleRow.getId() + THIRD_MANTISSA)));
         expectedValues.put("dateTimeField", THIRD_DATE);
         expectedValues.put("flagField", THIRD_FLAG_FIELD + ReadResponseTest.participantWithMultipleRow.getId());
 
@@ -425,7 +426,7 @@ public class ReadResponseTest extends BaseResponseTest
             expectedValues.put("booleanField", false);
 
         expectedValues.put("integerField", id + FIRST_INT_OFFSET);
-        expectedValues.put("doubleField", Double.parseDouble(ReadResponseTest.participantWithOneRow.getId() + FIRST_MANTISSA));
+        expectedValues.put("doubleField", BigDecimal.valueOf(Double.parseDouble(ReadResponseTest.participantWithOneRow.getId() + FIRST_MANTISSA)));
         expectedValues.put("dateTimeField", FIRST_DATE);
         expectedValues.put("flagField", FIRST_FLAG_FIELD + ReadResponseTest.participantWithOneRow.getId());
 
@@ -525,7 +526,7 @@ public class ReadResponseTest extends BaseResponseTest
             expectedValues.put("booleanField", false);
 
         expectedValues.put("integerField", idAsInt + FIRST_INT_OFFSET);
-        expectedValues.put("doubleField", Double.parseDouble(ReadResponseTest.participantWithOneRow.getId() + FIRST_MANTISSA));
+        expectedValues.put("doubleField", BigDecimal.valueOf(Double.parseDouble(ReadResponseTest.participantWithOneRow.getId() + FIRST_MANTISSA)));
         expectedValues.put("dateTimeField", FIRST_DATE);
         expectedValues.put("flagField", FIRST_FLAG_FIELD + ReadResponseTest.participantWithOneRow.getId());
 
@@ -679,7 +680,7 @@ public class ReadResponseTest extends BaseResponseTest
             expectedValues.put("booleanField", false);
 
         expectedValues.put("integerField", participantId + FIRST_INT_OFFSET);
-        expectedValues.put("doubleField", Double.parseDouble(participantId + FIRST_MANTISSA));
+        expectedValues.put("doubleField", BigDecimal.valueOf(Double.parseDouble(participantId + FIRST_MANTISSA)));
         expectedValues.put("dateTimeField", FIRST_DATE);
         expectedValues.put("flagField", FIRST_FLAG_FIELD + participantId);
 
@@ -735,7 +736,7 @@ public class ReadResponseTest extends BaseResponseTest
         String participantAppToken = ReadResponseTest.participantWithMultipleRow.getAppToken();
 
         log("First validate with a join clause.");
-        String sql = "select SecondSimpleList.integerField, SecondSimpleList.Description, TestListDiffDataTypes.participantId from TestListDiffDataTypes inner join SecondSimpleList on SecondSimpleList.integerField = TestListDiffDataTypes.integerField";
+        String sql = "select SecondSimpleList.integerField, SecondSimpleList.Description, TestListDiffDataTypes.participantId from TestListDiffDataTypes inner join SecondSimpleList on SecondSimpleList.integerField = TestListDiffDataTypes.integerField order by integerField";
         log("Call the executeSql action with sql: '" + sql + "' and participant " + participantId + " (" + participantAppToken + ").");
 
         Map<String, Object> params = new HashMap<>();
@@ -818,7 +819,9 @@ public class ReadResponseTest extends BaseResponseTest
         participantId = ReadResponseTest.participantWithMultipleRow.getId();
         participantAppToken = ReadResponseTest.participantWithMultipleRow.getAppToken();
 
-        sql = "select TestListDiffDataTypes.participantId, ThirdList.integerField, SecondSimpleList.Description from ((TestListDiffDataTypes inner join ThirdList on ThirdList.participantId = TestListDiffDataTypes.participantId) inner join SecondSImpleList on TestListDiffDataTypes.integerField = SecondSimpleList.integerField)";
+        sql = "select TestListDiffDataTypes.participantId, ThirdList.integerField, SecondSimpleList.Description " +
+                "from ((TestListDiffDataTypes inner join ThirdList on ThirdList.participantId = TestListDiffDataTypes.participantId) " +
+                "inner join SecondSImpleList on TestListDiffDataTypes.integerField = SecondSimpleList.integerField) order by integerField";
         log("Call the executeSql action with sql: '" + sql + "' and participant " + participantId + " (" + participantAppToken + "). This participant has no rows in the list.");
         goToProjectHome();
 
