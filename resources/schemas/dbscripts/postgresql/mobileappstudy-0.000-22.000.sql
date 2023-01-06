@@ -180,6 +180,4 @@ ALTER TABLE mobileappstudy.Participant ALTER COLUMN AllowDataSharing DROP DEFAUL
 
 /* 21.xxx SQL scripts */
 
-SELECT core.executeJavaUpgradeCode('migrateResponseServerConfig');
-
 ALTER TABLE mobileappstudy.Response ADD COLUMN Language VARCHAR(100);
