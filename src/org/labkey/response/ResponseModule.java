@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.SqlSelector;
-import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.module.DefaultModule;
 import org.labkey.api.module.ModuleContext;
 import org.labkey.api.security.permissions.ApplicationAdminPermission;
@@ -71,12 +70,6 @@ public class ResponseModule extends DefaultModule
     public boolean hasScripts()
     {
         return true;
-    }
-
-    @Override
-    public @Nullable UpgradeCode getUpgradeCode()
-    {
-        return new ResponseUpgradeCode();
     }
 
     @Override

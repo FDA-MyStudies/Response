@@ -1,1 +1,0 @@
-ALTER TABLE mobileappstudy.Response ADD COLUMN Language VARCHAR(100);
