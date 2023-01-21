@@ -23,7 +23,6 @@ import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.GuestCredentialsProvider;
-import org.labkey.remoteapi.PostCommand;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.test.BaseWebDriverTest;
@@ -222,7 +221,7 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
     @LogMethod
     protected CommandResponse assignToken(Connection connection, @LoggedParam String token, @LoggedParam String projectName, @LoggedParam String studyName) throws IOException, CommandException
     {
-        Command<?> command = new PostCommand<>("mobileappstudy", "enroll");
+        Command<?> command = new SimplePostCommand("mobileappstudy", "enroll");
         HashMap<String, Object> params = new HashMap<>(Maps.of("shortName", studyName, "token", token, "allowDataSharing", "true"));
         command.setParameters(params);
         log("Assigning token: " + token);
