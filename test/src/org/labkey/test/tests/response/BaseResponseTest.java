@@ -18,11 +18,12 @@ package org.labkey.test.tests.response;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.Nullable;
-import org.labkey.remoteapi.Command;
 import org.labkey.remoteapi.CommandException;
 import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
 import org.labkey.remoteapi.GuestCredentialsProvider;
+import org.labkey.remoteapi.SimpleGetCommand;
+import org.labkey.remoteapi.SimplePostCommand;
 import org.labkey.remoteapi.query.SelectRowsCommand;
 import org.labkey.remoteapi.query.SelectRowsResponse;
 import org.labkey.test.BaseWebDriverTest;
@@ -221,7 +222,7 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
     @LogMethod
     protected CommandResponse assignToken(Connection connection, @LoggedParam String token, @LoggedParam String projectName, @LoggedParam String studyName) throws IOException, CommandException
     {
-        Command<?> command = new SimplePostCommand("mobileappstudy", "enroll");
+        SimpleGetCommand command = new SimpleGetCommand("mobileappstudy", "enroll");
         HashMap<String, Object> params = new HashMap<>(Maps.of("shortName", studyName, "token", token, "allowDataSharing", "true"));
         command.setParameters(params);
         log("Assigning token: " + token);
@@ -315,7 +316,7 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
 
     protected CommandResponse callCommand(String action, Map<String, Object> params)  throws IOException, CommandException
     {
-        Command<?> selectCmd = new Command<>("mobileAppStudy", action);
+        SimpleGetCommand selectCmd = new SimpleGetCommand("mobileAppStudy", action);
         selectCmd.setParameters(params);
 
         return selectCmd.execute(createGuestConnection(), getProjectName());
