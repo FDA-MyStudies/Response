@@ -23,9 +23,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.labkey.remoteapi.CommandException;
-import org.labkey.remoteapi.CommandResponse;
 import org.labkey.remoteapi.Connection;
-import org.labkey.remoteapi.PostCommand;
+import org.labkey.remoteapi.SimplePostCommand;
 import org.labkey.test.WebTestHelper;
 import org.labkey.test.categories.Git;
 import org.labkey.test.commands.response.SubmitResponseCommand;
@@ -400,7 +399,7 @@ public class ForwardResponseTest extends BaseResponseTest
     @LogMethod
     private static void disableForwarding(String containerPath) throws IOException
     {
-        PostCommand<CommandResponse> command = new PostCommand<>("mobileAppStudy", "forwardingSettings");
+        SimplePostCommand command = new SimplePostCommand("mobileAppStudy", "forwardingSettings");
         Map<String, Object> params = new HashMap<>();
         params.put("forwardingType", "Disabled");
         command.setParameters(params);
