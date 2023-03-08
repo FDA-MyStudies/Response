@@ -21,10 +21,10 @@ import org.labkey.api.collections.ConcurrentHashSet;
 import org.labkey.api.data.Container;
 import org.labkey.api.util.DateUtil;
 import org.labkey.response.ResponseManager;
-import org.quartz.DailyTimeIntervalScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
+import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
@@ -63,16 +63,16 @@ public class ForwardingScheduler
         if (job == null)
         {
             job = JobBuilder.newJob(SurveyResponseForwardingJob.class)
-                    .withIdentity(ForwardingScheduler.class.getCanonicalName(), ForwardingScheduler.class.getCanonicalName())
-                    .usingJobData("surveyResponseForwarder", ForwardingScheduler.class.getCanonicalName())
-                    .build();
+                .withIdentity(ForwardingScheduler.class.getCanonicalName(), ForwardingScheduler.class.getCanonicalName())
+                .usingJobData("surveyResponseForwarder", ForwardingScheduler.class.getCanonicalName())
+                .build();
         }
 
         Trigger trigger = TriggerBuilder.newTrigger()
-                .withIdentity(ForwardingScheduler.class.getCanonicalName(), ForwardingScheduler.class.getCanonicalName())
-                .withSchedule(DailyTimeIntervalScheduleBuilder.dailyTimeIntervalSchedule().withIntervalInMinutes(getIntervalMinutes()))
-                .forJob(job)
-                .build();
+            .withIdentity(ForwardingScheduler.class.getCanonicalName(), ForwardingScheduler.class.getCanonicalName())
+            .withSchedule(SimpleScheduleBuilder.repeatMinutelyForever(getIntervalMinutes()))
+            .forJob(job)
+            .build();
 
         this.triggerKey = trigger.getKey();
 
