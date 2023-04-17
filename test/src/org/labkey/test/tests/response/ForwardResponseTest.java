@@ -15,7 +15,6 @@
  */
 package org.labkey.test.tests.response;
 
-import com.google.common.net.MediaType;
 import org.apache.hc.core5.http.HttpStatus;
 import org.jetbrains.annotations.Nullable;
 import org.junit.AfterClass;
@@ -38,6 +37,7 @@ import org.labkey.test.util.PipelineStatusTable;
 import org.labkey.test.util.TestLogger;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpRequest;
+import org.mockserver.model.MediaType;
 import org.mockserver.model.StringBody;
 import org.mockserver.verify.VerificationTimes;
 import org.openqa.selenium.support.ui.FluentWait;
