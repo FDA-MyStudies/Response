@@ -123,7 +123,7 @@ public class EnrollParticipantCommand extends ResponseCommand
     @Override
     protected void parseSuccessfulResponse(JSONObject response)
     {
-        _appToken = (String) ((JSONObject) response.get("data")).get(APP_TOKEN_JSON_FIELD);
+        _appToken = response.getJSONObject("data").getString(APP_TOKEN_JSON_FIELD);
     }
 
     @Override
