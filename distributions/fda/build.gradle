@@ -17,15 +17,12 @@ BuildUtils.addModuleDistributionDependencies(project, [BuildUtils.getApiProjectP
                                                        project.parent.parent.getPath(), // Response module
                                                        BuildUtils.getPlatformModuleProjectPath(project.gradle, "visualization")])
 
-project.task(
-        "distribution",
-        group: GroupNames.DISTRIBUTION,
-        type: ModuleDistribution,
+project.tasks.register("distribution", ModuleDistribution)
         {ModuleDistribution dist ->
+            group GroupNames.DISTRIBUTION
             dist.subDirName='response'
             dist.includeTarGZArchive=true
             dist.extraFileIdentifier='-response'
             dist.simpleDistribution=true
             dist.embeddedArchiveType='tar.gz'
         }
-)
