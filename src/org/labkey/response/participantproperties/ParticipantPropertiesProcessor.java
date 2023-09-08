@@ -123,8 +123,7 @@ public class ParticipantPropertiesProcessor extends DynamicListProcessor
             throw new InvalidDesignException(String.format(LogMessageFormats.DESIGN_STUDYID_MISMATCH, design.getMetadata().getStudyId(), study.getShortName()));
 
         // if a user isn't provided, need to create a LimitedUser to use for checking permissions, wrapping the Guest user
-        User insertUser = new LimitedUser((user == null)? UserManager.getGuestUser() : user,
-                new int[0], Collections.singleton(RoleManager.getRole(AuthorRole.class)), false);
+        User insertUser = new LimitedUser((user == null)? UserManager.getGuestUser() : user, Collections.singleton(RoleManager.getRole(AuthorRole.class)));
 
         String currentVersion = getParticipantPropertiesDesignVersion(user, study.getContainer());
         logger.debug(String.format(LogMessageFormats.START_UPDATE_PARTICIPANT_PROPERTIES, study.getShortName(), currentVersion, design.getStudyVersion()));

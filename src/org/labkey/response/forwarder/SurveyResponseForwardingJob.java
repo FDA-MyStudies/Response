@@ -50,7 +50,7 @@ public class SurveyResponseForwardingJob implements org.quartz.Job, Callable<Str
     {
         if (forwardingUser == null)
         {
-            forwardingUser = new LimitedUser(User.getSearchUser(), new int[0], Collections.singleton(RoleManager.getRole(ReaderRole.class)), false);
+            forwardingUser = new LimitedUser(User.getSearchUser(), Collections.singleton(RoleManager.getRole(ReaderRole.class)));
             forwardingUser.setPrincipalType(PrincipalType.SERVICE);
         }
         return forwardingUser;

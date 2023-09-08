@@ -879,7 +879,7 @@ public class ResponseManager
 
         // if a user isn't provided, need to create a LimitedUser to use for checking permissions, wrapping the Guest user
         User insertUser = new LimitedUser((user == null)? UserManager.getGuestUser() : user,
-                new int[0], Collections.singleton(RoleManager.getRole(SubmitterRole.class)), false);
+                Collections.singleton(RoleManager.getRole(SubmitterRole.class)));
 
         try (DbScope.Transaction transaction = scope.ensureTransaction())
         {
@@ -1304,8 +1304,7 @@ public class ResponseManager
     private void deleteParticipantDataFromSurveyLists(Participant participant) throws Exception
     {
         // Create a LimitedUser to use for checking permissions, wrapping the Guest user
-        User user = new LimitedUser(UserManager.getGuestUser(),
-                new int[0], Collections.singleton(RoleManager.getRole(EditorRole.class)), false);
+        User user = new LimitedUser(UserManager.getGuestUser(), Collections.singleton(RoleManager.getRole(EditorRole.class)));
 
         //Get all lists in the container
         Collection<ListDefinition> lists = ListService.get().getLists(participant.getContainer()).values();

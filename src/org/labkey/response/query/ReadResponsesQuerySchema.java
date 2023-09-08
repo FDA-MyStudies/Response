@@ -91,7 +91,7 @@ public class ReadResponsesQuerySchema extends UserSchema
 
     public static ReadResponsesQuerySchema get(Participant participant)
     {
-        User user = new LimitedUser(User.guest, new int[0], Collections.singleton(RoleManager.getRole(ReaderRole.class)), false);
+        User user = new LimitedUser(User.guest, Collections.singleton(RoleManager.getRole(ReaderRole.class)));
         return new ReadResponsesQuerySchema(user, participant.getContainer(), participant);
     }
 
