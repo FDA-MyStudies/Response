@@ -151,8 +151,7 @@ public class SurveyDesignProcessor extends DynamicListProcessor
             throw new InvalidDesignException(LogMessageFormats.MISSING_METADATA);
 
         // if a user isn't provided, need to create a LimitedUser to use for checking permissions, wrapping the Guest user
-        User insertUser = new LimitedUser((user == null)? UserManager.getGuestUser() : user,
-                new int[0], Collections.singleton(RoleManager.getRole(AuthorRole.class)), false);
+        User insertUser = new LimitedUser((user == null)? UserManager.getGuestUser() : user, Collections.singleton(RoleManager.getRole(AuthorRole.class)));
 
         ListDefinition listDef = ensureList(study.getContainer(), insertUser, design.getSurveyName(), null);
         applySurveyUpdate(study.getContainer(), insertUser, listDef.getDomain(), design.getSteps(), design.getSurveyName(), "");
