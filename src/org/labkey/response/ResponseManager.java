@@ -52,7 +52,6 @@ import org.labkey.api.security.LimitedUser;
 import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
 import org.labkey.api.security.roles.EditorRole;
-import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.security.roles.SubmitterRole;
 import org.labkey.api.util.ChecksumUtil;
 import org.labkey.api.util.ContainerUtil;
@@ -878,8 +877,7 @@ public class ResponseManager
         List<String> errors = new ArrayList<>();
 
         // if a user isn't provided, need to create a LimitedUser to use for checking permissions, wrapping the Guest user
-        User insertUser = new LimitedUser((user == null)? UserManager.getGuestUser() : user,
-                Collections.singleton(RoleManager.getRole(SubmitterRole.class)));
+        User insertUser = new LimitedUser((user == null) ? UserManager.getGuestUser() : user, SubmitterRole.class);
 
         try (DbScope.Transaction transaction = scope.ensureTransaction())
         {
@@ -1304,7 +1302,7 @@ public class ResponseManager
     private void deleteParticipantDataFromSurveyLists(Participant participant) throws Exception
     {
         // Create a LimitedUser to use for checking permissions, wrapping the Guest user
-        User user = new LimitedUser(UserManager.getGuestUser(), Collections.singleton(RoleManager.getRole(EditorRole.class)));
+        User user = new LimitedUser(UserManager.getGuestUser(), EditorRole.class);
 
         //Get all lists in the container
         Collection<ListDefinition> lists = ListService.get().getLists(participant.getContainer()).values();

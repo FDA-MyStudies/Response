@@ -28,13 +28,11 @@ import org.labkey.api.security.LimitedUser;
 import org.labkey.api.security.PrincipalType;
 import org.labkey.api.security.User;
 import org.labkey.api.security.roles.ReaderRole;
-import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.util.ConfigurationException;
 import org.labkey.api.view.ViewBackgroundInfo;
 import org.labkey.response.ResponseManager;
 import org.quartz.JobExecutionContext;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -50,7 +48,7 @@ public class SurveyResponseForwardingJob implements org.quartz.Job, Callable<Str
     {
         if (forwardingUser == null)
         {
-            forwardingUser = new LimitedUser(User.getSearchUser(), Collections.singleton(RoleManager.getRole(ReaderRole.class)));
+            forwardingUser = new LimitedUser(User.getSearchUser(), ReaderRole.class);
             forwardingUser.setPrincipalType(PrincipalType.SERVICE);
         }
         return forwardingUser;
