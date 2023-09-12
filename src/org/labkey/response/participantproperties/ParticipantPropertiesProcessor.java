@@ -21,7 +21,6 @@ import org.labkey.api.security.LimitedUser;
 import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
 import org.labkey.api.security.roles.AuthorRole;
-import org.labkey.api.security.roles.RoleManager;
 import org.labkey.response.DynamicListProcessor;
 import org.labkey.response.MobileAppStudySchema;
 import org.labkey.response.ResponseManager;
@@ -31,7 +30,6 @@ import org.labkey.response.surveydesign.InvalidDesignException;
 import org.labkey.response.surveydesign.SurveyDesignProvider;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -123,7 +121,7 @@ public class ParticipantPropertiesProcessor extends DynamicListProcessor
             throw new InvalidDesignException(String.format(LogMessageFormats.DESIGN_STUDYID_MISMATCH, design.getMetadata().getStudyId(), study.getShortName()));
 
         // if a user isn't provided, need to create a LimitedUser to use for checking permissions, wrapping the Guest user
-        User insertUser = new LimitedUser((user == null)? UserManager.getGuestUser() : user, Collections.singleton(RoleManager.getRole(AuthorRole.class)));
+        User insertUser = new LimitedUser((user == null) ? UserManager.getGuestUser() : user, AuthorRole.class);
 
         String currentVersion = getParticipantPropertiesDesignVersion(user, study.getContainer());
         logger.debug(String.format(LogMessageFormats.START_UPDATE_PARTICIPANT_PROPERTIES, study.getShortName(), currentVersion, design.getStudyVersion()));

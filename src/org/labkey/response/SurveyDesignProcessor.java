@@ -31,7 +31,6 @@ import org.labkey.api.security.LimitedUser;
 import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
 import org.labkey.api.security.roles.AuthorRole;
-import org.labkey.api.security.roles.RoleManager;
 import org.labkey.response.data.MobileAppStudy;
 import org.labkey.response.data.SurveyResponse;
 import org.labkey.response.surveydesign.InvalidDesignException;
@@ -40,7 +39,6 @@ import org.labkey.response.surveydesign.SurveyDesignProvider;
 import org.labkey.response.surveydesign.SurveyStep;
 import org.labkey.response.surveydesign.SurveyStep.StepResultType;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -151,7 +149,7 @@ public class SurveyDesignProcessor extends DynamicListProcessor
             throw new InvalidDesignException(LogMessageFormats.MISSING_METADATA);
 
         // if a user isn't provided, need to create a LimitedUser to use for checking permissions, wrapping the Guest user
-        User insertUser = new LimitedUser((user == null)? UserManager.getGuestUser() : user, Collections.singleton(RoleManager.getRole(AuthorRole.class)));
+        User insertUser = new LimitedUser(user == null ? UserManager.getGuestUser() : user, AuthorRole.class);
 
         ListDefinition listDef = ensureList(study.getContainer(), insertUser, design.getSurveyName(), null);
         applySurveyUpdate(study.getContainer(), insertUser, listDef.getDomain(), design.getSteps(), design.getSurveyName(), "");

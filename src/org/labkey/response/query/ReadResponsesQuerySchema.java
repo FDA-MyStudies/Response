@@ -38,14 +38,12 @@ import org.labkey.api.security.UserPrincipal;
 import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.roles.ReaderRole;
-import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.util.StringExpression;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.UnauthorizedException;
 import org.labkey.response.MobileAppStudySchema;
 import org.labkey.response.data.Participant;
 
-import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -91,7 +89,7 @@ public class ReadResponsesQuerySchema extends UserSchema
 
     public static ReadResponsesQuerySchema get(Participant participant)
     {
-        User user = new LimitedUser(User.guest, Collections.singleton(RoleManager.getRole(ReaderRole.class)));
+        User user = new LimitedUser(User.guest, ReaderRole.class);
         return new ReadResponsesQuerySchema(user, participant.getContainer(), participant);
     }
 
