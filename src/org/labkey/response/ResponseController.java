@@ -45,16 +45,12 @@ import org.labkey.api.data.DataRegionSelection;
 import org.labkey.api.data.NormalContainerType;
 import org.labkey.api.data.PropertyManager;
 import org.labkey.api.module.FolderTypeManager;
-import org.labkey.api.module.Module;
-import org.labkey.api.module.ModuleLoader;
-import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.query.InvalidKeyException;
 import org.labkey.api.query.QueryForm;
 import org.labkey.api.query.QuerySettings;
 import org.labkey.api.query.QueryView;
 import org.labkey.api.query.TempQuerySettings;
 import org.labkey.api.query.UserSchema;
-import org.labkey.api.security.AdminConsoleAction;
 import org.labkey.api.security.CSRF;
 import org.labkey.api.security.RequiresNoPermission;
 import org.labkey.api.security.RequiresPermission;
@@ -62,7 +58,6 @@ import org.labkey.api.security.RequiresSiteAdmin;
 import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.ReadPermission;
-import org.labkey.api.security.permissions.SiteAdminPermission;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
@@ -1228,8 +1223,7 @@ public class ResponseController extends SpringActionController
         }
     }
 
-    @AdminConsoleAction
-    @RequiresPermission(SiteAdminPermission.class)
+    @RequiresSiteAdmin
     public class ServerConfigurationAction extends FormViewAction<ServerConfigurationForm>
     {
         public static final String RESPONSE_SERVER_CONFIGURATION = "ResponseServerConfig";
@@ -1243,7 +1237,7 @@ public class ResponseController extends SpringActionController
         public static final String WCP_PASSWORD = "wcpPassword";
 
         @Override
-        public ModelAndView getView(ServerConfigurationForm form, boolean reshow, BindException errors) throws Exception
+        public ModelAndView getView(ServerConfigurationForm form, boolean reshow, BindException errors)
         {
             JspView<ServerConfigurationForm> view = new JspView<>("/org/labkey/response/view/responseServerConfiguration.jsp", form, errors);
             view.setTitle("Global Settings");

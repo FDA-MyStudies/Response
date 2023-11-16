@@ -23,7 +23,7 @@ import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.SqlSelector;
 import org.labkey.api.module.DefaultModule;
 import org.labkey.api.module.ModuleContext;
-import org.labkey.api.security.permissions.ApplicationAdminPermission;
+import org.labkey.api.security.permissions.SiteAdminPermission;
 import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.settings.AdminConsole;
 import org.labkey.api.usageMetrics.UsageMetricsService;
@@ -100,7 +100,7 @@ public class ResponseModule extends DefaultModule
         ReadResponsesQuerySchema.register(this);
 
         ActionURL serverConfigurationURL = new ActionURL(ResponseController.ServerConfigurationAction.class, ContainerManager.getRoot());
-        AdminConsole.addLink(AdminConsole.SettingsLinkType.Configuration, "Response Server Configuration", serverConfigurationURL, ApplicationAdminPermission.class);
+        AdminConsole.addLink(AdminConsole.SettingsLinkType.Configuration, "Response Server Configuration", serverConfigurationURL, SiteAdminPermission.class);
         FolderManagement.addTab(FolderManagement.TYPE.FolderManagement, "MyStudies Response Server", "forwarding",
                 IS_ACTIVE, ResponseController.ForwardingSettingsAction.class);
 

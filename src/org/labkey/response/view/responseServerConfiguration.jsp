@@ -70,7 +70,6 @@
     String wcpPasswordHelpText = "Password for that username on the WCP server.";
 %>
 
-
 <labkey:errors/><br/>
 
 <labkey:form name="ServerConfigurationForm" action="<%=new ActionURL(ResponseController.ServerConfigurationAction.class, getContainer())%>" method="POST">
@@ -109,7 +108,7 @@
 </labkey:form>
 
 
-<script type="text/javascript">
+<script type="text/javascript" nonce="<%=getScriptNonce()%>">
     +function ($) {
         const toggleTextInputDisabled = (toggle) => {
             $('#metadataDirectory').prop('disabled', !toggle);

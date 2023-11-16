@@ -1,17 +1,17 @@
 <%@ page import="org.apache.commons.lang3.StringUtils" %>
+<%@ page import="org.labkey.api.security.permissions.AdminPermission" %>
 <%@ page import="org.labkey.api.view.ActionURL" %>
 <%@ page import="org.labkey.api.view.HttpView" %>
 <%@ page import="org.labkey.api.view.JspView" %>
 <%@ page import="org.labkey.api.view.template.ClientDependencies" %>
+<%@ page import="org.labkey.response.ResponseController" %>
 <%@ page import="org.labkey.response.ResponseController.ForwardingSettingsAction" %>
 <%@ page import="org.labkey.response.ResponseController.ForwardingSettingsForm" %>
 <%@ page import="org.labkey.response.ResponseManager" %>
+<%@ page import="org.labkey.response.data.MobileAppStudy" %>
 <%@ page import="org.labkey.response.forwarder.ForwarderProperties" %>
 <%@ page import="org.labkey.response.forwarder.ForwardingType" %>
 <%@ page import="java.util.Map" %>
-<%@ page import="org.labkey.response.data.MobileAppStudy" %>
-<%@ page import="org.labkey.api.security.permissions.AdminPermission" %>
-<%@ page import="org.labkey.response.ResponseController" %>
 <%@ page extends="org.labkey.api.jsp.JspBase" %>
 <%@ taglib prefix="labkey" uri="http://www.labkey.org/taglib" %>
 
@@ -159,7 +159,7 @@
     </labkey:form>
 </labkey:panel>
 
-<script type="text/javascript">
+<script type="text/javascript" nonce="<%=getScriptNonce()%>">
     let pulseSuccessMessage = (message) => {
         let successMessage = $('.lk-response-update-metadata-success');
         successMessage.text(message);
