@@ -33,9 +33,9 @@ import org.labkey.api.data.PropertyManager;
 import org.labkey.response.participantproperties.ParticipantPropertiesDesign;
 
 import java.net.URI;
+import java.util.Base64;
 import java.util.function.Function;
 
-import static org.apache.commons.net.util.Base64.encodeBase64;
 import static org.labkey.api.util.StringUtilsLabKey.DEFAULT_CHARSET;
 import static org.labkey.response.ResponseController.ServerConfigurationAction.RESPONSE_SERVER_CONFIGURATION;
 import static org.labkey.response.ResponseController.ServerConfigurationAction.WCP_BASE_URL;
@@ -106,7 +106,7 @@ public class ServiceSurveyDesignProvider extends AbstractSurveyDesignProviderImp
     private static String getServiceToken()
     {
         PropertyManager.PropertyMap props = PropertyManager.getEncryptedStore().getProperties(ContainerManager.getRoot(), RESPONSE_SERVER_CONFIGURATION);
-        return new String(encodeBase64((props.get(WCP_USERNAME) + ":" + props.get(WCP_PASSWORD)).getBytes(DEFAULT_CHARSET)), DEFAULT_CHARSET);
+        return new String(Base64.getEncoder().encode((props.get(WCP_USERNAME) + ":" + props.get(WCP_PASSWORD)).getBytes(DEFAULT_CHARSET)), DEFAULT_CHARSET);
     }
 
     private static String getServiceUrl()
