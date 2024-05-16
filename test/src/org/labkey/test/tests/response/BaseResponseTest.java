@@ -37,7 +37,7 @@ import org.labkey.test.components.response.MyStudiesResponseServerTab;
 import org.labkey.test.data.response.InitialSurvey;
 import org.labkey.test.data.response.QuestionResponse;
 import org.labkey.test.data.response.Survey;
-import org.labkey.test.util.ListHelper;
+import org.labkey.test.params.list.IntListDefinition;
 import org.labkey.test.util.LogMethod;
 import org.labkey.test.util.LoggedParam;
 import org.labkey.test.util.Maps;
@@ -270,7 +270,7 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
         setResponseServerConfigurations(props);
     }
 
-    protected void setupProject(String studyName, String projectName, String surveyName, boolean enableResponseCollection)
+    protected void setupProject(String studyName, String projectName, String surveyName, boolean enableResponseCollection) throws Exception
     {
         _containerHelper.createProject(projectName, FOLDER_TYPE);
         log("Set a study name.");
@@ -283,7 +283,7 @@ public abstract class BaseResponseTest extends BaseWebDriverTest implements Post
         myStudiesResponseServerTab.validateSaveButtonEnabled();
         myStudiesResponseServerTab.saveAndExpectSuccess();
         if (StringUtils.isNotBlank(surveyName))
-            _listHelper.createList(projectName, surveyName, ListHelper.ListColumnType.AutoInteger, "Key");
+            new IntListDefinition(surveyName, "Key").create(createDefaultConnection(), projectName);
     }
 
     /**

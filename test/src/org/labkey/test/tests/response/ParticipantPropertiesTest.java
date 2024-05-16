@@ -92,14 +92,14 @@ public class ParticipantPropertiesTest extends BaseResponseTest
     protected static ClientAndServer mockServer = null;
 
     @BeforeClass
-    public static void setupProject()
+    public static void setupProject() throws Exception
     {
         ParticipantPropertiesTest init = (ParticipantPropertiesTest) getCurrentTest();
 
         init.doSetup();
     }
 
-    private void doSetup()
+    private void doSetup() throws Exception
     {
         initMockserver();
         setupProject(STUDY_NAME01, PROJECT_NAME01, null, true);
@@ -148,7 +148,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
     }
 
     @Override
-    protected void setupProject(String studyName, String projectName, String surveyName, boolean enableResponseCollection)
+    protected void setupProject(String studyName, String projectName, String surveyName, boolean enableResponseCollection) throws Exception
     {
         _containerHelper.deleteProject(projectName, false);
         super.setupProject(studyName, projectName, surveyName, enableResponseCollection);
@@ -341,7 +341,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
     }
 
     @Test
-    public void testParticipantWithdrawl()
+    public void testParticipantWithdrawl() throws Exception
     {
         setupProject(STUDY_NAME02, PROJECT_NAME02, null, true);
         goToProjectHome(PROJECT_NAME02);
@@ -374,7 +374,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
     }
 
     @Test
-    public void testAddColumn()
+    public void testAddColumn() throws Exception
     {
         String study = ADD_PATH;
         String project = PROJECT_NAME04 + study;
@@ -393,7 +393,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
     }
 
     @Test
-    public void testDeleteColumn()
+    public void testDeleteColumn() throws Exception
     {
         String study = DELETE_PATH;
         String project = PROJECT_NAME04 + study;
@@ -418,7 +418,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
     }
 
     @Test
-    public void testUpdateColumn() throws IOException, CommandException
+    public void testUpdateColumn() throws Exception
     {
         String study = UPDATE_PATH;
         String project = PROJECT_NAME04 + study;
@@ -457,7 +457,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
     }
 
     @Test
-    public void testUpdateAfterSurveyResponse()
+    public void testUpdateAfterSurveyResponse() throws Exception
     {
         String study = SURVEY_UPDATE_PATH;
         String project = PROJECT_NAME04 + study;
@@ -503,7 +503,7 @@ public class ParticipantPropertiesTest extends BaseResponseTest
      * @param project container name
      * @return first (0th) token in the batch generated
      */
-    private String setupProjectWithParticipantProperties(String study, String project)
+    private String setupProjectWithParticipantProperties(String study, String project) throws Exception
     {
         setupProject(study, project, null, true);
         goToProjectHome(project);
