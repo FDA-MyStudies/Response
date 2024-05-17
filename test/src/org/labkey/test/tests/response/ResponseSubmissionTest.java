@@ -50,14 +50,14 @@ public class ResponseSubmissionTest extends BaseResponseTest
     }
 
     @BeforeClass
-    public static void setupProject()
+    public static void setupProject() throws Exception
     {
         ResponseSubmissionTest init = (ResponseSubmissionTest) getCurrentTest();
 
         init.doSetup();
     }
 
-    private void doSetup()
+    private void doSetup() throws Exception
     {
         doCleanup(false);
 

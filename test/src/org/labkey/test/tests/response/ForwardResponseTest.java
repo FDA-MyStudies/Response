@@ -16,6 +16,7 @@
 package org.labkey.test.tests.response;
 
 import org.apache.hc.core5.http.HttpStatus;
+import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.Nullable;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -43,6 +44,7 @@ import org.mockserver.verify.VerificationTimes;
 import org.openqa.selenium.support.ui.FluentWait;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -145,14 +147,14 @@ public class ForwardResponseTest extends BaseResponseTest
     }
 
     @BeforeClass
-    public static void setupProject()
+    public static void setupProject() throws Exception
     {
         ForwardResponseTest init = (ForwardResponseTest) getCurrentTest();
 
         init.doSetup();
     }
 
-    private void doSetup()
+    private void doSetup() throws Exception
     {
         setupProject(STUDY_NAME01, PROJECT_NAME01, SURVEY_NAME, true);
         setupProject(STUDY_NAME02, PROJECT_NAME02, SURVEY_NAME, true);
@@ -319,7 +321,6 @@ public class ForwardResponseTest extends BaseResponseTest
         submitResponse(project, study, null);
         submitResponse(project, study, null);
         submitResponse(project, study, null);
-        int responseCount = 3;
 
         sleep(2000);  //Give pipeline job a chance to start processing
         pst = goToDataPipeline();  //refresh page
@@ -327,24 +328,29 @@ public class ForwardResponseTest extends BaseResponseTest
         assertEquals("Unexpected new pipeline job", oldCount, newCount);
         mockServer.verify(req, VerificationTimes.exactly(0));  //Will throw AssertionError if count doesn't match
 
-        assertEquals("Response forwarding pipeline job count not as expected", 0, pst.getDataRowCount()); //Allow delta of 1 in the event scheduled job runs
+        assertEquals("Response forwarding pipeline job count not as expected", 0, pst.getDataRowCount());
         enableOAuthForwarding(project, OAUTH_TOKEN_URL_PATH, OAUTH_TOKEN_FIELD, OAUTH_TOKEN_HEADER, OAUTH_ENDPOINT_PATH2);
-        pst = goToDataPipeline();
 
         log("Submitting response to trigger forwarding now that it is enabled");
         submitResponse(project, study, null);
-        responseCount++;
+
+        checker().awaiting(Duration.ofSeconds(10), () -> mockServer.verify(req, VerificationTimes.exactly(4)));
 
         String forwardingJobDescription = String.format(FORWARDING_PIPELINE_JOB_FORMAT, project);
-        waitForPipelineJobsToComplete(1, forwardingJobDescription, false);
-        assertTrue("Forwarding job failed unexpectedly.", "Complete".equalsIgnoreCase(pst.getJobStatus(forwardingJobDescription)));
+        pst = goToDataPipeline();
+        int jobCount = pst.getDataRowCount();
+        waitForPipelineJobsToComplete(jobCount, forwardingJobDescription, false);
+        Assertions.assertThat(jobCount).as("Forwarding job count").isLessThanOrEqualTo(2); // The last response sometimes gets forwarded separately
 
-        mockServer.verify(req, VerificationTimes.exactly(responseCount)); //Will throw an AssertionError if not found correct number of times.
-
-        log("Checking pipeline job log");
-        //TODO: this may be flaky as Timer job may create one in the interim...
+        log("Checking pipeline job log(s)");
         pst.clickStatusLink(forwardingJobDescription);
-        assertTextPresent(String.format("Forwarding completed. %1$s response(s) sent to", responseCount));
+        assertTextPresent(String.format("Forwarding completed. %1$s response(s) sent to", jobCount > 1 ? 1 : 4));
+        if (jobCount > 1)
+        {
+            goBack();
+            pst.clickStatusLink(1);
+            assertTextPresent(String.format("Forwarding completed. %1$s response(s) sent to", 3));
+        }
 
         log("Clearing mockserver request logs");
         mockServer.clear(req);
