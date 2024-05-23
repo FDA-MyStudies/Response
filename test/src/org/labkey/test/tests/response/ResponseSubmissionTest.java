@@ -22,7 +22,7 @@ import org.labkey.test.categories.Git;
 import org.labkey.test.commands.response.SubmitResponseCommand;
 import org.labkey.test.components.response.MyStudiesResponseServerTab;
 import org.labkey.test.pages.response.ResponseQueryPage;
-import org.labkey.test.util.ListHelper;
+import org.labkey.test.params.list.IntListDefinition;
 
 import java.util.List;
 
@@ -269,7 +269,7 @@ public class ResponseSubmissionTest extends BaseResponseTest
     }
 
     @Test
-    public void testSubmissionToDeletedProject()
+    public void testSubmissionToDeletedProject() throws Exception
     {
         //Setup a third study that we can delete
         _containerHelper.deleteProject(PROJECT_NAME03, false);
@@ -280,7 +280,7 @@ public class ResponseSubmissionTest extends BaseResponseTest
         myStudiesResponseServerTab.setInputId(STUDY_NAME03);
         myStudiesResponseServerTab.validateSaveButtonEnabled();
         myStudiesResponseServerTab.saveAndExpectSuccess();
-        _listHelper.createList(PROJECT_NAME03, SURVEY_NAME, ListHelper.ListColumnType.AutoInteger, "Key" );
+        new IntListDefinition(SURVEY_NAME, "Key").create(createDefaultConnection(), PROJECT_NAME03);
         setSurveyMetadataDropDir();
         goToProjectHome(PROJECT_NAME03);
 
