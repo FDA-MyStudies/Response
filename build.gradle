@@ -1,4 +1,3 @@
 plugins {
-    id 'org.labkey.build.standalone'
     id 'org.labkey.build.module'
 }
