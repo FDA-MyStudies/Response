@@ -23,5 +23,4 @@ project.tasks.register("distribution", ModuleDistribution)
             dist.subDirName='response'
             dist.extraFileIdentifier='-response'
             dist.simpleDistribution=true
-            dist.embeddedArchiveType='tar.gz'
         }
