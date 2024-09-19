@@ -23,15 +23,15 @@ the Response Server (i.e. a standard LabKey Server distribution plus the Respons
 1. Append these two lines to the end of `settings.gradle`:
    ```
    include ":server:modules:Response"
-   include ":server:modules:Response:distributions:fda"
+   include ":server:modules:Response:distributions:response"
    ```
 
 1. On the command line (again, in the root of your working copy), run one of these commands (use the first command on 
 Linux/OSX and the second on Windows):
 
     ```
-    ./gradlew :server:modules:Response:distributions:fda:dist
-    gradlew :server:modules:Response:distributions:fda:dist
+    ./gradlew :server:modules:Response:distributions:response:dist
+    gradlew :server:modules:Response:distributions:response:dist
     ```
 
 1. [Build and deploy LabKey](https://www.labkey.org/Documentation/24.7/wiki-page.view?name=buildLabKey) with the Response module.
