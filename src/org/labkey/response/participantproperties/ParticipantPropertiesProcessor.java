@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.JdbcType;
 import org.labkey.api.data.PropertyManager;
+import org.labkey.api.data.PropertyManager.WritablePropertyMap;
 import org.labkey.api.data.PropertyStorageSpec;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Table;
@@ -246,7 +247,7 @@ public class ParticipantPropertiesProcessor extends DynamicListProcessor
 
     private void updateParticipantPropertiesVersion(Container container, User user, String newVersion)
     {
-        PropertyManager.PropertyMap versionProperties = PropertyManager.getWritableProperties(user, container, PARTICIPANT_PROPERTIES_PROPERTY_CATEGORY, true);
+        WritablePropertyMap versionProperties = PropertyManager.getWritableProperties(user, container, PARTICIPANT_PROPERTIES_PROPERTY_CATEGORY, true);
         versionProperties.put(PARTICIPANT_PROPERTIES_VERSION_KEY, newVersion);
         versionProperties.save();
     }
