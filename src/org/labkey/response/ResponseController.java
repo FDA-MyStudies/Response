@@ -44,6 +44,7 @@ import org.labkey.api.data.DataRegion;
 import org.labkey.api.data.DataRegionSelection;
 import org.labkey.api.data.NormalContainerType;
 import org.labkey.api.data.PropertyManager;
+import org.labkey.api.data.PropertyManager.WritablePropertyMap;
 import org.labkey.api.module.FolderTypeManager;
 import org.labkey.api.query.InvalidKeyException;
 import org.labkey.api.query.QueryForm;
@@ -1273,7 +1274,7 @@ public class ResponseController extends SpringActionController
                 return false;
             else
             {
-                PropertyManager.PropertyMap props = PropertyManager.getEncryptedStore().getWritableProperties(getContainer(), RESPONSE_SERVER_CONFIGURATION, true);
+                WritablePropertyMap props = PropertyManager.getEncryptedStore().getWritableProperties(getContainer(), RESPONSE_SERVER_CONFIGURATION, true);
                 Map<String, String> valuesToPersist = form.getOptions();
 
                 if (!valuesToPersist.isEmpty())

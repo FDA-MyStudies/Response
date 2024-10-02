@@ -79,7 +79,7 @@ public class ForwardingScheduler
         try
         {
             StdSchedulerFactory.getDefaultScheduler().scheduleJob(job, trigger);
-            logger.info(String.format("SurveyResponseForwarder scheduled to run every %1$S minutes. Next runtime %2$s", getIntervalMinutes(), DateUtil.formatDateTimeISO8601(trigger.getNextFireTime())));
+            logger.info(String.format("SurveyResponseForwarder scheduled to run every %1$S minutes. Next runtime %2$s", getIntervalMinutes(), DateUtil.formatIsoDateShortTime(trigger.getNextFireTime())));
         }
         catch (SchedulerException e)
         {

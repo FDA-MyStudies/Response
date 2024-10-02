@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.PropertyManager;
+import org.labkey.api.data.PropertyManager.WritablePropertyMap;
 import org.labkey.api.security.Encryption;
 import org.labkey.api.util.logging.LogHelper;
 
@@ -60,7 +61,7 @@ public class ForwarderProperties
      */
     public void setForwarderProperties(Container container, Map<String, String> newConfig)
     {
-        PropertyManager.PropertyMap propertyMap = PropertyManager.getEncryptedStore().getWritableProperties(container, FORWARDER_CATEGORY ,true);
+        WritablePropertyMap propertyMap = PropertyManager.getEncryptedStore().getWritableProperties(container, FORWARDER_CATEGORY ,true);
         newConfig.keySet().forEach((key) -> {
             if (PROPERTIES.contains(key))
             {
@@ -79,7 +80,7 @@ public class ForwarderProperties
 
     public void setForwarderDisabled(Container container, ForwardingType authType)
     {
-        PropertyManager.PropertyMap propertyMap = PropertyManager.getEncryptedStore().getWritableProperties(container, FORWARDER_CATEGORY ,true);
+        WritablePropertyMap propertyMap = PropertyManager.getEncryptedStore().getWritableProperties(container, FORWARDER_CATEGORY ,true);
         propertyMap.put(FORWARDING_TYPE, authType.name());
         propertyMap.save();
     }
