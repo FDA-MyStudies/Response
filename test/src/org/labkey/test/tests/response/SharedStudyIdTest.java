@@ -201,7 +201,7 @@ public class SharedStudyIdTest extends BaseResponseTest
         EnrollParticipantCommand enrollCmd = new EnrollParticipantCommand("home", STUDY_ID, token1, null);
         testRequired(enrollCmd, null);
         testRequired(enrollCmd, "");
-        testRequired(enrollCmd, "%20%20%20");
+        testRequired(enrollCmd, "   ");
         testInvalid(enrollCmd, "na");
         testInvalid(enrollCmd, "n/a");
         testInvalid(enrollCmd, "N/A");
