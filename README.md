@@ -11,10 +11,10 @@ This LabKey module provides the Response Server functionality and services, incl
 
 ## Setup Instructions
 
-This module can be developed within the LabKey Server platform (version 24.7.x). To set up a development environment for
+This module can be developed within the LabKey Server platform (version 24.11.x). To set up a development environment for
 the Response Server (i.e. a standard LabKey Server distribution plus the Response module), follow these steps:
 
-1. Checkout the LabKey Server 24.7.x public GitHub repositories: [Set Up a Development Machine](https://www.labkey.org/Documentation/24.7/wiki-page.view?name=devMachine)
+1. Checkout the LabKey Server 24.11.x public GitHub repositories: [Set Up a Development Machine](https://www.labkey.org/Documentation/24.11/wiki-page.view?name=devMachine)
 
 1. Clone the Response module (this repository) into `server/modules`
 
@@ -34,4 +34,4 @@ Linux/OSX and the second on Windows):
     gradlew :server:modules:Response:distributions:response:dist
     ```
 
-1. [Build and deploy LabKey](https://www.labkey.org/Documentation/24.7/wiki-page.view?name=buildLabKey) with the Response module.
+1. [Build and deploy LabKey](https://www.labkey.org/Documentation/24.11/wiki-page.view?name=buildLabKey) with the Response module.
