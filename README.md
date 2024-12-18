@@ -1,5 +1,10 @@
 # LabKey Response Module - Implements the Response Server Functionality of the MyStudies System
 
+Note: The FDA MyStudies project ended December 31, 2024. At that time, the `release24.11-SNAPSHOT` branch of this
+repository was tested and deployed successfully using LabKey Server v24.11. The code in this repository is available
+for use by any interested party, subject to the license detailed in the accompanying LICENSE.txt file, however, the
+code is NOT maintained. Use at your own risk.
+
 This LabKey module provides the Response Server functionality and services, including:
 
 - Processing and storing all mobile app survey and active task responses
